@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KelasKu</title>
+    <link rel="stylesheet" href="../../assets/output.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+
+<body class="font-poppins bg-white">
+    <section id="register" class="flex flex-col md:flex-row h-screen">
+        <!-- NAV -->
+        <nav class="flex items-center justify-between p-10 text-light-teal w-full fixed top-0">
+            <a href="login.html" class="font-modak text-3xl text-dark-teal">KelasKu</a>
+            <div class="hidden md:block">
+                <ul class="flex space-x-6">
+                    <li><a href="#" class=" hover:-translate-y-1 transition text-lg px-3 py-2">Docs</a>
+                    </li>
+                    <li><a href="#" class=" hover:-translate-y-1 transition text-lg px-3 py-2">Tentang</a></li>
+                    <li><a href="#" class=" hover:-translate-y-1 transition text-lg px-3 py-2">Bantuan</a></li>
+                    <li><a href="login.html"
+                            class="bg-light-teal text-white text-lg px-4 py-2 rounded border hover:bg-white hover:border-light-teal hover:text-light-teal">Masuk
+                            Akun</a></li>
+                </ul>
+            </div>
+            <div class="block md:hidden text-white">
+                <span id="hamburger" class="material-symbols-outlined">
+                    menu
+                </span>
+            </div>
+        </nav>
+        <!-- SIDEBAR -->
+        <div id="sidebar"
+            class="fixed top-0 right-0 h-full w-1/2 bg-light-teal transform translate-x-full transition-transform duration-300 z-50 py-10 bg-opacity-75">
+            <div class="absolute top-10 right-10 text-white">
+                <span class="material-symbols-outlined" id="closeSidebar">
+                    close
+                </span>
+            </div>
+            <ul class="flex flex-col space-y-6 p-10 text-white">
+                <li><a href="#" class="text-lg">Docs</a></li>
+                <li><a href="#" class="text-lg">Tentang</a></li>
+                <li><a href="#" class="text-lg">Bantuan</a></li>
+                <li><a href="login.html"
+                        class="text-lg bg-white text-light-teal px-4 py-2 rounded border hover:bg-light-teal hover:border-white hover:text-white">Masuk
+                        Akun</a>
+                </li>
+            </ul>
+        </div>
+        <!-- SISI KIRI -->
+        <div class="w-full md:w-1/3 bg-light-teal flex justify-center items-center p-4 md:p-0">
+            <img src="../../assets/img/home.png" alt="">
+        </div>
+        <!-- SISI KANAN -->
+        <div class="w-full md:w-2/3 bg-white flex flex-col justify-center items-center p-8">
+            <div
+                class="border border-light-teal py-8 px-6 space-y-4 rounded-3xl shadow-lg md:py-16 md:px-12 md:space-y-8">
+                <h1 class="text-2xl mb-4 text-light-teal font-extrabold md:text-4xl md:mb-6">Siap belajar? Daftar
+                    sekarang!</h1>
+                <div class="mb-4 w-full md:mb-4">
+                    <h2 class="text-lg mb-1 md:text-xl md:mb-2">Email</h2>
+                    <div class="flex items-center border md:p-4 p-2 w-full rounded">
+                        <span class="material-symbols-outlined mr-2 text-light-teal">
+                            mail
+                        </span>
+                        <input type="email" name="" id="email" placeholder="Masukkan Email Anda"
+                            class="flex-1 outline-none">
+                    </div>
+                </div>
+                <div class="mb-4 w-full md:mb-4">
+                    <h2 class="text-lg mb-1 md:text-xl md:mb-2">Password</h2>
+                    <div class="flex items-center border md:p-4 p-2 w-full rounded">
+                        <span class="material-symbols-outlined mr-2 text-light-teal">
+                            lock
+                        </span>
+                        <input type="password" name="" id="password" placeholder="Masukkan Password Anda"
+                            class="flex-1 outline-none">
+                        <span class="material-symbols-outlined mr-2 text-light-teal" id="togglePassword">
+                            visibility
+                        </span>
+                    </div>
+                </div>
+                <div class="mb-4 w-full md:mb-4">
+                    <h2 class="text-lg mb-1 md:text-xl md:mb-2">Konfirmasi Password</h2>
+                    <div class="flex items-center border md:p-4 p-2 w-full rounded">
+                        <span class="material-symbols-outlined mr-2 text-light-teal">
+                            lock
+                        </span>
+                        <input type="password" name="" id="confirmPassword" placeholder="Konfirmasi Password Anda"
+                            class="flex-1 outline-none">
+                        <span class="material-symbols-outlined mr-2 text-light-teal" id="toggleConfirmPassword">
+                            visibility
+                        </span>
+                    </div>
+                </div>
+                <button
+                    class="bg-light-teal text-white text-lg px-4 py-2 rounded border border-transparent hover:bg-white hover:border-light-teal hover:text-light-teal w-full">Daftar</button>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        const hamburger = document.querySelector('#hamburger');
+        const sidebar = document.querySelector('#sidebar');
+        const closeSidebar = document.querySelector('#closeSidebar');
+
+        hamburger.addEventListener('click', () => {
+            sidebar.classList.toggle('translate-x-full');
+            hamburger.classList.toggle('hidden');
+        });
+
+        closeSidebar.addEventListener('click', () => {
+            sidebar.classList.add('translate-x-full');
+            hamburger.classList.remove('hidden');
+        });
+
+        const togglePassword = document.querySelector('#togglePassword');
+        const password = document.querySelector('#password');
+        const toggleConfirmPassword = document.querySelector('#toggleConfirmPassword');
+        const confirmPassword = document.querySelector('#confirmPassword');
+
+        togglePassword.addEventListener('click', function (e) {
+            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+            password.setAttribute('type', type);
+            this.textContent = type === 'password' ? 'visibility' : 'visibility_off';
+        });
+
+        toggleConfirmPassword.addEventListener('click', function (e) {
+            const type = confirmPassword.getAttribute('type') === 'password' ? 'text' : 'password';
+            confirmPassword.setAttribute('type', type);
+            this.textContent = type === 'password' ? 'visibility' : 'visibility_off';
+        });
+    </script>
+</body>
+
+</html>
