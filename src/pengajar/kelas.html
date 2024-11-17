@@ -10,86 +10,151 @@
 </head>
 
 <body class="font-poppins">
-    <!-- NAV -->
-    <nav class="flex flex-col md:flex-row md:items-center justify-between p-10 text-light-teal w-full">
-        <div class="flex items-center justify-between w-full md:w-auto">
-            <a href="../home/login.html" class="font-modak text-3xl text-dark-teal">KelasKu</a>
-            <div class="block text-light-teal md:hidden">
-                <span id="hamburger" class="material-symbols-outlined">
-                    menu
+    <div class="mobile-ui">
+        <!-- NAV -->
+        <nav class="flex flex-col md:flex-row md:items-center justify-between p-10 text-light-teal w-full">
+            <div class="flex items-center justify-between w-full md:w-auto">
+                <a href="../home/login.html" class="font-modak text-3xl text-dark-teal">KelasKu</a>
+                <div class="block text-light-teal md:hidden">
+                    <span id="hamburger" class="material-symbols-outlined">
+                        menu
+                    </span>
+                </div>
+            </div>
+            <div class="w-full mt-4 md:mt-0 md:flex md:justify-center">
+                <div class="flex items-center border rounded p-2 md:p-4 w-full md:w-2/5 lg:w-1/4">
+                    <span class="material-symbols-outlined mr-2 text-light-teal">
+                        search
+                    </span>
+                    <input type="text" name="search" placeholder="CARI BLABLABLA" class="flex-1 outline-none">
+                </div>
+            </div>
+        </nav>
+        <!-- SIDEBAR -->
+        <div id="sidebar"
+            class="absolute top-0 right-0 h-full w-1/2 md:w-1/6 bg-dark-teal transform translate-x-full md:translate-x-0 transition-transform duration-300 z-50 py-10 bg-opacity-90 shadow-lg">
+            <div class="absolute top-10 right-10 text-white md:hidden">
+                <span class="material-symbols-outlined" id="closeSidebar">
+                    close
                 </span>
             </div>
+            <ul class="flex flex-col space-y-6 p-5 text-white">
+                <li class="flex items-center space-x-4">
+                    <img src="../../assets/img/PrabowoProfile.jpeg" alt="Profile Photo" class="w-12 h-12 rounded-full">
+                    <span class="font-bold text-xl">Prabowo Subianto</span>
+                </li>
+                <li class="font-bold text-xl">Aktivitas Harian</li>
+                <li>
+                    <a href="../pengajar/beranda.html"
+                        class="text-lg flex items-center hover:-translate-y-1 transition">
+                        <span class="material-symbols-outlined mr-2 text-light-teal">
+                            home
+                        </span>Beranda
+                    </a>
+                </li>
+                <li>
+                    <a href="../pengajar/kelas.html" class="text-lg flex items-center hover:-translate-y-1 transition">
+                        <span class="material-symbols-outlined mr-2 text-light-teal">
+                            school
+                        </span>Kelas
+                    </a>
+                </li>
+                <li>
+                    <a href="../pengajar/nilai.html" class="text-lg flex items-center hover:-translate-y-1 transition">
+                        <span class="material-symbols-outlined mr-2 text-light-teal">
+                            monitoring
+                        </span>Penilaian
+                    </a>
+                </li>
+                <li>
+                    <a href="../pengajar/rekap.html" class="text-lg flex items-center hover:-translate-y-1 transition">
+                        <span class="material-symbols-outlined mr-2 text-light-teal">
+                            overview
+                        </span>Rekap
+                    </a>
+                </li>
+                <li class="font-bold text-xl">Pengaturan & Akun</li>
+                <li>
+                    <a href="../pengajar/pengaturan.html"
+                        class="text-lg flex items-center hover:-translate-y-1 transition">
+                        <span class="material-symbols-outlined mr-2 text-light-teal">
+                            settings
+                        </span>Pengaturan
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="text-lg flex items-center hover:-translate-y-1 transition">
+                        <span class="material-symbols-outlined mr-2 text-light-teal">
+                            logout
+                        </span>Keluar
+                    </a>
+                </li>
+            </ul>
         </div>
-        <div class="w-full mt-4 md:mt-0 md:flex md:justify-center">
-            <div class="flex items-center border rounded p-2 md:p-4 w-full md:w-2/5 lg:w-1/4">
-                <span class="material-symbols-outlined mr-2 text-light-teal">
-                    search
-                </span>
-                <input type="text" name="search" placeholder="CARI BLABLABLA" class="flex-1 outline-none">
+        <!--UTAMA-->
+        <div class="w-full md:w-5/6">
+            <div class="p-6 rounded-lg shadow-md flex flex-row justify-between">
+                <div class="header mb-4">
+                    <h1 class="text-3xl font-bold text-dark-teal uppercase mb-2">Atur Kelas</h1>
+                    <p class="text-xl text-teal-600 italic">Buat Kelas untuk Mahasiswamu</p>
+                </div>
+                <a href="tambahKelas.html"
+                    class="bg-light-teal text-white text-lg px-4 py-2 w-fit h-fit rounded border hover:bg-white hover:border-light-teal hover:text-light-teal">Tambah
+                    Kelas
+                </a>
             </div>
+            <table class="class-table w-full mt-6 border-collapse">
+                <thead>
+                    <tr class="text-dark-teal">
+                        <th class="border-b p-4 text-left font-medium">Kelas</th>
+                        <th class="border-b p-4 text-left font-medium">Dibuat Pada</th>
+                        <th class="border-b p-4 text-left font-medium">Mata Kuliah</th>
+                        <th class="border-b p-4 text-left font-medium">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="transition">
+                        <td class="p-4">Kelas A</td>
+                        <td class="p-4">12 Agustus 2021</td>
+                        <td class="p-4">IPA</td>
+                        <td class="p-4">
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" class="sr-only peer" checked>
+                                <div
+                                    class="w-11 h-6 bg-gray-200 rounded-full peer-checked:bg-green-500 peer-focus:ring-2 peer-focus:ring-green-300 peer-checked:after:translate-x-5 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all">
+                                </div>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr class="transition">
+                        <td class="p-4">Kelas B</td>
+                        <td class="p-4">13 Agustus 2021</td>
+                        <td class="p-4">IPS</td>
+                        <td class="p-4">
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" class="sr-only peer">
+                                <div
+                                    class="w-11 h-6 bg-gray-200 rounded-full peer-checked:bg-green-500 peer-focus:ring-2 peer-focus:ring-green-300 peer-checked:after:translate-x-5 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all">
+                                </div>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr class="transition">
+                        <td class="p-4">Kelas C</td>
+                        <td class="p-4">14 Agustus 2021</td>
+                        <td class="p-4">IPA</td>
+                        <td class="p-4">
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" class="sr-only peer" checked>
+                                <div
+                                    class="w-11 h-6 bg-gray-200 rounded-full peer-checked:bg-green-500 peer-focus:ring-2 peer-focus:ring-green-300 peer-checked:after:translate-x-5 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all">
+                                </div>
+                            </label>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
-    </nav>
-    <!-- SIDEBAR -->
-    <div id="sidebar"
-        class="absolute top-0 right-0 h-full w-1/2 md:w-1/6 bg-dark-teal transform translate-x-full md:translate-x-0 transition-transform duration-300 z-50 py-10 bg-opacity-90 shadow-lg">
-        <div class="absolute top-10 right-10 text-white md:hidden">
-            <span class="material-symbols-outlined" id="closeSidebar">
-                close
-            </span>
-        </div>
-        <ul class="flex flex-col space-y-6 p-5 text-white">
-            <li class="flex items-center space-x-4">
-                <img src="../../assets/img/PrabowoProfile.jpeg" alt="Profile Photo" class="w-12 h-12 rounded-full">
-                <span class="font-bold text-xl">Prabowo Subianto</span>
-            </li>
-            <li class="font-bold text-xl">Aktivitas Harian</li>
-            <li>
-                <a href="../pengajar/beranda.html" class="text-lg flex items-center hover:-translate-y-1 transition">
-                    <span class="material-symbols-outlined mr-2 text-light-teal">
-                        home
-                    </span>Beranda
-                </a>
-            </li>
-            <li>
-                <a href="../pengajar/kelas.html" class="text-lg flex items-center hover:-translate-y-1 transition">
-                    <span class="material-symbols-outlined mr-2 text-light-teal">
-                        school
-                    </span>Kelas
-                </a>
-            </li>
-            <li>
-                <a href="../pengajar/nilai.html" class="text-lg flex items-center hover:-translate-y-1 transition">
-                    <span class="material-symbols-outlined mr-2 text-light-teal">
-                        monitoring
-                    </span>Penilaian
-                </a>
-            </li>
-            <li>
-                <a href="../pengajar/rekap.html" class="text-lg flex items-center hover:-translate-y-1 transition">
-                    <span class="material-symbols-outlined mr-2 text-light-teal">
-                        overview
-                    </span>Rekap
-                </a>
-            </li>
-            <li class="font-bold text-xl">Pengaturan & Akun</li>
-            <li>
-                <a href="../pengajar/pengaturan.html" class="text-lg flex items-center hover:-translate-y-1 transition">
-                    <span class="material-symbols-outlined mr-2 text-light-teal">
-                        settings
-                    </span>Pengaturan
-                </a>
-            </li>
-            <li>
-                <a href="#" class="text-lg flex items-center hover:-translate-y-1 transition">
-                    <span class="material-symbols-outlined mr-2 text-light-teal">
-                        logout
-                    </span>Keluar
-                </a>
-            </li>
-        </ul>
-    </div>
-    <!--UTAMA-->
-    <div>
     </div>
     <script>
         const hamburger = document.querySelector('#hamburger');
