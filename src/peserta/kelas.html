@@ -6,6 +6,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KelasKu</title>
     <link rel="stylesheet" href="../../assets/output.css">
+    <style>
+        .load{
+            animation: transitionIn 0.75s;
+        }
+        @keyframes transitionIn{
+            from {
+                opacity: 0;
+                transform: rotateX(-10deg);
+            }
+            to {
+                opacity: 1;
+                transform: rotateX(0);
+            }
+        }
+    </style>
 </head>
 
 <body class="font-poppins">
@@ -89,8 +104,69 @@
         </ul>
     </div>
     <!--UTAMA-->
-    <div class=" bg-green-400 shadow-lg p-4 rounded mt-6 ml-10" style="width: 77%;">
-        <p class="font-bold text-black">Kelas</p>
+    <div class="w-full md:w-5/6 load">
+        <div class="p-6 rounded-lg shadow-md flex flex-row justify-between">
+            <div class="header mb-4">
+                <h1 class="px-4 text-3xl font-bold text-dark-teal uppercase mb-2">Kelas</h1>
+                <p class="px-4 text-xl text-teal-600 italic">Belajar adalah kunci keberhasilan</p>
+            </div>
+            <a href="ambilKelas.html"
+                class="bg-light-teal text-white text-lg px-4 py-2 w-fit h-fit rounded border hover:bg-white hover:border-light-teal hover:text-light-teal">Ambil Kelas
+            </a>
+        </div>
+        <div class="p-6 rounded-lg flex flex-row justify-between">
+            <table class="class-table w-full mt-6 border-collapse">
+                <thead>
+                    <tr class="text-dark-teal">
+                        <th class="border-b p-4 text-left font-medium">Kelas</th>
+                        <th class="border-b p-4 text-left font-medium">Diambil Pada</th>
+                        <th class="border-b p-4 text-left font-medium">Mata Kuliah</th>
+                        <th class="border-b p-4 text-left font-medium">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="transition">
+                        <td class="p-4"><a href="./detailKelas.html">Kelas A</a></td>
+                        <td class="p-4">12 Agustus 2021</td>
+                        <td class="p-4">IPA</td>
+                        <td class="p-4">
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" class="sr-only peer" checked>
+                                <div
+                                    class="w-11 h-6 bg-gray-200 rounded-full peer-checked:bg-green-500 peer-focus:ring-2 peer-focus:ring-green-300 peer-checked:after:translate-x-5 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all">
+                                </div>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr class="transition">
+                        <td class="p-4">Kelas B</td>
+                        <td class="p-4">13 Agustus 2021</td>
+                        <td class="p-4">IPS</td>
+                        <td class="p-4">
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" class="sr-only peer">
+                                <div
+                                    class="w-11 h-6 bg-gray-200 rounded-full peer-checked:bg-green-500 peer-focus:ring-2 peer-focus:ring-green-300 peer-checked:after:translate-x-5 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all">
+                                </div>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr class="transition">
+                        <td class="p-4">Kelas C</td>
+                        <td class="p-4">14 Agustus 2021</td>
+                        <td class="p-4">IPA</td>
+                        <td class="p-4">
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" class="sr-only peer" checked>
+                                <div
+                                    class="w-11 h-6 bg-gray-200 rounded-full peer-checked:bg-green-500 peer-focus:ring-2 peer-focus:ring-green-300 peer-checked:after:translate-x-5 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all">
+                                </div>
+                            </label>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
     <script>
         const hamburger = document.querySelector('#hamburger');

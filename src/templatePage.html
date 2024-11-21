@@ -6,6 +6,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KelasKu</title>
     <link rel="stylesheet" href="../../assets/output.css">
+    <style>
+        .load{
+            animation: transitionIn 0.75s;
+        }
+        @keyframes transitionIn{
+            from {
+                opacity: 0;
+                transform: rotateX(-10deg);
+            }
+            to {
+                opacity: 1;
+                transform: rotateX(0);
+            }
+        }
+    </style>
 </head>
 
 <body class="font-poppins">
@@ -89,7 +104,7 @@
         </ul>
     </div>
     <!--UTAMA-->
-    <div class="w-full md:w-5/6">
+    <div class="w-full md:w-5/6 load">
     </div>
     <script>
         const hamburger = document.querySelector('#hamburger');
