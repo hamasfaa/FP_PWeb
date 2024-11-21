@@ -662,10 +662,6 @@ video {
   height: 1.5rem;
 }
 
-.h-auto{
-  height: auto;
-}
-
 .h-fit{
   height: -moz-fit-content;
   height: fit-content;
@@ -698,10 +694,6 @@ video {
 
 .w-full{
   width: 100%;
-}
-
-.w-1\/6{
-  width: 16.666667%;
 }
 
 .flex-1{

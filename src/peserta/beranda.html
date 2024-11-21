@@ -12,7 +12,7 @@
     <!-- NAV -->
     <nav class="flex flex-col md:flex-row md:items-center justify-between p-10 text-light-teal w-full">
         <div class="flex items-center justify-between w-full md:w-auto">
-            <a href="../home/login.html" class="font-modak text-3xl text-dark-teal">KelasKu</a>
+            <a href="../home/login.html" class="font-modak text-4xl text-dark-teal">KelasKu</a>
             <div class="block text-light-teal md:hidden">
                 <span id="hamburger" class="material-symbols-outlined">
                     menu
@@ -36,60 +36,60 @@
                 close
             </span>
         </div>
-        <ul class="flex flex-col space-y-6 p-5 text-white">
-            <li class="flex items-center space-x-4">
-                <img src="../../assets/img/PrabowoProfile.jpeg" alt="Profile Photo" class="w-12 h-12 rounded-full">
-                <span class="font-bold text-xl">Prabowo Subianto</span>
+        <ul class="flex flex-col space-y-6 p-6 text-white">
+            <li class="flex flex-col items-center space-y-2">
+                <img src="../../assets/img/anies.jpg" alt="Profile Photo" class="rounded-full" style="width: 200px; height: 200px;">
+                <span class="font-bold text-xl mt-4">Anies Baswedan</span>
+                <span class="entitas">Mahasiswa</span>
             </li>
-            <li class="font-bold text-xl">Aktivitas Harian</li>
-            <li>
-                <a href="../pengajar/beranda.html" class="text-lg flex items-center hover:-translate-y-1 transition">
-                    <span class="material-symbols-outlined mr-2 text-light-teal">
-                        home
-                    </span>Beranda
-                </a>
+            <li class="flex justify-between items-center">
+                <span class="font-bold text-xl">Aktivitas Harian</span>
+                <span class="material-symbols-outlined cursor-pointer panah"
+                    onclick="toggleSection('aktivitas', this)">arrow_drop_down</span> <!-- Menyertakan 'this' -->
             </li>
-            <li>
-                <a href="../pengajar/kelas.html" class="text-lg flex items-center hover:-translate-y-1 transition">
-                    <span class="material-symbols-outlined mr-2 text-light-teal">
-                        school
-                    </span>Kelas
-                </a>
+            <div id="aktivitas" class="hidden space-y-4">
+                <li>
+                    <a href="../pengajar/beranda.html" class="text-lg flex items-center">
+                        <span class="material-symbols-outlined mr-2 text-light-teal">home</span>
+                        <div class="hover:-translate-x-1 transition">Beranda</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="../pengajar/kelas.html" class="text-lg flex items-center">
+                        <span class="material-symbols-outlined mr-2 text-light-teal">school</span>
+                        <div class="hover:-translate-x-1 transition">Kelas</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="../pengajar/nilai.html" class="text-lg flex items-center">
+                        <span class="material-symbols-outlined mr-2 text-light-teal">monitoring</span>
+                        <div class="hover:-translate-x-1 transition">Penilaian</div>
+                    </a>
+                </li>
+            </div>
+            <li class="flex justify-between items-center">
+                <span class="font-bold text-xl">Pengaturan & Akun</span>
+                <span class="material-symbols-outlined cursor-pointer panah"
+                    onclick="toggleSection('pengaturan', this)">arrow_drop_down</span> <!-- Menyertakan 'this' -->
             </li>
-            <li>
-                <a href="../pengajar/nilai.html" class="text-lg flex items-center hover:-translate-y-1 transition">
-                    <span class="material-symbols-outlined mr-2 text-light-teal">
-                        monitoring
-                    </span>Penilaian
-                </a>
-            </li>
-            <li>
-                <a href="../pengajar/rekap.html" class="text-lg flex items-center hover:-translate-y-1 transition">
-                    <span class="material-symbols-outlined mr-2 text-light-teal">
-                        overview
-                    </span>Absen
-                </a>
-            </li>
-            <li class="font-bold text-xl">Pengaturan & Akun</li>
-            <li>
-                <a href="../pengajar/pengaturan.html" class="text-lg flex items-center hover:-translate-y-1 transition">
-                    <span class="material-symbols-outlined mr-2 text-light-teal">
-                        settings
-                    </span>Pengaturan
-                </a>
-            </li>
-            <li>
-                <a href="#" class="text-lg flex items-center hover:-translate-y-1 transition">
-                    <span class="material-symbols-outlined mr-2 text-light-teal">
-                        logout
-                    </span>Keluar
-                </a>
-            </li>
+            <div id="pengaturan" class="hidden space-y-4">
+                <li>
+                    <a href="../pengajar/pengaturan.html" class="text-lg flex items-center">
+                        <span class="material-symbols-outlined mr-2 text-light-teal">settings</span>
+                        <div class="hover:-translate-x-1 transition">Pengaturan</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="text-lg flex items-center">
+                        <span class="material-symbols-outlined mr-2 text-light-teal">logout</span>
+                        <div class="hover:-translate-x-1 transition">Keluar</div>
+                    </a>
+                </li>
+            </div>
         </ul>
     </div>
     <!--UTAMA-->
     <div class="w-full md:w-5/6">
-        SISWA
     </div>
     <script>
         const hamburger = document.querySelector('#hamburger');
@@ -105,6 +105,19 @@
             sidebar.classList.add('translate-x-full');
             hamburger.classList.remove('hidden');
         });
+
+        function toggleSection(sectionId, arrowElement) {
+            const section = document.getElementById(sectionId);
+            section.classList.toggle('hidden');
+            section.classList.toggle('visible');
+
+            // Ubah ikon panah
+            if (section.classList.contains('hidden')) {
+                arrowElement.textContent = 'arrow_drop_down'; // Ubah ke panah ke bawah
+            } else {
+                arrowElement.textContent = 'arrow_drop_up'; // Ubah ke panah ke atas
+            }
+        }
     </script>
 </body>
 
