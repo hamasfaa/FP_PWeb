@@ -570,6 +570,10 @@ video {
   border-width: 0;
 }
 
+.visible{
+  visibility: visible;
+}
+
 .fixed{
   position: fixed;
 }
@@ -658,6 +662,10 @@ video {
   height: 1.5rem;
 }
 
+.h-auto{
+  height: auto;
+}
+
 .h-fit{
   height: -moz-fit-content;
   height: fit-content;
@@ -669,19 +677,6 @@ video {
 
 .h-screen{
   height: 100vh;
-}
-
-.h-auto{
-  height: auto;
-}
-
-.h-max{
-  height: -moz-max-content;
-  height: max-content;
-}
-
-.h-dvh{
-  height: 100dvh;
 }
 
 .w-1\/2{
@@ -703,6 +698,10 @@ video {
 
 .w-full{
   width: 100%;
+}
+
+.w-1\/6{
+  width: 16.666667%;
 }
 
 .flex-1{
@@ -762,6 +761,12 @@ video {
   --tw-space-x-reverse: 0;
   margin-right: calc(1.5rem * var(--tw-space-x-reverse));
   margin-left: calc(1.5rem * calc(1 - var(--tw-space-x-reverse)));
+}
+
+.space-y-2 > :not([hidden]) ~ :not([hidden]){
+  --tw-space-y-reverse: 0;
+  margin-top: calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(0.5rem * var(--tw-space-y-reverse));
 }
 
 .space-y-4 > :not([hidden]) ~ :not([hidden]){
@@ -850,11 +855,6 @@ video {
   --tw-bg-opacity: 0.9;
 }
 
-.p-coba{
-  padding-top: 0rem;
-  padding-left: 1.25rem;
-}
-
 .p-10{
   padding: 2.5rem;
 }
@@ -941,7 +941,7 @@ video {
 }
 
 .text-4xl{
-  font-size: 2rem;
+  font-size: 2.25rem;
   line-height: 2.5rem;
 }
 
@@ -952,11 +952,6 @@ video {
 
 .text-xl{
   font-size: 1.25rem;
-  line-height: 1.75rem;
-}
-
-.panah{
-  font-size: 3rem;
   line-height: 1.75rem;
 }
 
@@ -1104,13 +1099,13 @@ video {
   content: var(--tw-content);
 }
 
-.hover\:-translate-y-1:hover{
-  --tw-translate-y: -0.25rem;
+.hover\:-translate-x-1:hover{
+  --tw-translate-x: -0.25rem;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 
-.hover\:-translate-x-1:hover{
-  --tw-translate-x: 0.5rem;
+.hover\:-translate-y-1:hover{
+  --tw-translate-y: -0.25rem;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 
@@ -1206,10 +1201,6 @@ video {
 
   .md\:w-1\/6{
     width: 16.666667%;
-  }
-
-  .md\:w-custom{
-    width: 18%;
   }
 
   .md\:w-2\/3{
