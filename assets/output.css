@@ -671,6 +671,19 @@ video {
   height: 100vh;
 }
 
+.h-auto{
+  height: auto;
+}
+
+.h-max{
+  height: -moz-max-content;
+  height: max-content;
+}
+
+.h-dvh{
+  height: 100dvh;
+}
+
 .w-1\/2{
   width: 50%;
 }
