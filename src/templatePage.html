@@ -6,6 +6,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KelasKu</title>
     <link rel="stylesheet" href="../../assets/output.css">
+    <style>
+        .load{
+            animation: transitionIn 0.75s;
+        }
+        @keyframes transitionIn{
+            from {
+                opacity: 0;
+                transform: rotateX(-10deg);
+            }
+            to {
+                opacity: 1;
+                transform: rotateX(0);
+            }
+        }
+    </style>
 </head>
 
 <body class="font-poppins">
@@ -38,16 +53,14 @@
         </div>
         <ul class="flex flex-col space-y-6 p-6 text-white">
             <li class="flex flex-col items-center space-y-2">
-                <img src="../../assets/img/PrabowoProfile.jpeg" alt="Profile Photo" class="rounded-full">
+                <img src="../../assets/img/PrabowoProfile.jpeg" alt="Profile Photo" class="rounded-full" style="width: 200px; height: 200px;">
                 <span class="font-bold text-xl mt-4">Prabowo Subianto</span>
                 <span class="entitas">Dosen</span>
             </li>
             <li class="flex justify-between items-center">
                 <span class="font-bold text-xl">Aktivitas Harian</span>
-                <span class="material-symbols-outlined cursor-pointer panah"
-                    onclick="toggleSection('aktivitas', this)">arrow_drop_down</span> <!-- Menyertakan 'this' -->
             </li>
-            <div id="aktivitas" class="hidden space-y-4">
+            <div id="aktivitas" class="space-y-4">
                 <li>
                     <a href="../pengajar/beranda.html" class="text-lg flex items-center">
                         <span class="material-symbols-outlined mr-2 text-light-teal">home</span>
@@ -89,7 +102,7 @@
         </ul>
     </div>
     <!--UTAMA-->
-    <div class="w-full md:w-5/6">
+    <div class="w-full md:w-5/6 load">
     </div>
     <script>
         const hamburger = document.querySelector('#hamburger');
