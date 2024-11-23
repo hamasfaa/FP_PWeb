@@ -83,15 +83,18 @@
             white-space: nowrap;
             z-index: 1000;
         }
+
         .sidebar-collapsed .menu-item:hover .tooltip {
             opacity: 1;
         }
-        
+
         /* Sidebar tersembunyi pada mobile */
         @media (max-width: 768px) {
             #sidebar {
-                transform: translateX(100%); /* Sembunyikan sidebar di luar layar kanan */
-                width: 50%; /* Lebar sidebar pada mobile, sesuaikan jika diperlukan */
+                transform: translateX(100%);
+                /* Sembunyikan sidebar di luar layar kanan */
+                width: 50%;
+                /* Lebar sidebar pada mobile, sesuaikan jika diperlukan */
             }
 
             /* Sidebar terlihat saat memiliki kelas 'active' */
@@ -119,24 +122,27 @@
 
         /* Sidebar terlihat pada desktop */
         @media (min-width: 769px) {
+
             #hamburger-mobile,
             #closeSidebar-mobile {
                 display: none;
             }
         }
+
         /* Tambahkan animasi buka tutup untuk sidebar di mode mobile */
         @media (max-width: 768px) {
             #sidebar {
                 transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
-                opacity: 0; /* Sidebar tersembunyi secara default */
+                opacity: 0;
+                /* Sidebar tersembunyi secara default */
             }
 
             /* Sidebar terlihat saat memiliki kelas 'active' */
             #sidebar.active {
-                opacity: 1; /* Sidebar terlihat */
+                opacity: 1;
+                /* Sidebar terlihat */
             }
         }
-        
     </style>
 </head>
 
@@ -163,17 +169,15 @@
     </nav>
     <!-- SIDEBAR -->
     <div id="sidebar"
-    class="fixed top-0 right-0 h-full md:w-1/6 bg-dark-teal transform translate-x-full md:translate-x-0 transition-transform duration-300 z-50 bg-opacity-90 shadow-lg flex flex-col">
-
+        class="fixed top-0 right-0 h-full md:w-1/6 bg-dark-teal transform translate-x-full md:translate-x-0 transition-transform duration-300 z-50 bg-opacity-90 shadow-lg flex flex-col">
         <!-- Ikon Hamburger untuk Mobile (Berfungsi Sebagai Tombol Close) -->
         <div class="text-white px-6 py-2 cursor-pointer flex md:hidden">
             <span id="closeSidebar-mobile" class="material-symbols-outlined text-3xl">
                 menu
             </span>
         </div>
-
         <!-- Ikon Hamburger Default di Sidebar untuk Desktop (Collapse) -->
-        <div class="hamburger text-white px-6 py-2 cursor-pointer flex md:flex hidden">
+        <div class="hamburger text-white px-6 py-2 cursor-pointer  md:flex hidden">
             <span class="material-symbols-outlined text-3xl">menu</span>
         </div>
         <div>
@@ -219,8 +223,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#"
-                        class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
+                    <a href="#" class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">logout</span>
                         <span class="link-text ml-3">Keluar</span>
                         <span class="tooltip">Keluar</span>
