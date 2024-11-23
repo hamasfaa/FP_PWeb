@@ -86,6 +86,57 @@
         .sidebar-collapsed .menu-item:hover .tooltip {
             opacity: 1;
         }
+        
+        /* Sidebar tersembunyi pada mobile */
+        @media (max-width: 768px) {
+            #sidebar {
+                transform: translateX(100%); /* Sembunyikan sidebar di luar layar kanan */
+                width: 70%; /* Lebar sidebar pada mobile, sesuaikan jika diperlukan */
+            }
+
+            /* Sidebar terlihat saat memiliki kelas 'active' */
+            #sidebar.active {
+                transform: translateX(0);
+            }
+
+            /* Sembunyikan teks pada sidebar untuk mobile */
+            .profile-container,
+            .tooltip {
+                display: none;
+            }
+
+            /* Tampilkan hamburger-mobile dan closeSidebar-mobile pada mobile */
+            #hamburger-mobile,
+            #closeSidebar-mobile {
+                display: block;
+            }
+
+            /* Sembunyikan ikon hamburger default di sidebar pada mobile */
+            .hamburger {
+                display: none;
+            }
+        }
+
+        /* Sidebar terlihat pada desktop */
+        @media (min-width: 769px) {
+            #hamburger-mobile,
+            #closeSidebar-mobile {
+                display: none;
+            }
+        }
+        /* Tambahkan animasi buka tutup untuk sidebar di mode mobile */
+        @media (max-width: 768px) {
+            #sidebar {
+                transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+                opacity: 0; /* Sidebar tersembunyi secara default */
+            }
+
+            /* Sidebar terlihat saat memiliki kelas 'active' */
+            #sidebar.active {
+                opacity: 1; /* Sidebar terlihat */
+            }
+        }
+        
     </style>
 </head>
 
@@ -94,6 +145,12 @@
     <nav class="flex flex-col md:flex-row md:items-center justify-between p-10 text-light-teal w-full">
         <div class="flex items-center justify-between w-full md:w-auto">
             <a href="../home/login.html" class="font-modak text-4xl text-dark-teal">KelasKu</a>
+            <!-- Ikon Hamburger untuk Mobile -->
+            <div class="md:hidden">
+                <span id="hamburger-mobile" class="material-symbols-outlined text-3xl cursor-pointer">
+                    menu
+                </span>
+            </div>
         </div>
         <div class="w-full mt-4 md:mt-0 md:flex md:justify-center">
             <div class="flex items-center border rounded p-2 md:p-4 w-full md:w-2/5 lg:w-1/4">
@@ -106,8 +163,17 @@
     </nav>
     <!-- SIDEBAR -->
     <div id="sidebar"
-        class="fixed top-0 right-0 h-full md:w-1/6 bg-dark-teal transform translate-x-full md:translate-x-0 transition-transform duration-300 z-50 bg-opacity-90 shadow-lg flex flex-col">
-        <div class="hamburger text-white px-6 py-2 cursor-pointer flex">
+    class="fixed top-0 right-0 h-full md:w-1/6 bg-dark-teal transform translate-x-full md:translate-x-0 transition-transform duration-300 z-50 bg-opacity-90 shadow-lg flex flex-col">
+
+        <!-- Ikon Hamburger untuk Mobile (Berfungsi Sebagai Tombol Close) -->
+        <div class="text-white px-6 py-2 cursor-pointer flex md:hidden">
+            <span id="closeSidebar-mobile" class="material-symbols-outlined text-3xl">
+                menu
+            </span>
+        </div>
+
+        <!-- Ikon Hamburger Default di Sidebar untuk Desktop (Collapse) -->
+        <div class="hamburger text-white px-6 py-2 cursor-pointer flex md:flex hidden">
             <span class="material-symbols-outlined text-3xl">menu</span>
         </div>
         <div>
@@ -137,11 +203,11 @@
                     </a>
                 </li>
                 <li>
-                    <a href="../pengajar/rekap.html"
+                    <a href="../pengajar/presensi.html"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">overview</span>
-                        <span class="link-text ml-3">Rekap</span>
-                        <span class="tooltip">Rekap</span>
+                        <span class="link-text ml-3">Presensi</span>
+                        <span class="tooltip">Presensi</span>
                     </a>
                 </li>
                 <li>
@@ -162,6 +228,8 @@
                 </li>
             </ul>
         </div>
+
+        <!-- Profil -->
         <div class="profile-container flex items-center space-x-4 p-6 mt-auto">
             <img src="../../assets/img/PrabowoProfile.jpeg" alt="Foto Profil" class="rounded-xl w-12 h-12">
             <div class="flex flex-col profile-text">
@@ -170,12 +238,44 @@
             </div>
         </div>
     </div>
+
+    </div>
     <!-- UTAMA -->
     <div class="w-full md:w-5/6 load">
     </div>
     <script>
-        document.querySelector('.hamburger').addEventListener('click', function () {
-            document.getElementById('sidebar').classList.toggle('sidebar-collapsed');
+        const hamburger = document.querySelector('.hamburger');
+        const sidebar = document.getElementById('sidebar');
+        const hamburgerMobile = document.getElementById('hamburger-mobile');
+        const closeSidebarMobile = document.getElementById('closeSidebar-mobile');
+
+        // Fungsi untuk meng-toggle sidebar pada desktop (collapse)
+        hamburger.addEventListener('click', function () {
+            sidebar.classList.toggle('sidebar-collapsed');
+        });
+
+        // Fungsi untuk toggle sidebar pada mobile
+        function toggleSidebar(e) {
+            e.stopPropagation(); // Mencegah event bubbling
+            sidebar.classList.toggle('active');
+        }
+
+        // Event listeners untuk hamburger di navbar dan tombol close di sidebar
+        hamburgerMobile.addEventListener('click', toggleSidebar);
+        closeSidebarMobile.addEventListener('click', toggleSidebar);
+
+        // Menutup sidebar saat mengklik di luar sidebar pada mobile
+        document.addEventListener('click', function (event) {
+            if (window.innerWidth <= 768) { // Hanya berlaku pada mobile
+                if (!sidebar.contains(event.target) && !hamburgerMobile.contains(event.target) && !closeSidebarMobile.contains(event.target)) {
+                    sidebar.classList.remove('active');
+                }
+            }
+        });
+
+        // Mencegah penutupan sidebar saat mengklik di dalam sidebar
+        sidebar.addEventListener('click', function (e) {
+            e.stopPropagation();
         });
     </script>
 </body>

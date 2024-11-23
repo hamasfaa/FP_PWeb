@@ -113,7 +113,7 @@
         <div>
             <ul class="flex flex-col space-y-6 px-6 pt-2 pb-6 text-white">
                 <li>
-                    <a href="#"
+                    <a href="../peserta/beranda.html"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">home</span>
                         <span class="link-text ml-3">Beranda</span>
@@ -129,7 +129,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="../peserta/nilai.html"
+                    <a href="#"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">monitoring</span>
                         <span class="link-text ml-3">Penilaian</span>
@@ -172,7 +172,79 @@
     </div>
     <!-- UTAMA -->
     <div class="w-full md:w-5/6 load">
-        
+        <div class="p-6 rounded-lg shadow-md flex flex-row justify-between">
+            <div class="header mb-4">
+                <h1 class="px-4 text-3xl font-bold text-dark-teal uppercase mb-2">Penilaian</h1>
+                <p class="px-4 text-xl text-teal-600 italic">Hasil tidak akan mengkhianati usaha</p>
+            </div>
+            <a href="rekap.html"
+                class="bg-light-teal text-white text-lg px-4 py-2 w-fit h-fit rounded border hover:bg-white hover:border-light-teal hover:text-light-teal">Rekap Nilai
+            </a>
+        </div>
+        <div class="p-6 rounded-lg flex flex-row justify-between">
+            <table class="class-table w-full mt-6 border-collapse">
+                <thead>
+                    <tr class="text-dark-teal">
+                        <th class="border-b p-4 text-left font-medium">Kelas</th>
+                        <th class="border-b p-4 text-left font-medium">Diambil Pada</th>
+                        <th class="border-b p-4 text-left font-medium">Mata Kuliah</th>
+                        <th class="border-b p-4 text-left font-medium">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="transition">
+                        <td class="p-4"><a href="./detailKelas.html">Kelas A</a></td>
+                        <td class="p-4">12 Agustus 2024</td>
+                        <td class="p-4">Pemrograman Web</td>
+                        <td class="p-4">
+                            <a href="lihatnilai.html"
+                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Lihat Nilai
+                            </a>
+                        </td>
+                    </tr>
+                    <tr class="transition">
+                        <td class="p-4">Kelas B</td>
+                        <td class="p-4">13 Agustus 2024</td>
+                        <td class="p-4">Sistem Operasi</td>
+                        <td class="p-4">
+                            <a href="lihatnilai.html"
+                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Lihat Nilai
+                            </a>
+                        </td>
+                    </tr>
+                    <tr class="transition">
+                        <td class="p-4">Kelas D</td>
+                        <td class="p-4">14 Agustus 2024</td>
+                        <td class="p-4">Struktur Data</td>
+                        <td class="p-4">
+                            <a href="lihatnilai.html"
+                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Lihat Nilai
+                            </a>
+                        </td>
+                    </tr>
+                    <tr class="transition">
+                        <td class="p-4">Kelas F</td>
+                        <td class="p-4">10 Agustus 2024</td>
+                        <td class="p-4">Jaringan Komputer</td>
+                        <td class="p-4">
+                            <a href="lihatnilai.html"
+                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Lihat Nilai
+                            </a>
+                        </td>
+                    </tr>
+                    <tr class="transition">
+                        <td class="p-4">Kelas E</td>
+                        <td class="p-4">17 Agustus 2024</td>
+                        <td class="p-4">Teori graf</td>
+                        <td class="p-4">
+                            <a href="lihatnilai.html"
+                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Lihat Nilai
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>                
+            </table>
+        </div>
     </div>
     <script>
         document.querySelector('.hamburger').addEventListener('click', function () {
