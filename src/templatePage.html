@@ -7,7 +7,6 @@
     <title>KelasKu</title>
     <link rel="stylesheet" href="../../assets/output.css">
     <style>
-        /* Animasi untuk elemen dengan kelas 'load' */
         .load {
             animation: transitionIn 0.75s;
         }
@@ -24,52 +23,68 @@
             }
         }
 
-        /* Menambahkan transisi pada sidebar */
         #sidebar {
             transition: width 0.3s ease;
+            overflow: visible;
         }
 
         .sidebar-collapsed {
             width: 70px;
-            overflow: hidden;
         }
 
-        /* Sembunyikan teks link dan profil saat sidebar diminimalkan */
         .sidebar-collapsed .link-text,
         .sidebar-collapsed .profile-text {
             display: none;
         }
 
-        /* Memusatkan ikon menu saat sidebar diminimalkan */
         .sidebar-collapsed .menu-item {
             justify-content: center;
         }
 
-        /* Memusatkan ikon hamburger saat sidebar diminimalkan */
         .sidebar-collapsed .hamburger {
             justify-content: center;
             padding-left: 0;
             padding-right: 0;
         }
 
-        /* Atur ulang tata letak kontainer profil saat sidebar diminimalkan */
         .sidebar-collapsed .profile-container {
             flex-direction: column;
             align-items: center;
         }
 
-        /* Pastikan gambar profil tidak meregang */
         .profile-container img {
             object-fit: cover;
             width: 50px;
             height: 50px;
         }
 
-        /* Mengatur transisi untuk elemen yang dapat dianimasikan */
         .menu-item,
         .hamburger,
         .profile-container {
             transition: all 0.3s ease;
+        }
+
+        .menu-item {
+            position: relative;
+        }
+
+        .menu-item .tooltip {
+            position: absolute;
+            right: 100%;
+            margin-right: 0.5rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            background-color: rgba(55, 65, 81, 1);
+            color: rgba(255, 255, 255, 1);
+            font-size: 0.875rem;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            white-space: nowrap;
+            z-index: 1000;
+        }
+        .sidebar-collapsed .menu-item:hover .tooltip {
+            opacity: 1;
         }
     </style>
 </head>
@@ -90,46 +105,59 @@
         </div>
     </nav>
     <!-- SIDEBAR -->
-    <div id="sidebar" class="fixed top-0 right-0 h-full md:w-1/5 bg-dark-teal transform translate-x-full md:translate-x-0 transition-transform duration-300 z-50 bg-opacity-90 shadow-lg flex flex-col">
+    <div id="sidebar"
+        class="fixed top-0 right-0 h-full md:w-1/5 bg-dark-teal transform translate-x-full md:translate-x-0 transition-transform duration-300 z-50 bg-opacity-90 shadow-lg flex flex-col">
         <div class="hamburger text-white px-6 py-2 cursor-pointer flex">
             <span class="material-symbols-outlined text-3xl">menu</span>
         </div>
         <div>
             <ul class="flex flex-col space-y-6 px-6 pt-2 pb-6 text-white">
                 <li>
-                    <a href="../pengajar/beranda.html" class="flex items-center hover:-translate-y-1 transition menu-item text-xl">
+                    <a href="../pengajar/beranda.html"
+                        class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">home</span>
                         <span class="link-text ml-3">Beranda</span>
+                        <span class="tooltip">Beranda</span>
                     </a>
                 </li>
                 <li>
-                    <a href="../pengajar/kelas.html" class="flex items-center hover:-translate-y-1 transition menu-item text-xl">
+                    <a href="../pengajar/kelas.html"
+                        class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">school</span>
                         <span class="link-text ml-3">Kelas</span>
+                        <span class="tooltip">Kelas</span>
                     </a>
                 </li>
                 <li>
-                    <a href="../pengajar/nilai.html" class="flex items-center hover:-translate-y-1 transition menu-item text-xl">
+                    <a href="../pengajar/nilai.html"
+                        class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">monitoring</span>
                         <span class="link-text ml-3">Penilaian</span>
+                        <span class="tooltip">Penilaian</span>
                     </a>
                 </li>
                 <li>
-                    <a href="../pengajar/rekap.html" class="flex items-center hover:-translate-y-1 transition menu-item text-xl">
+                    <a href="../pengajar/rekap.html"
+                        class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">overview</span>
                         <span class="link-text ml-3">Rekap</span>
+                        <span class="tooltip">Rekap</span>
                     </a>
                 </li>
                 <li>
-                    <a href="../pengajar/pengaturan.html" class="flex items-center hover:-translate-y-1 transition menu-item text-xl">
+                    <a href="../pengajar/pengaturan.html"
+                        class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">settings</span>
                         <span class="link-text ml-3">Pengaturan</span>
+                        <span class="tooltip">Pengaturan</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="flex items-center hover:-translate-y-1 transition menu-item text-xl">
+                    <a href="#"
+                        class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">logout</span>
                         <span class="link-text ml-3">Keluar</span>
+                        <span class="tooltip">Keluar</span>
                     </a>
                 </li>
             </ul>
@@ -142,12 +170,10 @@
             </div>
         </div>
     </div>
-    <!-- KONTEN UTAMA -->
+    <!-- UTAMA -->
     <div class="w-full md:w-5/6 load">
-
     </div>
     <script>
-        // Fungsi untuk toggle sidebar
         document.querySelector('.hamburger').addEventListener('click', function () {
             document.getElementById('sidebar').classList.toggle('sidebar-collapsed');
         });
