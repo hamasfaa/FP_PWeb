@@ -6,6 +6,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KelasKu</title>
     <link rel="stylesheet" href="../../assets/output.css">
+    <style>
+        .load{
+            animation: transitionIn 0.75s;
+        }
+        @keyframes transitionIn{
+            from {
+                opacity: 0;
+                transform: rotateX(-10deg);
+            }
+            to {
+                opacity: 1;
+                transform: rotateX(0);
+            }
+        }
+    </style>
 </head>
 
 <body class="font-poppins">
@@ -44,10 +59,8 @@
             </li>
             <li class="flex justify-between items-center">
                 <span class="font-bold text-xl">Aktivitas Harian</span>
-                <span class="material-symbols-outlined cursor-pointer panah"
-                    onclick="toggleSection('aktivitas', this)">arrow_drop_down</span> <!-- Menyertakan 'this' -->
             </li>
-            <div id="aktivitas" class="hidden space-y-4">
+            <div id="aktivitas" class="space-y-4">
                 <li>
                     <a href="../peserta/beranda.html" class="text-lg flex items-center">
                         <span class="material-symbols-outlined mr-2 text-light-teal">home</span>
@@ -89,7 +102,7 @@
         </ul>
     </div>
     <!--UTAMA-->
-    <div class=" bg-green-400 shadow-lg p-4 rounded mt-6 ml-10" style="width: 77%;">
+    <div class=" bg-green-400 shadow-lg p-4 rounded mt-6 ml-10 load" style="width: 77%;">
         <p class="font-bold text-black">Kelas</p>
     </div>
     <script>
