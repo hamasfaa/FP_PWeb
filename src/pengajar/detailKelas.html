@@ -199,6 +199,14 @@
                     </a>
                 </li>
                 <li>
+                    <a href="../pengajar/tugas.html"
+                        class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
+                        <span class="material-symbols-outlined text-light-teal text-3xl">task</span>
+                        <span class="link-text ml-3">Tugas</span>
+                        <span class="tooltip">Tugas</span>
+                    </a>
+                </li>
+                <li>
                     <a href="../pengajar/nilai.html"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">monitoring</span>
@@ -245,17 +253,10 @@
     <div class="w-full md:w-5/6 load">
         <div class="p-6 rounded-lg shadow-md flex flex-row justify-between">
             <div class="header mb-4">
-                <div class="space-x-6 flex flex-row mb-2 justify-between">
+                <div class="space-x-6 flex flex-col justify-between">
                     <div class="text-3xl font-bold text-dark-teal uppercase">Kelas A</div>
-                    <div
-                        class="copy-container flex items-center text-xl text-green-600 border-2 border-dashed border-green-500 p-2 rounded cursor-pointer hover:bg-green-100 transition">
-                        ASDF
-                        <span class="material-symbols-outlined ml-2 text-green-500 hover:text-green-800 transition">
-                            content_copy
-                        </span>
-                    </div>
                 </div>
-                <p class="flex text-xl text-teal-600 italic items-center space-x-4">
+                <div class="flex text-xl text-teal-600 italic space-x-4">
                     <span class="flex items-center">
                         <span class="material-symbols-outlined mr-2 text-light-teal">
                             calendar_month
@@ -266,60 +267,40 @@
                             person
                         </span> Prabowo Subianto
                     </span>
-                </p>
+                </div>
+            </div>
+            <div
+                class="flex items-center text-xl text-dark-teal border-2 border-dashed border-dark-teal rounded cursor-pointer hover:bg-light-teal transition h-fit w-fit p-2">
+                ASDF
+                <span class="material-symbols-outlined ml-2 text-dark-teal hover:text-white transition">
+                    content_copy
+                </span>
             </div>
         </div>
-        <table class="class-table w-full mt-6 border-collapse">
-            <thead>
-                <tr class="text-dark-teal">
-                    <th class="border-b p-4 text-left font-medium">Tugas</th>
-                    <th class="border-b p-4 text-left font-medium">Deadline</th>
-                    <th class="border-b p-4 text-left font-medium">File</th>
-                    <th class="border-b p-4 text-left font-medium">Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr class="transition">
-                    <td class="p-4"><a href="./detailKelas.html">Kerjakan UI/UX</a></td>
-                    <td class="p-4">12 Agustus 2021</td>
-                    <td class="p-4">HOHO</td>
-                    <td class="p-4">
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" class="sr-only peer" checked>
-                            <div
-                                class="w-11 h-6 bg-gray-200 rounded-full peer-checked:bg-green-500 peer-focus:ring-2 peer-focus:ring-green-300 peer-checked:after:translate-x-5 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all">
-                            </div>
-                        </label>
-                    </td>
-                </tr>
-                <tr class="transition">
-                    <td class="p-4">Jadi White Hacker</td>
-                    <td class="p-4">13 Agustus 2021</td>
-                    <td class="p-4">yayay</td>
-                    <td class="p-4">
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" class="sr-only peer">
-                            <div
-                                class="w-11 h-6 bg-gray-200 rounded-full peer-checked:bg-green-500 peer-focus:ring-2 peer-focus:ring-green-300 peer-checked:after:translate-x-5 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all">
-                            </div>
-                        </label>
-                    </td>
-                </tr>
-                <tr class="transition">
-                    <td class="p-4">Makan Cepat</td>
-                    <td class="p-4">14 Agustus 2021</td>
-                    <td class="p-4">mmmm</td>
-                    <td class="p-4">
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" class="sr-only peer" checked>
-                            <div
-                                class="w-11 h-6 bg-gray-200 rounded-full peer-checked:bg-green-500 peer-focus:ring-2 peer-focus:ring-green-300 peer-checked:after:translate-x-5 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all">
-                            </div>
-                        </label>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="p-6 rounded-lg flex flex-row justify-between">
+            <table class="class-table w-full mt-6 border-collapse">
+                <thead>
+                    <tr class="text-dark-teal">
+                        <th class="border-b p-4 text-left font-medium">No</th>
+                        <th class="border-b p-4 text-left font-medium">Nama</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="transition">
+                        <td class="p-4">1</a></td>
+                        <td class="p-4">Anies Baswedan</td>
+                    </tr>
+                    <tr class="transition">
+                        <td class="p-4">2</td>
+                        <td class="p-4">Fufufafa</td>
+                    </tr>
+                    <tr class="transition">
+                        <td class="p-4">3</td>
+                        <td class="p-4">El Kecepatan</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
     <script>
         const hamburger = document.querySelector('.hamburger');

@@ -249,37 +249,85 @@
             </div>
         </div>
     </div>
-
-    </div>
     <!-- UTAMA -->
     <div class="w-full md:w-5/6 load">
         <div class="p-6 rounded-lg shadow-md flex flex-row justify-between">
             <div class="header mb-4">
-                <h1 class="text-3xl font-bold text-dark-teal uppercase mb-2">Atur Kelas</h1>
-                <p class="text-xl text-teal-600 italic">Buat Kelas untuk Mahasiswamu</p>
+                <div class="space-x-6 flex flex-row mb-2 justify-between">
+                    <div class="text-3xl font-bold text-dark-teal uppercase">Kelas A</div>
+                    <div
+                        class="copy-container flex items-center text-xl text-green-600 border-2 border-dashed border-green-500 p-2 rounded cursor-pointer hover:bg-green-100 transition">
+                        ASDF
+                        <span class="material-symbols-outlined ml-2 text-green-500 hover:text-green-800 transition">
+                            content_copy
+                        </span>
+                    </div>
+                </div>
+                <p class="flex text-xl text-teal-600 italic items-center space-x-4">
+                    <span class="flex items-center">
+                        <span class="material-symbols-outlined mr-2 text-light-teal">
+                            calendar_month
+                        </span> 25 Mei 2025
+                    </span>
+                    <span class="flex items-center">
+                        <span class="material-symbols-outlined mr-2 text-light-teal">
+                            person
+                        </span> Prabowo Subianto
+                    </span>
+                </p>
             </div>
         </div>
-        <div class="p-6 rounded-lg">
-            <form>
-                <div class="mb-4">
-                    <label for="className" class="block text-gray-700 font-bold mb-2 text-xl">Nama Kelas:</label>
-                    <input type="text" id="className" name="className"
-                        class="shadow appearance-none border rounded w-full md:w-1/3 py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        placeholder="Masukkan nama kelas">
-                </div>
-                <div class="mb-4">
-                    <label for="subject" class="block text-gray-700 font-bold mb-2 text-xl">Mata Kuliah:</label>
-                    <input type="text" id="subject" name="subject"
-                        class="shadow appearance-none border rounded w-full md:w-1/3 py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        placeholder="Masukkan mata kuliah">
-                </div>
-                <div class="flex items-center justify-between">
-                    <button type="submit"
-                        class="bg-dark-teal hover:bg-teal-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full md:w-auto">Tambah
-                        Kelas</button>
-                </div>
-            </form>
-        </div>
+        <table class="class-table w-full mt-6 border-collapse">
+            <thead>
+                <tr class="text-dark-teal">
+                    <th class="border-b p-4 text-left font-medium">Tugas</th>
+                    <th class="border-b p-4 text-left font-medium">Deadline</th>
+                    <th class="border-b p-4 text-left font-medium">File</th>
+                    <th class="border-b p-4 text-left font-medium">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="transition">
+                    <td class="p-4"><a href="./detailKelas.html">Kerjakan UI/UX</a></td>
+                    <td class="p-4">12 Agustus 2021</td>
+                    <td class="p-4">HOHO</td>
+                    <td class="p-4">
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" class="sr-only peer" checked>
+                            <div
+                                class="w-11 h-6 bg-gray-200 rounded-full peer-checked:bg-green-500 peer-focus:ring-2 peer-focus:ring-green-300 peer-checked:after:translate-x-5 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all">
+                            </div>
+                        </label>
+                    </td>
+                </tr>
+                <tr class="transition">
+                    <td class="p-4">Jadi White Hacker</td>
+                    <td class="p-4">13 Agustus 2021</td>
+                    <td class="p-4">yayay</td>
+                    <td class="p-4">
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" class="sr-only peer">
+                            <div
+                                class="w-11 h-6 bg-gray-200 rounded-full peer-checked:bg-green-500 peer-focus:ring-2 peer-focus:ring-green-300 peer-checked:after:translate-x-5 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all">
+                            </div>
+                        </label>
+                    </td>
+                </tr>
+                <tr class="transition">
+                    <td class="p-4">Makan Cepat</td>
+                    <td class="p-4">14 Agustus 2021</td>
+                    <td class="p-4">mmmm</td>
+                    <td class="p-4">
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" class="sr-only peer" checked>
+                            <div
+                                class="w-11 h-6 bg-gray-200 rounded-full peer-checked:bg-green-500 peer-focus:ring-2 peer-focus:ring-green-300 peer-checked:after:translate-x-5 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all">
+                            </div>
+                        </label>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
     <script>
         const hamburger = document.querySelector('.hamburger');

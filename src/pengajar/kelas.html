@@ -199,6 +199,14 @@
                     </a>
                 </li>
                 <li>
+                    <a href="../pengajar/tugas.html"
+                        class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
+                        <span class="material-symbols-outlined text-light-teal text-3xl">task</span>
+                        <span class="link-text ml-3">Tugas</span>
+                        <span class="tooltip">Tugas</span>
+                    </a>
+                </li>
+                <li>
                     <a href="../pengajar/nilai.html"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">monitoring</span>
@@ -245,69 +253,65 @@
     <div class="w-full md:w-5/6 load">
         <div class="p-6 rounded-lg shadow-md flex flex-row justify-between">
             <div class="header mb-4">
-                <h1 class="text-3xl font-bold text-dark-teal uppercase mb-2">Atur Kelas</h1>
-                <p class="text-xl text-teal-600 italic">Buat Kelas untuk Mahasiswamu</p>
+                <h1 class="px-4 text-3xl font-bold text-dark-teal uppercase mb-2">Atur Kelas</h1>
+                <p class="px-4 text-xl text-teal-600 italic">Kelola kelasmu dengan mudah dan efisien</p>
             </div>
             <a href="tambahKelas.html"
                 class="bg-light-teal text-white text-lg px-4 py-2 w-fit h-fit rounded border hover:bg-white hover:border-light-teal hover:text-light-teal">Tambah
                 Kelas
             </a>
         </div>
-        <table class="class-table w-full mt-6 border-collapse">
-            <thead>
-                <tr class="text-dark-teal">
-                    <th class="border-b p-4 text-left font-medium">Kelas</th>
-                    <th class="border-b p-4 text-left font-medium">Dibuat Pada</th>
-                    <th class="border-b p-4 text-left font-medium">Mata Kuliah</th>
-                    <th class="border-b p-4 text-left font-medium">Kode</th>
-                    <th class="border-b p-4 text-left font-medium">Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr class="transition">
-                    <td class="p-4"><a href="./detailKelas.html">Kelas A</a></td>
-                    <td class="p-4">12 Agustus 2021</td>
-                    <td class="p-4">IPA</td>
-                    <td class="p-4">asdf</td>
-                    <td class="p-4">
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" class="sr-only peer" checked>
-                            <div
-                                class="w-11 h-6 bg-gray-200 rounded-full peer-checked:bg-green-500 peer-focus:ring-2 peer-focus:ring-green-300 peer-checked:after:translate-x-5 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all">
+        <div class="p-6 rounded-lg flex flex-row justify-between">
+            <table class="class-table w-full mt-6 border-collapse">
+                <thead>
+                    <tr class="text-dark-teal">
+                        <th class="border-b p-4 text-left font-medium">Kelas</th>
+                        <th class="border-b p-4 text-left font-medium">Dibuat Pada</th>
+                        <th class="border-b p-4 text-left font-medium">Mata Kuliah</th>
+                        <th class="border-b p-4 text-left font-medium">Kode</th>
+                        <th class="border-b p-4 text-left font-medium">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="transition">
+                        <td class="p-4"><a href="./detailKelas.html">Kelas A</a></td>
+                        <td class="p-4">12 Agustus 2021</td>
+                        <td class="p-4">IPA</td>
+                        <td class="p-4">asdf</td>
+                        <td class="p-4">
+                            <div class="relative bg-red-700 text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border
+                                hover:bg-white hover:border-red-500 hover:text-red-500 cursor-pointer">Hapus
+                                Kelas
                             </div>
-                        </label>
-                    </td>
-                </tr>
-                <tr class="transition">
-                    <td class="p-4">Kelas B</td>
-                    <td class="p-4">13 Agustus 2021</td>
-                    <td class="p-4">IPS</td>
-                    <td class="p-4">asdf</td>
-                    <td class="p-4">
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" class="sr-only peer">
-                            <div
-                                class="w-11 h-6 bg-gray-200 rounded-full peer-checked:bg-green-500 peer-focus:ring-2 peer-focus:ring-green-300 peer-checked:after:translate-x-5 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all">
+                        </td>
+                    </tr>
+                    <tr class="transition">
+                        <td class="p-4">Kelas B</td>
+                        <td class="p-4">13 Agustus 2021</td>
+                        <td class="p-4">IPS</td>
+                        <td class="p-4">asdf</td>
+                        <td class="p-4">
+                            <div class="relative bg-red-700 text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border
+                                hover:bg-white hover:border-red-500 hover:text-red-500 cursor-pointer">Hapus
+                                Kelas
                             </div>
-                        </label>
-                    </td>
-                </tr>
-                <tr class="transition">
-                    <td class="p-4">Kelas C</td>
-                    <td class="p-4">14 Agustus 2021</td>
-                    <td class="p-4">IPA</td>
-                    <td class="p-4">asdf</td>
-                    <td class="p-4">
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" class="sr-only peer" checked>
-                            <div
-                                class="w-11 h-6 bg-gray-200 rounded-full peer-checked:bg-green-500 peer-focus:ring-2 peer-focus:ring-green-300 peer-checked:after:translate-x-5 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all">
+                        </td>
+                    </tr>
+                    <tr class="transition">
+                        <td class="p-4">Kelas C</td>
+                        <td class="p-4">14 Agustus 2021</td>
+                        <td class="p-4">IPA</td>
+                        <td class="p-4">asdf</td>
+                        <td class="p-4">
+                            <div class="relative bg-red-700 text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border
+                                hover:bg-white hover:border-red-500 hover:text-red-500 cursor-pointer">Hapus
+                                Kelas
                             </div>
-                        </label>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
     <script>
         const hamburger = document.querySelector('.hamburger');

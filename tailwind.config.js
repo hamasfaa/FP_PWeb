@@ -8,7 +8,7 @@ module.exports = {
         poppins: ['Poppins', 'sans-serif']
       },
       colors: {
-        teal: '#008080',
+        'teal': '#008080',
         'light-teal': '#20B2AA',
         'dark-teal': '#006666',
         'teal-blue': '#367588',
