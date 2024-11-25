@@ -136,6 +136,36 @@
                 opacity: 1; /* Sidebar terlihat */
             }
         }
+
+        /* Style untuk modal (overlay) */
+        .modal {
+            display: none; /* Tersembunyi secara default */
+            position: fixed; /* Tetap di tempat */
+            z-index: 1; /* Berada di atas */
+            left: 0;
+            top: 0;
+            width: 100%; /* Lebar penuh */
+            height: 100%; /* Tinggi penuh */
+            overflow: auto; /* Aktifkan scroll jika diperlukan */
+            background-color: rgba(0,0,0,0.4); /* Hitam dengan opasitas */
+        }
+
+        /* Tombol Tutup */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: red;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
         
     </style>
 </head>
@@ -253,7 +283,152 @@
                 <p class="px-4 text-xl text-teal-600 italic mb-1">Dr. Agus Budi Raharjo, S.Kom., M.Kom.</p>
             </div>
         </div>
+        <div class="p-6 rounded-lg flex flex-col md:flex-row items-center justify-center w-1/2 mx-auto h-auto bg-green-100 mt-8">
+            <div class="w-full md:w-1/2">
+                <table class="w-full text-center border-collapse text-lg lg:text-xl">
+                    <thead class="font-bold">
+                        <tr>
+                            <th class="border-r border-gray-300 w-1/4 text-blue-700 py-2">HADIR</th>
+                            <th class="border-r border-gray-300 w-1/4 text-purple-700">IZIN</th>
+                            <th class="border-r border-gray-300 w-1/4 text-yellow-600">SAKIT</th>
+                            <th class="w-1/4 text-red-600">ALPA</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="border-r border-gray-300 py-2">3</td>
+                            <td class="border-r border-gray-300">1</td>
+                            <td class="border-r border-gray-300">1</td>
+                            <td>1</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="w-full md:w-1/2 mt-4 md:mt-0">
+                <table class="w-full text-center md:text-right border-collapse text-lg lg:text-xl">
+                    <thead class="font-bold">
+                        <tr>
+                            <th class="py-2">TOTAL TATAP MUKA TERLAKSANA</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="py-2">6</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="p-6 rounded-lg flex flex-col md:flex-row items-center justify-center w-5/6 mx-auto h-auto bg-gray-100 mt-8">
+            <table class="class-table w-full border-collapse">
+                <thead>
+                    <tr class="text-dark-teal w-1/5">
+                        <th class="border-b p-4 text-left font-medium">Tatap muka</th>
+                        <th class="border-b p-4 text-left font-medium">Jadwal</th>
+                        <th class="border-b p-4 text-left font-medium">Dosen</th>
+                        <th class="border-b p-4 text-left font-medium">Status</th>
+                        <th class="border-b p-4 text-left font-medium">Keterangan</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="transition">
+                        <td class="p-4">1</td>
+                        <td class="p-4">12 Agustus 2024</td>
+                        <td class="p-4">Bintang Nuralamsyah, S.Kom., M.Kom.</td>
+                        <td class="p-4 text-blue-700 font-bold">HADIR</td>
+                        <td class="p-4">
+                            <button 
+                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal" 
+                                onclick="openModal()">Kode
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="transition">
+                        <td class="p-4">2</td>
+                        <td class="p-4">19 Agustus 2024</td>
+                        <td class="p-4">Bintang Nuralamsyah, S.Kom., M.Kom.</td>
+                        <td class="p-4 text-purple-700 font-bold">IZIN</td>
+                        <td class="p-4">
+                            <button 
+                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal" 
+                                onclick="openModal()">Kode
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="transition">
+                        <td class="p-4">3</td>
+                        <td class="p-4">26 Agustus 2024</td>
+                        <td class="p-4">Bintang Nuralamsyah, S.Kom., M.Kom.</td>
+                        <td class="p-4 text-yellow-600 font-bold">SAKIT</td>
+                        <td class="p-4">
+                            <button 
+                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal" 
+                                onclick="openModal()">Kode
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="transition">
+                        <td class="p-4">4</td>
+                        <td class="p-4">2 September 2024</td>
+                        <td class="p-4">Bintang Nuralamsyah, S.Kom., M.Kom.</td>
+                        <td class="p-4 text-blue-700 font-bold">HADIR</td>
+                        <td class="p-4">
+                            <button 
+                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal" 
+                                onclick="openModal()">Kode
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="transition">
+                        <td class="p-4">5</td>
+                        <td class="p-4">9 September 2024</td>
+                        <td class="p-4">Bintang Nuralamsyah, S.Kom., M.Kom.</td>
+                        <td class="p-4 text-blue-700 font-bold">HADIR</td>
+                        <td class="p-4">
+                            <button 
+                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal" 
+                                onclick="openModal()">Kode
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="transition">
+                        <td class="p-4">6</td>
+                        <td class="p-4">16 September 2024</td>
+                        <td class="p-4">Bintang Nuralamsyah, S.Kom., M.Kom.</td>
+                        <td class="p-4 text-red-600 font-bold">ALPA</td>
+                        <td class="p-4">
+                            <button 
+                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal" 
+                                onclick="openModal()">Kode
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>                
+            </table>
+        </div>
+        <div id="myModal" class="modal">
+            <form class="modal-content bg-white p-5 border border-gray-300 rounded-lg shadow-lg mx-auto mt-20 w-1/3" action="submit_path" method="POST">
+                <span class="close text-2xl font-bold text-gray-500 cursor-pointer float-right" onclick="closeModal()">&times;</span>
+                <div class="mt-5">
+                    <label for="code" class="block text-sm font-medium text-gray-700">Masukkan 6 Digit Kode Presensi: <span class="text-red-500">*</span></label>
+                    <input type="text" id="code" name="code" required minlength="6" maxlength="6" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                    <p class="mt-4 mb-2 text-sm font-medium text-gray-700">Kehadiran Kuliah <span class="text-red-500">*</span></p>
+                    <div class="flex items-center mb-4">
+                        <input type="radio" id="class" name="attendance" value="class" required class="text-indigo-600 border-gray-300 focus:ring-indigo-500">
+                        <label for="class" class="ml-2 text-sm text-gray-700">Saya hadir kuliah di kelas</label>
+                    </div>
+                    <div class="flex items-center mb-4">
+                        <input type="radio" id="online" name="attendance" value="online" required class="text-indigo-600 border-gray-300 focus:ring-indigo-500">
+                        <label for="online" class="ml-2 text-sm text-gray-700">Saya hadir kuliah secara online</label>
+                    </div>
+                    <button type="submit" class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Simpan</button>
+                </div>
+            </form>                       
+        </div>
     </div>
+    
+     
+    
     <script>
         const hamburger = document.querySelector('.hamburger');
         const sidebar = document.getElementById('sidebar');
@@ -288,6 +463,24 @@
         sidebar.addEventListener('click', function (e) {
             e.stopPropagation();
         });
+
+        // Mendapatkan modal
+        var modal = document.getElementById("myModal");
+
+        // Mendapatkan tombol yang membuka modal
+        var btn = document.querySelector(".open-modal-btn");
+
+        // Fungsi untuk membuka modal
+        function openModal() {
+            modal.style.display = "block";
+        }
+
+        // Fungsi untuk menutup modal
+        function closeModal() {
+            modal.style.display = "none";
+        }
+
+
     </script>
 </body>
 
