@@ -142,6 +142,101 @@
                 opacity: 1;
                 /* Sidebar terlihat */
             }
+
+            .modal-content {
+                width: 90%;
+                /* Lebar modal lebih kecil pada mobile */
+                max-width: 90%;
+                /* Maksimal 90% pada perangkat kecil */
+                margin: 10% auto;
+                /* Penyesuaian margin untuk lebih terpusat */
+            }
+
+            /* Tombol close lebih kecil dan mudah dijangkau */
+            .close {
+                font-size: 24px;
+                /* Ukuran tombol close lebih kecil */
+                padding: 8px;
+                /* Peningkatan ukuran tombol close */
+            }
+
+            .modal-content input {
+                font-size: 14px;
+                /* Ukuran input lebih kecil */
+                padding: 8px;
+                /* Penyesuaian padding input agar tidak terlalu besar */
+            }
+        }
+
+        /* Style untuk modal (overlay) */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        /* Modal Content untuk lebih responsif */
+        .modal-content {
+            background-color: #ffffff;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            /* Lebar standar pada layar besar */
+        }
+
+        /* Tombol Tutup */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: red;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Tombol simpan pada modal */
+        .modal-content button {
+            background-color: #0d9488;
+            /* warna serupa tabel */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        .modal-content button:hover {
+            background-color: #0f766e;
+        }
+
+        /* Form input dalam modal */
+        .modal-content input {
+            width: calc(100% - 24px);
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
     </style>
 </head>
@@ -242,47 +337,65 @@
         </div>
     </div>
     <!-- UTAMA -->
-    <div class="w-full md:w-5/6 load p-6">
-        <div class="bg-white shadow-md rounded-lg p-6 mb-6 flex flex-row justify-between">
-            <div class="header mb-4">
-                <h1 class="text-3xl font-bold text-dark-teal uppercase mb-2">Presensi Kelas A</h1>
-                <p class="text-xl text-teal-600 italic">IPA</p>
+    <div class="w-full md:w-5/6 load p-4 md:p-6">
+        <div class="bg-white shadow-md rounded-lg p-4 md:p-6 mb-6 flex flex-col sm:flex-row justify-between">
+            <div class="header mb-4 sm:mb-0">
+                <h1 class="text-2xl sm:text-3xl font-bold text-dark-teal uppercase mb-2">Presensi Kelas A</h1>
+                <p class="text-lg sm:text-xl text-teal-600 italic">IPA</p>
             </div>
-            <a href="tambahPertemuan.html"
-                class="bg-light-teal text-white text-lg px-4 py-2 w-fit h-fit rounded border hover:bg-white hover:border-light-teal hover:text-light-teal">Tambah
-                Pertemuan</a>
+            <button href="tambahPertemuan.html"
+                class="bg-light-teal text-white text-lg px-4 py-2 w-fit h-fit rounded border hover:bg-white hover:border-light-teal hover:text-light-teal"
+                onclick="openModal()">Tambah
+                Pertemuan</button>
         </div>
-        <div class="bg-white shadow-lg rounded-lg p-8">
+        <div class="bg-white shadow-lg rounded-lg p-4 sm:p-8">
             <table class="w-full mt-6 border-collapse">
                 <thead>
                     <tr class="text-dark-teal">
                         <th class="border-b p-4 text-left font-medium">Pertemuan</th>
                         <th class="border-b p-4 text-left font-medium">Deskripsi</th>
                         <th class="border-b p-4 text-left font-medium">Tanggal</th>
-                        <th class="border-b p-4 text-left font-medium">Jumlah</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr class="transition duration-300 hover:bg-teal-50">
-                        <td class="p-4">1</td>
+                        <td class="p-4"><a href="./detailPresensi.html">1</a></td>
                         <td class="p-4">HTML</td>
                         <td class="p-4">12 Agustus 2024</td>
-                        <td class="p-4">50</td>
                     </tr>
                     <tr class="transition duration-300 hover:bg-teal-50">
                         <td class="p-4">2</td>
                         <td class="p-4">CSS</td>
                         <td class="p-4">13 Agustus 2021</td>
-                        <td class="p-4">49</td>
                     </tr>
                     <tr class="transition duration-300 hover:bg-teal-50">
                         <td class="p-4">3</td>
                         <td class="p-4">JS</td>
                         <td class="p-4">14 Agustus 2021</td>
-                        <td class="p-4">50</td>
                     </tr>
                 </tbody>
             </table>
+        </div>
+        <div id="myModal" class="modal justify-center">
+            <form class="modal-content" action="submit_path" method="POST">
+                <!-- <span class="close" onclick="closeModal()"></span> -->
+                <span class="material-symbols-outlined close" onclick="closeModal()">close</span>
+                <div class="mt-5">
+                    <label for="meetingNumber" class="block text-sm font-medium text-gray-700">Pertemuan Ke:</label>
+                    <input type="number" id="meetingNumber" name="meetingNumber" min="1"
+                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500">
+                    <label for="description" class="block text-sm font-medium text-gray-700">Deskripsi:</label>
+                    <input type="text" id="description" name="description"
+                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500">
+                    <label for="date" class="block text-sm font-medium text-gray-700">Tanggal:</label>
+                    <input type="date" id="date" name="date"
+                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500">
+                    <div class="flex justify-center">
+                        <button type="submit"
+                            class="w-1/2 bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Tambah</button>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
     <script>
@@ -319,6 +432,32 @@
         sidebar.addEventListener('click', function (e) {
             e.stopPropagation();
         });
+
+        // Mendapatkan modal
+        var modal = document.getElementById("myModal");
+
+        // Mendapatkan tombol yang membuka modal
+        var btn = document.querySelector(".open-modal-btn");
+
+        // Fungsi untuk membuka modal
+        function openModal() {
+            modal.style.display = "block";
+            document.body.style.overflow = "hidden"; // Menonaktifkan scroll saat modal muncul
+        }
+
+        // Fungsi untuk menutup modal
+        function closeModal() {
+            modal.style.display = "none";
+            document.body.style.overflow = "auto"; // Mengaktifkan scroll kembali
+        }
+
+        // Menutup modal jika klik di luar modal
+        window.onclick = function (event) {
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+
     </script>
 </body>
 
