@@ -219,8 +219,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#"
-                        class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
+                    <a href="#" class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative" onclick="confirmLogout(event)">
                         <span class="material-symbols-outlined text-light-teal text-3xl">logout</span>
                         <span class="link-text ml-3">Keluar</span>
                         <span class="tooltip">Keluar</span>
@@ -318,6 +317,16 @@
     </div>
     </div>
     <script>
+        function confirmLogout(event) {
+            event.preventDefault(); // Mencegah link untuk navigasi
+            const confirmation = confirm("Apakah Anda ingin keluar?");
+            
+            if (confirmation) {
+                window.location.href = '../home/login.html'; 
+            } else {
+
+            }
+        }
         const hamburger = document.querySelector('.hamburger');
         const sidebar = document.getElementById('sidebar');
         const hamburgerMobile = document.getElementById('hamburger-mobile');
