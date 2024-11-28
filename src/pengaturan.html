@@ -83,15 +83,18 @@
             white-space: nowrap;
             z-index: 1000;
         }
+
         .sidebar-collapsed .menu-item:hover .tooltip {
             opacity: 1;
         }
-        
+
         /* Sidebar tersembunyi pada mobile */
         @media (max-width: 768px) {
             #sidebar {
-                transform: translateX(100%); /* Sembunyikan sidebar di luar layar kanan */
-                width: 50%; /* Lebar sidebar pada mobile, sesuaikan jika diperlukan */
+                transform: translateX(100%);
+                /* Sembunyikan sidebar di luar layar kanan */
+                width: 50%;
+                /* Lebar sidebar pada mobile, sesuaikan jika diperlukan */
             }
 
             /* Sidebar terlihat saat memiliki kelas 'active' */
@@ -119,24 +122,27 @@
 
         /* Sidebar terlihat pada desktop */
         @media (min-width: 769px) {
+
             #hamburger-mobile,
             #closeSidebar-mobile {
                 display: none;
             }
         }
+
         /* Tambahkan animasi buka tutup untuk sidebar di mode mobile */
         @media (max-width: 768px) {
             #sidebar {
                 transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
-                opacity: 0; /* Sidebar tersembunyi secara default */
+                opacity: 0;
+                /* Sidebar tersembunyi secara default */
             }
 
             /* Sidebar terlihat saat memiliki kelas 'active' */
             #sidebar.active {
-                opacity: 1; /* Sidebar terlihat */
+                opacity: 1;
+                /* Sidebar terlihat */
             }
         }
-        
     </style>
 </head>
 
@@ -163,7 +169,7 @@
     </nav>
     <!-- SIDEBAR -->
     <div id="sidebar"
-    class="fixed top-0 right-0 h-full md:w-1/6 bg-dark-teal transform translate-x-full md:translate-x-0 transition-transform duration-300 z-50 bg-opacity-90 shadow-lg flex flex-col">
+        class="fixed top-0 right-0 h-full md:w-1/6 bg-dark-teal transform translate-x-full md:translate-x-0 transition-transform duration-300 z-50 bg-opacity-90 shadow-lg flex flex-col">
 
         <!-- Ikon Hamburger untuk Mobile (Berfungsi Sebagai Tombol Close) -->
         <div class="text-white px-6 py-2 cursor-pointer flex md:hidden">
@@ -179,7 +185,7 @@
         <div>
             <ul class="flex flex-col space-y-6 px-6 pt-2 pb-6 text-white">
                 <li>
-                    <a href="./peserta/beranda.html"
+                    <a href="../peserta/beranda.html"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">home</span>
                         <span class="link-text ml-3">Beranda</span>
@@ -187,7 +193,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="./peserta/kelas.html"
+                    <a href="../peserta/kelas.html"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">school</span>
                         <span class="link-text ml-3">Kelas</span>
@@ -195,7 +201,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="./peserta/nilai.html"
+                    <a href="../peserta/nilai.html"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">monitoring</span>
                         <span class="link-text ml-3">Penilaian</span>
@@ -203,7 +209,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="./peserta/presensi.html"
+                    <a href="../peserta/presensi.html"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">overview</span>
                         <span class="link-text ml-3">Presensi</span>
@@ -211,7 +217,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="./peserta/pengaturan.html"
+                    <a href="pengaturan.html"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">settings</span>
                         <span class="link-text ml-3">Pengaturan</span>
@@ -219,7 +225,8 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative" onclick="confirmLogout(event)">
+                    <a href="#" class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative"
+                        onclick="confirmLogout(event)">
                         <span class="material-symbols-outlined text-light-teal text-3xl">logout</span>
                         <span class="link-text ml-3">Keluar</span>
                         <span class="tooltip">Keluar</span>
@@ -245,11 +252,11 @@
             <div class="header mb-4">
                 <h1 class="px-4 text-3xl font-bold text-dark-teal uppercase mb-2">Pengaturan Akun</h1>
             </div>
-            <div class="flex flex-row items-center">
+            <div class="flex flex-col items-center md:flex-row">
                 <img src="../../assets/img/anies.jpg" alt="profil" class="px-4 w-64 mt-2" style="border-radius: 15%;">
                 <div class="flex flex-col ml-4 justify-center">
-                    <span class="font-bold text-4xl text-black">Anies Baswedan</span>
-                    <span class="text-gray-600 text-xl">Mahasiswa</span>
+                    <span class="font-bold text-xl text-black md:text-4xl">Anies Baswedan</span>
+                    <span class="text-gray-600 text-md md:text-xl">Mahasiswa</span>
                 </div>
             </div>
             <div class="mt-8 w-full pl-4">
@@ -289,9 +296,12 @@
                     <h2 class="text-2xl font-bold text-dark-teal">Lainnya</h2>
                     <p class="text-gray-600 text-lg mt-1">Password dan Alamat Rumah</p>
                     <div class="mt-4 space-y-4">
-                        <div class="p-4 bg-white rounded-lg shadow-sm hover:bg-gray-200 transition duration-300 flex items-center">
+                        <div
+                            class="p-4 bg-white rounded-lg shadow-sm hover:bg-gray-200 transition duration-300 flex items-center">
                             <span class="font-bold text-lg text-gray-800">Password:</span>
-                            <input type="password" id="password" class="bg-transparent text-gray-600 text-lg ml-2 w-full sm:w-2/3 border-none outline-none" value="akupintar">
+                            <input type="password" id="password"
+                                class="bg-transparent text-gray-600 text-lg ml-2 w-full sm:w-2/3 border-none outline-none"
+                                value="akupintar">
                             <button id="toggle-password" class="ml-auto text-gray-600">
                                 <span class="material-symbols-outlined">visibility</span>
                             </button>
@@ -305,12 +315,12 @@
             </div>
         </div>
     </div>
-    
+
     <script>
-        document.getElementById('toggle-password').addEventListener('click', function() {
+        document.getElementById('toggle-password').addEventListener('click', function () {
             const passwordField = document.getElementById('password');
             const icon = this.querySelector('span');
-            
+
             // Jika password tersembunyi, ubah menjadi teks dan ganti ikon
             if (passwordField.type === 'password') {
                 passwordField.type = 'text';
@@ -323,9 +333,9 @@
         function confirmLogout(event) {
             event.preventDefault(); // Mencegah link untuk navigasi
             const confirmation = confirm("Apakah Anda ingin keluar?");
-            
+
             if (confirmation) {
-                window.location.href = '../home/login.html'; 
+                window.location.href = '../home/login.html';
             } else {
 
             }
