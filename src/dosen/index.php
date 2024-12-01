@@ -1,3 +1,30 @@
+<?php
+session_start();
+include('/xampp/htdocs/FP/assets/db/config.php');
+
+if (!isset($_SESSION['U_ID'])) {
+    header('Location: ../home/login.html');
+    exit();
+}
+
+$userID = $_SESSION['U_ID'];
+$sql = "SELECT U_Nama, U_Role, U_Foto FROM User WHERE U_ID = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param('i', $userID);
+$stmt->execute();
+$stmt->store_result();
+
+if ($stmt->num_rows > 0) {
+    $stmt->bind_result($name, $role, $photo);
+    $stmt->fetch();
+} else {
+    header('Location: ../home/login.html');
+    exit();
+}
+
+$stmt->close();
+?>
+
 <!DOCTYPE html>
 <html lang="id">
 
@@ -225,7 +252,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
+                    <a href="#" class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative" onclick="confirmLogout(event)">
                         <span class="material-symbols-outlined text-light-teal text-3xl">logout</span>
                         <span class="link-text ml-3">Keluar</span>
                         <span class="tooltip">Keluar</span>
@@ -235,10 +262,10 @@
         </div>
         <!-- Profil -->
         <div class="profile-container flex items-center space-x-4 p-6 mt-auto">
-            <img src="../../assets/img/default.png" alt="Foto Profil" class="rounded-xl w-12 h-12">
+            <img src="<?php echo $photo ?>" alt="Foto Profil" class="rounded-xl w-12 h-12">
             <div class="flex flex-col profile-text">
-                <span class="font-bold text-xl text-white">Prabowo Subianto</span>
-                <span class="text-white">Dosen</span>
+                <span class="font-bold text-xl text-white"><?php echo htmlspecialchars($name); ?></span>
+                <span class="text-white"><?php echo htmlspecialchars(strtoupper($role)); ?></span>
             </div>
         </div>
     </div>
@@ -252,7 +279,7 @@
         const closeSidebarMobile = document.getElementById('closeSidebar-mobile');
 
         // Fungsi untuk meng-toggle sidebar pada desktop (collapse)
-        hamburger.addEventListener('click', function () {
+        hamburger.addEventListener('click', function() {
             sidebar.classList.toggle('sidebar-collapsed');
         });
 
@@ -267,7 +294,7 @@
         closeSidebarMobile.addEventListener('click', toggleSidebar);
 
         // Menutup sidebar saat mengklik di luar sidebar pada mobile
-        document.addEventListener('click', function (event) {
+        document.addEventListener('click', function(event) {
             if (window.innerWidth <= 768) { // Hanya berlaku pada mobile
                 if (!sidebar.contains(event.target) && !hamburgerMobile.contains(event.target) && !closeSidebarMobile.contains(event.target)) {
                     sidebar.classList.remove('active');
@@ -276,9 +303,20 @@
         });
 
         // Mencegah penutupan sidebar saat mengklik di dalam sidebar
-        sidebar.addEventListener('click', function (e) {
+        sidebar.addEventListener('click', function(e) {
             e.stopPropagation();
         });
+
+        function confirmLogout(event) {
+            event.preventDefault(); // Mencegah link untuk navigasi
+            const confirmation = confirm("Apakah Anda ingin keluar?");
+
+            if (confirmation) {
+                window.location.href = '../../auth/logout.php';
+            } else {
+                return;
+            }
+        }
     </script>
 </body>
 
