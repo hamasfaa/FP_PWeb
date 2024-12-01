@@ -3,7 +3,7 @@ session_start();
 include('/xampp/htdocs/FP/assets/db/config.php');
 
 if (!isset($_SESSION['U_ID'])) {
-    header('Location: ../home/login.html');
+    header('Location: ../home/login.php');
     exit();
 }
 
@@ -18,7 +18,7 @@ if ($stmt->num_rows > 0) {
     $stmt->bind_result($name, $role, $photo);
     $stmt->fetch();
 } else {
-    header('Location: ../home/login.html');
+    header('Location: ../home/login.php');
     exit();
 }
 
@@ -177,7 +177,7 @@ $stmt->close();
     <!-- NAV -->
     <nav class="flex flex-col md:flex-row md:items-center justify-between p-10 text-light-teal w-full">
         <div class="flex items-center justify-between w-full md:w-auto">
-            <a href="../home/login.html" class="font-modak text-4xl text-dark-teal">KelasKu</a>
+            <a href="../home/login.php" class="font-modak text-4xl text-dark-teal">KelasKu</a>
             <!-- Ikon Hamburger untuk Mobile -->
             <div class="md:hidden">
                 <span id="hamburger-mobile" class="material-symbols-outlined text-3xl cursor-pointer">
@@ -212,7 +212,7 @@ $stmt->close();
         <div>
             <ul class="flex flex-col space-y-6 px-6 pt-2 pb-6 text-white">
                 <li>
-                    <a href="../pengajar/beranda.html"
+                    <a href="../dosen/index.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">home</span>
                         <span class="link-text ml-3">Beranda</span>
@@ -220,7 +220,7 @@ $stmt->close();
                     </a>
                 </li>
                 <li>
-                    <a href="../pengajar/kelas.html"
+                    <a href="../dosen/kelas.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">school</span>
                         <span class="link-text ml-3">Kelas</span>
@@ -228,7 +228,7 @@ $stmt->close();
                     </a>
                 </li>
                 <li>
-                    <a href="../pengajar/tugas.html"
+                    <a href="../dosen/tugas.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">task</span>
                         <span class="link-text ml-3">Tugas</span>
@@ -236,7 +236,7 @@ $stmt->close();
                     </a>
                 </li>
                 <li>
-                    <a href="../pengajar/presensi.html"
+                    <a href="../dosen/presensi.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">overview</span>
                         <span class="link-text ml-3">Presensi</span>
@@ -244,7 +244,7 @@ $stmt->close();
                     </a>
                 </li>
                 <li>
-                    <a href="../pengaturan.html"
+                    <a href="../pengaturan.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">settings</span>
                         <span class="link-text ml-3">Pengaturan</span>

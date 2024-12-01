@@ -177,13 +177,13 @@
             </span>
         </div>
         <!-- Ikon Hamburger Default di Sidebar untuk Desktop (Collapse) -->
-        <div class="hamburger text-white px-6 py-2 cursor-pointer  md:flex hidden">
+        <div class="hamburger text-white px-6 py-2 cursor-pointer md:flex hidden">
             <span class="material-symbols-outlined text-3xl">menu</span>
         </div>
         <div>
             <ul class="flex flex-col space-y-6 px-6 pt-2 pb-6 text-white">
                 <li>
-                    <a href="../pengajar/beranda.html"
+                    <a href="../dosen/index.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">home</span>
                         <span class="link-text ml-3">Beranda</span>
@@ -191,7 +191,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="../pengajar/kelas.html"
+                    <a href="../dosen/kelas.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">school</span>
                         <span class="link-text ml-3">Kelas</span>
@@ -199,7 +199,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="../pengajar/tugas.html"
+                    <a href="../dosen/tugas.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">task</span>
                         <span class="link-text ml-3">Tugas</span>
@@ -207,7 +207,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="../pengajar/presensi.html"
+                    <a href="../dosen/presensi.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">overview</span>
                         <span class="link-text ml-3">Presensi</span>
@@ -215,7 +215,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="../pengaturan.html"
+                    <a href="../pengaturan.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">settings</span>
                         <span class="link-text ml-3">Pengaturan</span>
@@ -223,7 +223,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
+                    <a href="#" class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative" onclick="confirmLogout(event)">
                         <span class="material-symbols-outlined text-light-teal text-3xl">logout</span>
                         <span class="link-text ml-3">Keluar</span>
                         <span class="tooltip">Keluar</span>
@@ -231,44 +231,51 @@
                 </li>
             </ul>
         </div>
-
         <!-- Profil -->
         <div class="profile-container flex items-center space-x-4 p-6 mt-auto">
-            <img src="../../assets/img/PrabowoProfile.jpeg" alt="Foto Profil" class="rounded-xl w-12 h-12">
+            <img src="<?php echo $photo ?>" alt="Foto Profil" class="rounded-xl w-12 h-12">
             <div class="flex flex-col profile-text">
-                <span class="font-bold text-xl text-white">Prabowo Subianto</span>
-                <span class="text-white">Dosen</span>
+                <span class="font-bold text-xl text-white"><?php echo htmlspecialchars($name); ?></span>
+                <span class="text-white"><?php echo htmlspecialchars(strtoupper($role)); ?></span>
             </div>
         </div>
-    </div>
-
     </div>
     <!-- UTAMA -->
     <div class="w-full md:w-5/6 load p-6 rounded-lg">
         <div class="bg-white shadow-md rounded-lg p-6 mb-6 flex flex-row justify-between">
             <div class="header mb-4">
-                <h1 class="text-3xl font-bold text-dark-teal uppercase mb-2">Atur Kelas</h1>
-                <p class="text-xl text-teal-600 italic">Kelola kelasmu dengan mudah dan efisien</p>
+                <h1 class="text-3xl font-bold text-dark-teal uppercase mb-2">Tugas Kelas A</h1>
+                <p class="text-xl text-teal-600 italic">IPA</p>
             </div>
         </div>
         <div class="bg-white shadow-lg rounded-lg p-8">
             <form>
                 <div class="mb-6">
-                    <label for="className" class="block text-dark-teal font-semibold mb-2 text-lg">Nama Kelas:</label>
-                    <input type="text" id="className" name="className"
+                    <label for="newTask" class="block text-dark-teal font-semibold mb-2 text-lg">Nama Tugas:</label>
+                    <input type="text" id="newTask" name="newTask"
                         class="border border-teal-300 rounded-lg w-full p-4 focus:outline-none focus:border-teal-500 transition duration-300"
-                        placeholder="Masukkan nama kelas">
+                        placeholder="Tambahkan Tugas Baru">
                 </div>
                 <div class="mb-6">
-                    <label for="subject" class="block text-dark-teal font-semibold mb-2 text-lg">Mata Kuliah:</label>
-                    <input type="text" id="subject" name="subject"
-                        class="border border-teal-300 rounded-lg w-full p-4 focus:outline-none focus:border-teal-500 transition duration-300"
-                        placeholder="Masukkan mata kuliah">
+                    <label for="deadline" class="block text-dark-teal font-semibold mb-2 text-lg">Deadline:</label>
+                    <input type="date" id="deadline" name="deadline"
+                        class="border border-teal-300 rounded-lg w-full p-4 focus:outline-none focus:border-teal-500 transition duration-300">
+                </div>
+                <div class="mb-6">
+                    <label for="fileUpload" class="block text-dark-teal font-semibold mb-2 text-lg">Upload File:</label>
+                    <div id="drop-area"
+                        class="border-dashed border-2 border-teal-400 rounded-lg p-6 text-center w-full flex flex-col items-center justify-center transition duration-300 hover:border-teal-600">
+                        <span class="material-symbols-outlined text-teal-500 mb-2">
+                            file_upload
+                        </span>
+                        <p class="text-teal-600 mb-4">Drag & Drop your files here or click to upload</p>
+                        <input type="file" id="fileUpload" name="fileUpload" class="hidden">
+                    </div>
                 </div>
                 <div class="flex items-center justify-between">
                     <button type="submit"
                         class="bg-dark-teal text-white text-lg px-4 py-2 h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal transition duration-300">Tambah
-                        Kelas</button>
+                        Tugas</button>
                 </div>
             </form>
         </div>
@@ -280,7 +287,7 @@
         const closeSidebarMobile = document.getElementById('closeSidebar-mobile');
 
         // Fungsi untuk meng-toggle sidebar pada desktop (collapse)
-        hamburger.addEventListener('click', function () {
+        hamburger.addEventListener('click', function() {
             sidebar.classList.toggle('sidebar-collapsed');
         });
 
@@ -295,7 +302,7 @@
         closeSidebarMobile.addEventListener('click', toggleSidebar);
 
         // Menutup sidebar saat mengklik di luar sidebar pada mobile
-        document.addEventListener('click', function (event) {
+        document.addEventListener('click', function(event) {
             if (window.innerWidth <= 768) { // Hanya berlaku pada mobile
                 if (!sidebar.contains(event.target) && !hamburgerMobile.contains(event.target) && !closeSidebarMobile.contains(event.target)) {
                     sidebar.classList.remove('active');
@@ -304,7 +311,7 @@
         });
 
         // Mencegah penutupan sidebar saat mengklik di dalam sidebar
-        sidebar.addEventListener('click', function (e) {
+        sidebar.addEventListener('click', function(e) {
             e.stopPropagation();
         });
     </script>

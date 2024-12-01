@@ -177,13 +177,13 @@
             </span>
         </div>
         <!-- Ikon Hamburger Default di Sidebar untuk Desktop (Collapse) -->
-        <div class="hamburger text-white px-6 py-2 cursor-pointer  md:flex hidden">
+        <div class="hamburger text-white px-6 py-2 cursor-pointer md:flex hidden">
             <span class="material-symbols-outlined text-3xl">menu</span>
         </div>
         <div>
             <ul class="flex flex-col space-y-6 px-6 pt-2 pb-6 text-white">
                 <li>
-                    <a href="../pengajar/beranda.html"
+                    <a href="../dosen/index.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">home</span>
                         <span class="link-text ml-3">Beranda</span>
@@ -191,7 +191,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="../pengajar/kelas.html"
+                    <a href="../dosen/kelas.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">school</span>
                         <span class="link-text ml-3">Kelas</span>
@@ -199,7 +199,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="../pengajar/tugas.html"
+                    <a href="../dosen/tugas.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">task</span>
                         <span class="link-text ml-3">Tugas</span>
@@ -207,7 +207,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="../pengajar/presensi.html"
+                    <a href="../dosen/presensi.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">overview</span>
                         <span class="link-text ml-3">Presensi</span>
@@ -215,7 +215,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="../pengaturan.html"
+                    <a href="../pengaturan.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">settings</span>
                         <span class="link-text ml-3">Pengaturan</span>
@@ -223,7 +223,8 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
+                    <a href="#" class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative"
+                        onclick="confirmLogout(event)">
                         <span class="material-symbols-outlined text-light-teal text-3xl">logout</span>
                         <span class="link-text ml-3">Keluar</span>
                         <span class="tooltip">Keluar</span>
@@ -231,68 +232,35 @@
                 </li>
             </ul>
         </div>
-
         <!-- Profil -->
         <div class="profile-container flex items-center space-x-4 p-6 mt-auto">
-            <img src="../../assets/img/PrabowoProfile.jpeg" alt="Foto Profil" class="rounded-xl w-12 h-12">
+            <img src="<?php echo $photo ?>" alt="Foto Profil" class="rounded-xl w-12 h-12">
             <div class="flex flex-col profile-text">
-                <span class="font-bold text-xl text-white">Prabowo Subianto</span>
-                <span class="text-white">Dosen</span>
+                <span class="font-bold text-xl text-white">
+                    <?php echo htmlspecialchars($name); ?>
+                </span>
+                <span class="text-white">
+                    <?php echo htmlspecialchars(strtoupper($role)); ?>
+                </span>
             </div>
         </div>
+    </div>
+
     </div>
     <!-- UTAMA -->
-    <div class="w-full md:w-5/6 load p-6">
-        <div class="bg-white shadow-md rounded-lg p-6 mb-6 flex flex-row justify-between">
-            <div class="header mb-4">
-                <h1 class="text-3xl font-bold text-dark-teal uppercase mb-2">Tugas</h1>
-                <p class="text-xl text-teal-600 italic">Buat dan kelola tugas untuk membantu pengembangan mahasiswa.</p>
-            </div>
-        </div>
-        <div class="bg-white shadow-lg rounded-lg p-8">
-            <div class="overflow-x-auto">
-                <table class="w-full mt-6 border-collapse">
-                    <thead>
-                        <tr class="text-dark-teal">
-                            <th class="border-b p-4 text-left font-medium">Kelas</th>
-                            <th class="border-b p-4 text-left font-medium">Mata Kuliah</th>
-                            <th class="border-b p-4 text-left font-medium">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="transition duration-300 hover:bg-teal-50">
-                            <td class="p-4">Kelas A</td>
-                            <td class="p-4">IPA</td>
-                            <td class="p-4">
-                                <a href="./daftarTugas.html"
-                                    class="bg-dark-teal text-white text-lg px-4 py-2 rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal transition duration-300">Kelola
-                                    Tugas</a>
-                            </td>
-                        </tr>
-                        <tr class="transition duration-300 hover:bg-teal-50">
-                            <td class="p-4">Kelas B</td>
-                            <td class="p-4">IPS</td>
-                            <td class="p-4">
-                                <a href="./daftarTugas.html"
-                                    class="bg-dark-teal text-white text-lg px-4 py-2 rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal transition duration-300">Kelola
-                                    Tugas</a>
-                            </td>
-                        </tr>
-                        <tr class="transition duration-300 hover:bg-teal-50">
-                            <td class="p-4">Kelas C</td>
-                            <td class="p-4">IPA</td>
-                            <td class="p-4">
-                                <a href="./daftarTugas.html"
-                                    class="bg-dark-teal text-white text-lg px-4 py-2 rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal transition duration-300">Kelola
-                                    Tugas</a>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+    <div class="w-full md:w-5/6 load">
     </div>
     <script>
+        function confirmLogout(event) {
+            event.preventDefault(); // Mencegah link untuk navigasi
+            const confirmation = confirm("Apakah Anda ingin keluar?");
+
+            if (confirmation) {
+                window.location.href = '../src/home/login.html';
+            } else {
+
+            }
+        }
         const hamburger = document.querySelector('.hamburger');
         const sidebar = document.getElementById('sidebar');
         const hamburgerMobile = document.getElementById('hamburger-mobile');

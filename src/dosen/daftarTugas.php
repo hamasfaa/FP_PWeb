@@ -177,13 +177,13 @@
             </span>
         </div>
         <!-- Ikon Hamburger Default di Sidebar untuk Desktop (Collapse) -->
-        <div class="hamburger text-white px-6 py-2 cursor-pointer  md:flex hidden">
+        <div class="hamburger text-white px-6 py-2 cursor-pointer md:flex hidden">
             <span class="material-symbols-outlined text-3xl">menu</span>
         </div>
         <div>
             <ul class="flex flex-col space-y-6 px-6 pt-2 pb-6 text-white">
                 <li>
-                    <a href="../pengajar/beranda.html"
+                    <a href="../dosen/index.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">home</span>
                         <span class="link-text ml-3">Beranda</span>
@@ -191,7 +191,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="../pengajar/kelas.html"
+                    <a href="../dosen/kelas.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">school</span>
                         <span class="link-text ml-3">Kelas</span>
@@ -199,7 +199,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="../pengajar/tugas.html"
+                    <a href="../dosen/tugas.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">task</span>
                         <span class="link-text ml-3">Tugas</span>
@@ -207,7 +207,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="../pengajar/presensi.html"
+                    <a href="../dosen/presensi.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">overview</span>
                         <span class="link-text ml-3">Presensi</span>
@@ -215,7 +215,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="../pengaturan.html"
+                    <a href="../pengaturan.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">settings</span>
                         <span class="link-text ml-3">Pengaturan</span>
@@ -223,7 +223,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
+                    <a href="#" class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative" onclick="confirmLogout(event)">
                         <span class="material-symbols-outlined text-light-teal text-3xl">logout</span>
                         <span class="link-text ml-3">Keluar</span>
                         <span class="tooltip">Keluar</span>
@@ -231,13 +231,12 @@
                 </li>
             </ul>
         </div>
-
         <!-- Profil -->
         <div class="profile-container flex items-center space-x-4 p-6 mt-auto">
-            <img src="../../assets/img/PrabowoProfile.jpeg" alt="Foto Profil" class="rounded-xl w-12 h-12">
+            <img src="<?php echo $photo ?>" alt="Foto Profil" class="rounded-xl w-12 h-12">
             <div class="flex flex-col profile-text">
-                <span class="font-bold text-xl text-white">Prabowo Subianto</span>
-                <span class="text-white">Dosen</span>
+                <span class="font-bold text-xl text-white"><?php echo htmlspecialchars($name); ?></span>
+                <span class="text-white"><?php echo htmlspecialchars(strtoupper($role)); ?></span>
             </div>
         </div>
     </div>
@@ -245,69 +244,74 @@
     <div class="w-full md:w-5/6 load p-6">
         <div class="bg-white shadow-md rounded-lg p-6 mb-6 flex flex-row justify-between">
             <div class="header mb-4">
-                <h1 class="text-3xl font-bold text-dark-teal uppercase mb-2">Penilaian Kelas A</h1>
+                <h1 class="text-3xl font-bold text-dark-teal uppercase mb-2">Tugas Kelas A</h1>
                 <p class="text-xl text-teal-600 italic">IPA</p>
             </div>
+            <a href="tambahTugas.html"
+                class="bg-dark-teal text-white text-lg px-4 py-2 h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal transition duration-300">Tambah
+                Tugas</a>
         </div>
         <div class="bg-white shadow-lg rounded-lg p-8">
-            <div class="text-dark-teal text-lg px-4 py-2 w-fit h-fit rounded border-dark-teal border mb-6">
-                Buat HTML
+            <div class="overflow-x-auto">
+                <table class="w-full mt-6 border-collapse">
+                    <thead>
+                        <tr class="text-dark-teal">
+                            <th class="border-b p-4 text-left font-medium">Nama Tugas</th>
+                            <th class="border-b p-4 text-left font-medium">Dibuat Pada</th>
+                            <th class="border-b p-4 text-left font-medium">Deadline</th>
+                            <th class="border-b p-4 text-left font-medium">File</th>
+                            <th class="border-b p-4 text-left font-medium">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="transition duration-300 hover:bg-teal-50">
+                            <td class="p-4">Buat HTML</td>
+                            <td class="p-4">12 Agustus 2024</td>
+                            <td class="p-4">12 Agustus 2024</td>
+                            <td class="p-4">SOAL.PDF</td>
+                            <td class="p-4">
+                                <a href="./beriNilai.html"
+                                    class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Beri
+                                    Nilai</a>
+                                <button
+                                    class="relative bg-yellow-700 text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-yellow-500 hover:text-yellow-500">Sembunyikan</button>
+                                <button
+                                    class="relative bg-red-700 text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-red-500 hover:text-red-500 cursor-pointer">Hapus</button>
+                            </td>
+                        </tr>
+                        <tr class="transition duration-300 hover:bg-teal-50">
+                            <td class="p-4">Buat CSS</td>
+                            <td class="p-4">12 Agustus 2024</td>
+                            <td class="p-4">12 Agustus 2024</td>
+                            <td class="p-4">SOAL.PDF</td>
+                            <td class="p-4">
+                                <a href="./beriNilai.html"
+                                    class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Beri
+                                    Nilai</a>
+                                <button
+                                    class="relative bg-yellow-700 text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-yellow-500 hover:text-yellow-500">Sembunyikan</button>
+                                <button
+                                    class="relative bg-red-700 text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-red-500 hover:text-red-500 cursor-pointer">Hapus</button>
+                            </td>
+                        </tr>
+                        <tr class="transition duration-300 hover:bg-teal-50">
+                            <td class="p-4">Buat JS</td>
+                            <td class="p-4">12 Agustus 2024</td>
+                            <td class="p-4">12 Agustus 2024</td>
+                            <td class="p-4">-</td>
+                            <td class="p-4">
+                                <a href="./beriNilai.html"
+                                    class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Beri
+                                    Nilai</a>
+                                <button
+                                    class="relative bg-yellow-700 text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-yellow-500 hover:text-yellow-500">Sembunyikan</button>
+                                <button
+                                    class="relative bg-red-700 text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-red-500 hover:text-red-500 cursor-pointer">Hapus</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-            <table class="w-full mt-6 border-collapse">
-                <thead>
-                    <tr class="text-dark-teal">
-                        <th class="border-b p-4 text-left font-medium">No</th>
-                        <th class="border-b p-4 text-left font-medium">Nama</th>
-                        <th class="border-b p-4 text-left font-medium">Pengumpulan</th>
-                        <th class="border-b p-4 text-left font-medium">File</th>
-                        <th class="border-b p-4 text-left font-medium">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr class="transition duration-300 hover:bg-teal-50">
-                        <td class="p-4">1</td>
-                        <td class="p-4">Anies Baswedan</td>
-                        <td class="p-4">15 Agustus 2024</td>
-                        <td class="p-4">AniesHTML.pdf</td>
-                        <td class="p-4">
-                            <form action="#" method="POST">
-                                <input type="number" name="nilai" placeholder="Nilai" min="0" max="100"
-                                    class="relative bg-white text-dark-teal text-lg px-4 py-2 w-20 h-fit rounded-xl border border-dark-teal focus:outline-none focus:ring-2 focus:ring-light-teal">
-                                <button type="submit"
-                                    class="bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Simpan</button>
-                            </form>
-                        </td>
-                    </tr>
-                    <tr class="transition duration-300 hover:bg-teal-50">
-                        <td class="p-4">2</td>
-                        <td class="p-4">Fufufafa</td>
-                        <td class="p-4">17 Agustus 2024</td>
-                        <td class="p-4">HTML.pdf</td>
-                        <td class="p-4">
-                            <form action="#" method="POST">
-                                <input type="number" name="nilai" placeholder="Nilai" min="0" max="100"
-                                    class="relative bg-white text-dark-teal text-lg px-4 py-2 w-20 h-fit rounded-xl border border-dark-teal focus:outline-none focus:ring-2 focus:ring-light-teal">
-                                <button type="submit"
-                                    class="bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Simpan</button>
-                            </form>
-                        </td>
-                    </tr>
-                    <tr class="transition duration-300 hover:bg-teal-50">
-                        <td class="p-4">3</td>
-                        <td class="p-4">El Kecepatan</td>
-                        <td class="p-4">16 Agustus 2024</td>
-                        <td class="p-4">Tugas1HTML.pdf</td>
-                        <td class="p-4">
-                            <form action="#" method="POST">
-                                <input type="number" name="nilai" placeholder="Nilai" min="0" max="100"
-                                    class="relative bg-white text-dark-teal text-lg px-4 py-2 w-20 h-fit rounded-xl border border-dark-teal focus:outline-none focus:ring-2 focus:ring-light-teal">
-                                <button type="submit"
-                                    class="bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Simpan</button>
-                            </form>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
         </div>
     </div>
     <script>
@@ -317,7 +321,7 @@
         const closeSidebarMobile = document.getElementById('closeSidebar-mobile');
 
         // Fungsi untuk meng-toggle sidebar pada desktop (collapse)
-        hamburger.addEventListener('click', function () {
+        hamburger.addEventListener('click', function() {
             sidebar.classList.toggle('sidebar-collapsed');
         });
 
@@ -332,7 +336,7 @@
         closeSidebarMobile.addEventListener('click', toggleSidebar);
 
         // Menutup sidebar saat mengklik di luar sidebar pada mobile
-        document.addEventListener('click', function (event) {
+        document.addEventListener('click', function(event) {
             if (window.innerWidth <= 768) { // Hanya berlaku pada mobile
                 if (!sidebar.contains(event.target) && !hamburgerMobile.contains(event.target) && !closeSidebarMobile.contains(event.target)) {
                     sidebar.classList.remove('active');
@@ -341,7 +345,7 @@
         });
 
         // Mencegah penutupan sidebar saat mengklik di dalam sidebar
-        sidebar.addEventListener('click', function (e) {
+        sidebar.addEventListener('click', function(e) {
             e.stopPropagation();
         });
     </script>

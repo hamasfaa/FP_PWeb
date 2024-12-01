@@ -179,13 +179,13 @@
         </div>
 
         <!-- Ikon Hamburger Default di Sidebar untuk Desktop (Collapse) -->
-        <div class="hamburger text-white px-6 py-2 cursor-pointer flex md:flex hidden">
+        <div class="hamburger text-white px-6 py-2 cursor-pointer md:flex hidden">
             <span class="material-symbols-outlined text-3xl">menu</span>
         </div>
         <div>
             <ul class="flex flex-col space-y-6 px-6 pt-2 pb-6 text-white">
                 <li>
-                    <a href="./peserta/beranda.html"
+                    <a href="../dosen/index.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">home</span>
                         <span class="link-text ml-3">Beranda</span>
@@ -193,7 +193,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="./peserta/kelas.html"
+                    <a href="../dosen/kelas.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">school</span>
                         <span class="link-text ml-3">Kelas</span>
@@ -201,15 +201,15 @@
                     </a>
                 </li>
                 <li>
-                    <a href="./peserta/nilai.html"
+                    <a href="../dosen/tugas.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
-                        <span class="material-symbols-outlined text-light-teal text-3xl">monitoring</span>
-                        <span class="link-text ml-3">Penilaian</span>
-                        <span class="tooltip">Penilaian</span>
+                        <span class="material-symbols-outlined text-light-teal text-3xl">task</span>
+                        <span class="link-text ml-3">Tugas</span>
+                        <span class="tooltip">Tugas</span>
                     </a>
                 </li>
                 <li>
-                    <a href="./peserta/presensi.html"
+                    <a href="../dosen/presensi.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">overview</span>
                         <span class="link-text ml-3">Presensi</span>
@@ -217,7 +217,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="pengaturan.html"
+                    <a href="../pengaturan.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">settings</span>
                         <span class="link-text ml-3">Pengaturan</span>
@@ -234,13 +234,16 @@
                 </li>
             </ul>
         </div>
-
         <!-- Profil -->
         <div class="profile-container flex items-center space-x-4 p-6 mt-auto">
-            <img src="../../assets/img/anies.jpg" alt="Foto Profil" class="rounded-xl w-12 h-12">
+            <img src="<?php echo $photo ?>" alt="Foto Profil" class="rounded-xl w-12 h-12">
             <div class="flex flex-col profile-text">
-                <span class="font-bold text-xl text-white">Anies Baswedan</span>
-                <span class="text-white">Mahasiswa</span>
+                <span class="font-bold text-xl text-white">
+                    <?php echo htmlspecialchars($name); ?>
+                </span>
+                <span class="text-white">
+                    <?php echo htmlspecialchars(strtoupper($role)); ?>
+                </span>
             </div>
         </div>
     </div>

@@ -1,3 +1,44 @@
+<?php
+session_start();
+include('/xampp/htdocs/FP/assets/db/config.php');
+
+if (!isset($_SESSION['U_ID'])) {
+    header('Location: ../home/login.php');
+    exit();
+}
+
+$userID = $_SESSION['U_ID'];
+$sql = "SELECT U_Nama, U_Role, U_Foto FROM User WHERE U_ID = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param('i', $userID);
+$stmt->execute();
+$stmt->store_result();
+
+if ($stmt->num_rows > 0) {
+    $stmt->bind_result($name, $role, $photo);
+    $stmt->fetch();
+} else {
+    header('Location: ../home/login.php');
+    exit();
+}
+
+$class_sql =
+    "SELECT K.K_NamaKelas, K.K_TanggalDibuat, K.K_MataKuliah, K.K_KodeKelas
+        FROM Kelas K
+        JOIN User_Kelas UK ON K.K_ID = UK.Kelas_K_ID
+        WHERE UK.User_U_ID = ?";
+$class_stmt = $conn->prepare($class_sql);
+$class_stmt->bind_param('i', $userID);
+$class_stmt->execute();
+$class_stmt->store_result();
+
+if ($class_stmt->num_rows > 0) {
+    $class_stmt->bind_result($namaKelas, $tanggalDibuat, $mataKuliah, $kodeKelas);
+} else {
+    $kelasName = $kelasDate = $mataKuliah = $kelasKode = '';
+}
+?>
+
 <!DOCTYPE html>
 <html lang="id">
 
@@ -150,7 +191,7 @@
     <!-- NAV -->
     <nav class="flex flex-col md:flex-row md:items-center justify-between p-10 text-light-teal w-full">
         <div class="flex items-center justify-between w-full md:w-auto">
-            <a href="../home/login.html" class="font-modak text-4xl text-dark-teal">KelasKu</a>
+            <a href="../dosen/index.php" class="font-modak text-4xl text-dark-teal">KelasKu</a>
             <!-- Ikon Hamburger untuk Mobile -->
             <div class="md:hidden">
                 <span id="hamburger-mobile" class="material-symbols-outlined text-3xl cursor-pointer">
@@ -177,13 +218,13 @@
             </span>
         </div>
         <!-- Ikon Hamburger Default di Sidebar untuk Desktop (Collapse) -->
-        <div class="hamburger text-white px-6 py-2 cursor-pointer  md:flex hidden">
+        <div class="hamburger text-white px-6 py-2 cursor-pointer md:flex hidden">
             <span class="material-symbols-outlined text-3xl">menu</span>
         </div>
         <div>
             <ul class="flex flex-col space-y-6 px-6 pt-2 pb-6 text-white">
                 <li>
-                    <a href="../pengajar/beranda.html"
+                    <a href="../dosen/index.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">home</span>
                         <span class="link-text ml-3">Beranda</span>
@@ -191,7 +232,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="../pengajar/kelas.html"
+                    <a href="../dosen/kelas.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">school</span>
                         <span class="link-text ml-3">Kelas</span>
@@ -199,7 +240,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="../pengajar/tugas.html"
+                    <a href="../dosen/tugas.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">task</span>
                         <span class="link-text ml-3">Tugas</span>
@@ -207,15 +248,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="../pengajar/nilai.html"
-                        class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
-                        <span class="material-symbols-outlined text-light-teal text-3xl">monitoring</span>
-                        <span class="link-text ml-3">Penilaian</span>
-                        <span class="tooltip">Penilaian</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="../pengajar/presensi.html"
+                    <a href="../dosen/presensi.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">overview</span>
                         <span class="link-text ml-3">Presensi</span>
@@ -223,7 +256,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="../pengajar/pengaturan.html"
+                    <a href="../pengaturan.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">settings</span>
                         <span class="link-text ml-3">Pengaturan</span>
@@ -239,39 +272,65 @@
                 </li>
             </ul>
         </div>
-
         <!-- Profil -->
         <div class="profile-container flex items-center space-x-4 p-6 mt-auto">
-            <img src="../../assets/img/PrabowoProfile.jpeg" alt="Foto Profil" class="rounded-xl w-12 h-12">
+            <img src="<?php echo $photo ?>" alt="Foto Profil" class="rounded-xl w-12 h-12">
             <div class="flex flex-col profile-text">
-                <span class="font-bold text-xl text-white">Prabowo Subianto</span>
-                <span class="text-white">Dosen</span>
+                <span class="font-bold text-xl text-white"><?php echo htmlspecialchars($name); ?></span>
+                <span class="text-white"><?php echo htmlspecialchars(strtoupper($role)); ?></span>
             </div>
         </div>
     </div>
-
-    </div>
     <!-- UTAMA -->
-    <div class="w-full md:w-5/6 load">
+    <div class="w-full md:w-5/6 load p-6">
+        <div class="bg-white shadow-md rounded-lg p-6 mb-6 flex flex-row justify-between">
+            <div class="header mb-4">
+                <h1 class="text-3xl font-bold text-dark-teal uppercase mb-2">Atur Kelas</h1>
+                <p class="text-xl text-teal-600 italic">Kelola kelasmu dengan mudah dan efisien</p>
+            </div>
+            <a href="tambahKelas.php"
+                class="bg-dark-teal text-white text-lg px-4 py-2 h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal transition duration-300">Tambah
+                Kelas</a>
+        </div>
+        <div class="bg-white shadow-lg rounded-lg p-8">
+            <div class="overflow-x-auto">
+                <table class="w-full mt-6 border-collapse">
+                    <thead>
+                        <tr class="text-dark-teal">
+                            <th class="border-b p-4 text-left font-medium">Kelas</th>
+                            <th class="border-b p-4 text-left font-medium">Dibuat Pada</th>
+                            <th class="border-b p-4 text-left font-medium">Mata Kuliah</th>
+                            <th class="border-b p-4 text-left font-medium">Kode</th>
+                            <th class="border-b p-4 text-left font-medium">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php while ($class_stmt->fetch()): ?>
+                            <tr class="transition duration-300 hover:bg-teal-50">
+                                <td class="p-4"><a href="./detailKelas.php?kelasID=<?php echo $kodeKelas; ?>"><?php echo htmlspecialchars($namaKelas); ?></a></td>
+                                <td class="p-4"><?php echo date('d F Y', strtotime($tanggalDibuat)); ?></td>
+                                <td class="p-4"><?php echo htmlspecialchars($mataKuliah); ?></td>
+                                <td class="p-4"><?php echo htmlspecialchars($kodeKelas); ?></td>
+                                <td class="p-4">
+                                    <button class="relative bg-red-700 text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-red-500 hover:text-red-500 cursor-pointer">
+                                        Hapus
+                                    </button>
+                                </td>
+                            </tr>
+                        <?php endwhile; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
     <script>
-        function confirmLogout(event) {
-            event.preventDefault(); // Mencegah link untuk navigasi
-            const confirmation = confirm("Apakah Anda ingin keluar?");
-            
-            if (confirmation) {
-                window.location.href = '../src/home/login.html'; 
-            } else {
-
-            }
-        }
         const hamburger = document.querySelector('.hamburger');
         const sidebar = document.getElementById('sidebar');
         const hamburgerMobile = document.getElementById('hamburger-mobile');
         const closeSidebarMobile = document.getElementById('closeSidebar-mobile');
 
         // Fungsi untuk meng-toggle sidebar pada desktop (collapse)
-        hamburger.addEventListener('click', function () {
+        hamburger.addEventListener('click', function() {
             sidebar.classList.toggle('sidebar-collapsed');
         });
 
@@ -286,7 +345,7 @@
         closeSidebarMobile.addEventListener('click', toggleSidebar);
 
         // Menutup sidebar saat mengklik di luar sidebar pada mobile
-        document.addEventListener('click', function (event) {
+        document.addEventListener('click', function(event) {
             if (window.innerWidth <= 768) { // Hanya berlaku pada mobile
                 if (!sidebar.contains(event.target) && !hamburgerMobile.contains(event.target) && !closeSidebarMobile.contains(event.target)) {
                     sidebar.classList.remove('active');
@@ -295,10 +354,14 @@
         });
 
         // Mencegah penutupan sidebar saat mengklik di dalam sidebar
-        sidebar.addEventListener('click', function (e) {
+        sidebar.addEventListener('click', function(e) {
             e.stopPropagation();
         });
     </script>
 </body>
 
 </html>
+
+<?php
+$class_stmt->close();
+?>
