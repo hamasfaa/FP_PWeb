@@ -14,6 +14,8 @@ $stmt->bind_param('i', $userID);
 $stmt->execute();
 $stmt->store_result();
 
+$error = '';
+
 if ($stmt->num_rows > 0) {
     $stmt->bind_result($name, $role, $photo);
     $stmt->fetch();
@@ -23,10 +25,7 @@ if ($stmt->num_rows > 0) {
 }
 
 $class_sql =
-    "SELECT K.K_NamaKelas, K.K_TanggalDibuat, K.K_MataKuliah, K.K_KodeKelas
-        FROM Kelas K
-        JOIN User_Kelas UK ON K.K_ID = UK.Kelas_K_ID
-        WHERE UK.User_U_ID = ?";
+    "SELECT K.K_NamaKelas, K.K_TanggalDibuat, K.K_MataKuliah, K.K_KodeKelas FROM Kelas K JOIN User_Kelas UK ON K.K_ID = UK.Kelas_K_ID WHERE UK.User_U_ID = ?";
 $class_stmt = $conn->prepare($class_sql);
 $class_stmt->bind_param('i', $userID);
 $class_stmt->execute();
@@ -35,8 +34,50 @@ $class_stmt->store_result();
 if ($class_stmt->num_rows > 0) {
     $class_stmt->bind_result($namaKelas, $tanggalDibuat, $mataKuliah, $kodeKelas);
 } else {
-    $kelasName = $kelasDate = $mataKuliah = $kelasKode = '';
+    $namaKelas = $tanggalDibuat = $mataKuliah = $kodeKelas = '';
 }
+
+if (isset($_POST['kelasDEL']) && !empty($_POST['kelasDEL'])) {
+    $kelasKode = $_POST['kelasDEL'];
+    // $error = $userID;
+
+    $check_sql = "SELECT K.K_ID FROM Kelas K JOIN User_Kelas UK ON K.K_ID = UK.Kelas_K_ID WHERE K.K_KodeKelas = ? AND UK.User_U_ID = ?";
+    $check_stmt = $conn->prepare($check_sql);
+    $check_stmt->bind_param('si', $kelasKode, $userID);
+    $check_stmt->execute();
+    $check_stmt->store_result();
+
+    if ($check_stmt->num_rows > 0) {
+        $check_stmt->bind_result($kelasID);
+        $check_stmt->fetch();
+
+        $conn->begin_transaction();
+
+
+        try {
+            // $error = 'masuk cuy';
+            $delete_user_kelas_sql = "DELETE FROM User_Kelas WHERE Kelas_K_ID = ?";
+            $delete_user_kelas_stmt = $conn->prepare($delete_user_kelas_sql);
+            $delete_user_kelas_stmt->bind_param('i', $kelasID);
+            $delete_user_kelas_stmt->execute();
+
+            $delete_kelas_sql = "DELETE FROM Kelas WHERE K_ID = ?";
+            $delete_kelas_stmt = $conn->prepare($delete_kelas_sql);
+            $delete_kelas_stmt->bind_param('i', $kelasID);
+            $delete_kelas_stmt->execute();
+
+            $conn->commit();
+
+            header('Location: ./kelas.php');
+            exit();
+        } catch (Exception $e) {
+            $conn->rollback();
+            $error = $e->getMessage();
+        }
+    }
+    $check_stmt->close();
+}
+$stmt->close();
 ?>
 
 <!DOCTYPE html>
@@ -312,9 +353,12 @@ if ($class_stmt->num_rows > 0) {
                                 <td class="p-4"><?php echo htmlspecialchars($mataKuliah); ?></td>
                                 <td class="p-4"><?php echo htmlspecialchars($kodeKelas); ?></td>
                                 <td class="p-4">
-                                    <button class="relative bg-red-700 text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-red-500 hover:text-red-500 cursor-pointer">
-                                        Hapus
-                                    </button>
+                                    <form action="" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus kelas ini?');">
+                                        <input type="hidden" name="kelasDEL" value="<?php echo htmlspecialchars($kodeKelas); ?>">
+                                        <button class="relative bg-red-700 text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-red-500 hover:text-red-500 cursor-pointer">
+                                            Hapus
+                                        </button>
+                                    </form>
                                 </td>
                             </tr>
                         <?php endwhile; ?>
@@ -322,6 +366,11 @@ if ($class_stmt->num_rows > 0) {
                 </table>
             </div>
         </div>
+        <?php if (!empty($error)): ?>
+            <div id="" class="text-red-500 mb-4">
+                <?php echo $error; ?>
+            </div>
+        <?php endif; ?>
     </div>
     <script>
         const hamburger = document.querySelector('.hamburger');

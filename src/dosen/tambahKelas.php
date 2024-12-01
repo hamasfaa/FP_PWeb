@@ -54,7 +54,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $stmt_user->bind_param('ii', $userID, $kelasID);
 
             if ($stmt_user->execute()) {
-                $success_message = "Kelas berhasil dibuat! Kode Kelas: " . $kodeKelas . " (ID: " . $kelasID . ")";
+                // $success_message = "Kelas berhasil dibuat! Kode Kelas: " . $kodeKelas . " (ID: " . $kelasID . ")";
+                header('Location: kelas.php');
+                exit();
             } else {
                 $error_message = "Gagal menambahkan pengguna ke kelas.";
             }
