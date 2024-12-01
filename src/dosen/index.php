@@ -235,7 +235,7 @@
         </div>
         <!-- Profil -->
         <div class="profile-container flex items-center space-x-4 p-6 mt-auto">
-            <img src="../../assets/img/PrabowoProfile.jpeg" alt="Foto Profil" class="rounded-xl w-12 h-12">
+            <img src="../../assets/img/default.png" alt="Foto Profil" class="rounded-xl w-12 h-12">
             <div class="flex flex-col profile-text">
                 <span class="font-bold text-xl text-white">Prabowo Subianto</span>
                 <span class="text-white">Dosen</span>

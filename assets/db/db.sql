@@ -64,7 +64,7 @@ CREATE TABLE User (
     U_Nama varchar(100)  NOT NULL,
     U_Email varchar(100)  NOT NULL,
     U_Password varchar(255)  NOT NULL,
-    U_Role ENUM('dosen', 'mahasiswa') NOT NULL
+    U_Role ENUM('dosen', 'mahasiswa') NOT NULL,
     U_TanggalLahir date  NOT NULL,
     U_NoPonsel varchar(15),
     U_Alamat varchar(255),
