@@ -5,6 +5,7 @@
 -- Table: Absen_Dosen
 CREATE TABLE Absen_Dosen (
     AD_ID int  NOT NULL,
+    AD_TanggalDibuat date  NOT NULL,
     AD_Pertemuan int  NOT NULL,
     AD_Kode char(6)  NOT NULL,
     Kelas_K_ID int  NOT NULL,
@@ -37,9 +38,10 @@ CREATE TABLE Tugas_Dosen (
     TD_ID int  NOT NULL,
     TD_Judul varchar(100)  NOT NULL,
     TD_Deskripsi longtext  NOT NULL,
+    TD_TanggalDibuat date  NOT NULL,
     TD_Deadline datetime  NOT NULL,
     TD_Status boolean  NOT NULL,
-    TD_FileSoal varchar(255)  NOT NULL,
+    TD_FileSoal varchar(255),
     Kelas_K_ID int  NOT NULL,
     User_U_ID int  NOT NULL,
     CONSTRAINT Tugas_Dosen_pk PRIMARY KEY (TD_ID)

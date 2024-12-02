@@ -1,3 +1,40 @@
+<?php
+session_start();
+include('../../assets/db/config.php');
+include('../../auth/aksesDosen.php');
+
+$userID = $_SESSION['U_ID'];
+$sql = "SELECT U_Nama, U_Role, U_Foto FROM User WHERE U_ID = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param('i', $userID);
+$stmt->execute();
+$stmt->store_result();
+
+$error = '';
+
+if ($stmt->num_rows > 0) {
+    $stmt->bind_result($name, $role, $photo);
+    $stmt->fetch();
+} else {
+    header('Location: ../home/login.php');
+    exit();
+}
+
+$class_sql =
+    "SELECT K.K_ID,K.K_NamaKelas, K.K_MataKuliah FROM Kelas K JOIN User_Kelas UK ON K.K_ID = UK.Kelas_K_ID WHERE UK.User_U_ID = ?";
+$class_stmt = $conn->prepare($class_sql);
+$class_stmt->bind_param('i', $userID);
+$class_stmt->execute();
+$class_stmt->store_result();
+
+if ($class_stmt->num_rows > 0) {
+    $class_stmt->bind_result($kelasID, $namaKelas,  $mataKuliah);
+} else {
+    $namaKelas  = $mataKuliah  = '';
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="id">
 
@@ -150,7 +187,7 @@
     <!-- NAV -->
     <nav class="flex flex-col md:flex-row md:items-center justify-between p-10 text-light-teal w-full">
         <div class="flex items-center justify-between w-full md:w-auto">
-            <a href="../home/login.html" class="font-modak text-4xl text-dark-teal">KelasKu</a>
+            <a href="../home/login.php" class="font-modak text-4xl text-dark-teal">KelasKu</a>
             <!-- Ikon Hamburger untuk Mobile -->
             <div class="md:hidden">
                 <span id="hamburger-mobile" class="material-symbols-outlined text-3xl cursor-pointer">
@@ -259,33 +296,17 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="transition duration-300 hover:bg-teal-50">
-                            <td class="p-4">Kelas A</td>
-                            <td class="p-4">IPA</td>
-                            <td class="p-4">
-                                <a href="./daftarTugas.html"
-                                    class="bg-dark-teal text-white text-lg px-4 py-2 rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal transition duration-300">Kelola
-                                    Tugas</a>
-                            </td>
-                        </tr>
-                        <tr class="transition duration-300 hover:bg-teal-50">
-                            <td class="p-4">Kelas B</td>
-                            <td class="p-4">IPS</td>
-                            <td class="p-4">
-                                <a href="./daftarTugas.html"
-                                    class="bg-dark-teal text-white text-lg px-4 py-2 rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal transition duration-300">Kelola
-                                    Tugas</a>
-                            </td>
-                        </tr>
-                        <tr class="transition duration-300 hover:bg-teal-50">
-                            <td class="p-4">Kelas C</td>
-                            <td class="p-4">IPA</td>
-                            <td class="p-4">
-                                <a href="./daftarTugas.html"
-                                    class="bg-dark-teal text-white text-lg px-4 py-2 rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal transition duration-300">Kelola
-                                    Tugas</a>
-                            </td>
-                        </tr>
+                        <?php while ($class_stmt->fetch()): ?>
+                            <tr class="transition duration-300 hover:bg-teal-50">
+                                <td class="p-4"><?php echo htmlspecialchars($namaKelas); ?></td>
+                                <td class="p-4"><?php echo htmlspecialchars($mataKuliah); ?></td>
+                                <td class="p-4">
+                                    <a href="./daftarTugas.php?ID=<?php echo $kelasID; ?>"
+                                        class="bg-dark-teal text-white text-lg px-4 py-2 rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal transition duration-300">Kelola
+                                        Tugas</a>
+                                </td>
+                            </tr>
+                        <?php endwhile; ?>
                     </tbody>
                 </table>
             </div>

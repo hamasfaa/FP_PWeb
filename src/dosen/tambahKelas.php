@@ -3,11 +3,6 @@ session_start();
 include('../../assets/db/config.php');
 include('../../auth/aksesDosen.php');
 
-if (!isset($_SESSION['U_ID'])) {
-    header('Location: ../home/login.php');
-    exit();
-}
-
 $userID = $_SESSION['U_ID'];
 
 $sql_profile = "SELECT U_Nama, U_Role, U_Foto FROM User WHERE U_ID = ?";

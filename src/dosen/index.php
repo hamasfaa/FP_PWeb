@@ -3,11 +3,6 @@ session_start();
 include('../../assets/db/config.php');
 include('../../auth/aksesDosen.php');
 
-if (!isset($_SESSION['U_ID'])) {
-    header('Location: ../home/login.php');
-    exit();
-}
-
 $userID = $_SESSION['U_ID'];
 $sql = "SELECT U_Nama, U_Role, U_Foto FROM User WHERE U_ID = ?";
 $stmt = $conn->prepare($sql);
@@ -198,7 +193,6 @@ $stmt->close();
     <!-- SIDEBAR -->
     <div id="sidebar"
         class="fixed top-0 right-0 h-full md:w-1/6 bg-dark-teal transform translate-x-full md:translate-x-0 transition-transform duration-300 z-50 bg-opacity-90 shadow-lg flex flex-col">
-
         <!-- Ikon Hamburger untuk Mobile (Berfungsi Sebagai Tombol Close) -->
         <div class="text-white px-6 py-2 cursor-pointer flex md:hidden">
             <span id="closeSidebar-mobile" class="material-symbols-outlined text-3xl">
