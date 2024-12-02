@@ -1,7 +1,7 @@
 <?php
 session_start();
-include('/xampp/htdocs/FP/assets/db/config.php');
-include('/xampp/htdocs/FP/auth/aksesDosen.php');
+include('../../assets/db/config.php');
+include('../../auth/aksesDosen.php');
 
 $userID = $_SESSION['U_ID'];
 

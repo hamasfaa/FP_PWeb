@@ -1,6 +1,6 @@
 <?php
 session_start();
-include('/xampp/htdocs/FP/assets/db/config.php');
+include('../assets/db/config.php');
 
 if (!isset($_SESSION['U_ID'])) {
     echo "UserID tidak ditemukan dalam sesi.";
