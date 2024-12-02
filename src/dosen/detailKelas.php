@@ -1,13 +1,7 @@
 <?php
 session_start();
 include('/xampp/htdocs/FP/assets/db/config.php');
-
-if (!isset($_SESSION['U_ID'])) {
-    header('Location: ../home/login.php');
-    exit();
-} else if ($_SESSION['role'] !== 'dosen') {
-    header('Location: ../../auth/access-denied.php');
-}
+include('/xampp/htdocs/FP/auth/aksesDosen.php');
 
 $userID = $_SESSION['U_ID'];
 

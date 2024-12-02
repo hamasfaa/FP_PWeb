@@ -7,16 +7,16 @@ if (!isset($_SESSION['U_ID'])) {
     exit();
 }
 
-$sql_who = "SELECT U_Nama FROM User WHERE U_ID = ?";
+$sql_who = "SELECT U_Nama, U_Role FROM User WHERE U_ID = ?";
 $stmt_who = $conn->prepare($sql_who);
 $stmt_who->bind_param("i", $_SESSION['U_ID']);
 $stmt_who->execute();
 $stmt_who->store_result();
 
 if ($stmt_who->num_rows > 0) {
-    $stmt_who->bind_result($name);
+    $stmt_who->bind_result($name, $role);
     $stmt_who->fetch();
-    echo $name;
+    echo $name . $role;
 } else {
     echo "Nama User Tidak Ditemukan";
 }
