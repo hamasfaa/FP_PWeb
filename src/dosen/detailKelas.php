@@ -1,3 +1,64 @@
+<?php
+session_start();
+include('/xampp/htdocs/FP/assets/db/config.php');
+
+if (!isset($_SESSION['U_ID'])) {
+    header('Location: ../home/login.php');
+    exit();
+}
+
+$userID = $_SESSION['U_ID'];
+
+$sql_profile = "SELECT U_Nama, U_Role, U_Foto FROM User WHERE U_ID = ?";
+$stmt_profile = $conn->prepare($sql_profile);
+$stmt_profile->bind_param('i', $userID);
+$stmt_profile->execute();
+$stmt_profile->store_result();
+
+$error = '';
+
+if ($stmt_profile->num_rows > 0) {
+    $stmt_profile->bind_result($name, $role, $photo);
+    $stmt_profile->fetch();
+} else {
+    header('Location: ../home/login.php');
+    exit();
+}
+
+if (isset($_GET['ID'])) {
+    $kelasID = $_GET['ID'];
+    $kelasID = htmlspecialchars($kelasID);
+} else {
+    $error = 'Kelas tidak ditemukan';
+}
+
+$kode_sql = "SELECT K_MataKuliah, K_NamaKelas, K_TanggalDibuat, K_KodeKelas FROM Kelas WHERE K_ID = ?";
+$stmt_kode = $conn->prepare($kode_sql);
+$stmt_kode->bind_param('i', $kelasID);
+$stmt_kode->execute();
+$stmt_kode->store_result();
+$stmt_kode->bind_result($mataKuliah, $namaKelas, $tanggalDibuat, $kodeKelas);
+$stmt_kode->fetch();
+// $error = $kelasID;
+
+
+
+$list_sql = "SELECT UK.User_U_ID, U.U_Nama, U.U_Role FROM User_Kelas UK JOIN User U ON UK.User_U_ID = U.U_ID WHERE UK.Kelas_K_ID = ? ORDER BY U.U_ID ASC";
+$stmt_list = $conn->prepare($list_sql);
+$stmt_list->bind_param('i', $kelasID);
+$stmt_list->execute();
+$stmt_list->store_result();
+
+if ($stmt_list->num_rows > 0) {
+    $stmt_list->bind_result($userID, $userNama, $userRole);
+    // $error = 'ada';
+} else {
+    $userID = $userNama = $userRole = '';
+    // $error = 'tidak ada';
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="id">
 
@@ -244,12 +305,12 @@
     <div class="w-full md:w-5/6 load p-6">
         <div class="bg-white shadow-md rounded-lg p-6 mb-6 flex flex-row justify-between">
             <div class="header mb-4">
-                <h1 class="text-3xl font-bold text-dark-teal uppercase mb-2">Kelas A</h1>
-                <p class="text-xl text-teal-600 italic">IPA</p>
+                <h1 class="text-3xl font-bold text-dark-teal uppercase mb-2"><?php echo $namaKelas ?></h1>
+                <p class="text-xl text-teal-600 italic"><?php echo $mataKuliah ?></p>
             </div>
             <div
                 class="flex items-center text-xl text-dark-teal border-2 border-dashed border-dark-teal rounded cursor-pointer hover:bg-light-teal transition h-fit w-fit p-2">
-                ASDF
+                <?php echo htmlspecialchars($kodeKelas) ?>
                 <span class="material-symbols-outlined ml-2 text-dark-teal hover:text-white transition">
                     content_copy
                 </span>
@@ -261,21 +322,17 @@
                     <tr class="text-dark-teal">
                         <th class="border-b p-4 text-left font-medium">No</th>
                         <th class="border-b p-4 text-left font-medium">Nama</th>
+                        <th class="border-b p-4 text-left font-medium">Peran</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr class="transition duration-300 hover:bg-teal-50">
-                        <td class="p-4">1</td>
-                        <td class="p-4">Anies Baswedan</td>
-                    </tr>
-                    <tr class="transition duration-300 hover:bg-teal-50">
-                        <td class="p-4">2</td>
-                        <td class="p-4">Fufufafa</td>
-                    </tr>
-                    <tr class="transition duration-300 hover:bg-teal-50">
-                        <td class="p-4">3</td>
-                        <td class="p-4">El Kecepatan</td>
-                    </tr>
+                    <?php while ($stmt_list->fetch()): ?>
+                        <tr class="transition duration-300 hover:bg-teal-50">
+                            <td class="p-4"><?php echo htmlspecialchars($userID) ?></td>
+                            <td class="p-4"><?php echo htmlspecialchars($userNama) ?></td>
+                            <td class="p-4 uppercase"><?php echo htmlspecialchars($userRole) ?></td>
+                        </tr>
+                    <?php endwhile; ?>
                 </tbody>
             </table>
         </div>
@@ -318,3 +375,7 @@
 </body>
 
 </html>
+
+<?php
+$stmt_list->close();
+?>

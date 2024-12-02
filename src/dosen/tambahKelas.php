@@ -15,6 +15,8 @@ $stmt_profile->bind_param('i', $userID);
 $stmt_profile->execute();
 $stmt_profile->store_result();
 
+$error = '';
+
 if ($stmt_profile->num_rows > 0) {
     $stmt_profile->bind_result($name, $role, $photo);
     $stmt_profile->fetch();

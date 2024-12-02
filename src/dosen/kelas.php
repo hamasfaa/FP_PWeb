@@ -25,21 +25,21 @@ if ($stmt->num_rows > 0) {
 }
 
 $class_sql =
-    "SELECT K.K_NamaKelas, K.K_TanggalDibuat, K.K_MataKuliah, K.K_KodeKelas FROM Kelas K JOIN User_Kelas UK ON K.K_ID = UK.Kelas_K_ID WHERE UK.User_U_ID = ?";
+    "SELECT K.K_ID,K.K_NamaKelas, K.K_TanggalDibuat, K.K_MataKuliah, K.K_KodeKelas FROM Kelas K JOIN User_Kelas UK ON K.K_ID = UK.Kelas_K_ID WHERE UK.User_U_ID = ?";
 $class_stmt = $conn->prepare($class_sql);
 $class_stmt->bind_param('i', $userID);
 $class_stmt->execute();
 $class_stmt->store_result();
 
 if ($class_stmt->num_rows > 0) {
-    $class_stmt->bind_result($namaKelas, $tanggalDibuat, $mataKuliah, $kodeKelas);
+    $class_stmt->bind_result($kelasID, $namaKelas, $tanggalDibuat, $mataKuliah, $kodeKelas);
 } else {
     $namaKelas = $tanggalDibuat = $mataKuliah = $kodeKelas = '';
 }
 
 if (isset($_POST['kelasDEL']) && !empty($_POST['kelasDEL'])) {
     $kelasKode = $_POST['kelasDEL'];
-    // $error = $userID;
+    // $error = $kelasID;
 
     $check_sql = "SELECT K.K_ID FROM Kelas K JOIN User_Kelas UK ON K.K_ID = UK.Kelas_K_ID WHERE K.K_KodeKelas = ? AND UK.User_U_ID = ?";
     $check_stmt = $conn->prepare($check_sql);
@@ -348,7 +348,7 @@ $stmt->close();
                     <tbody>
                         <?php while ($class_stmt->fetch()): ?>
                             <tr class="transition duration-300 hover:bg-teal-50">
-                                <td class="p-4"><a href="./detailKelas.php?kelasID=<?php echo $kodeKelas; ?>"><?php echo htmlspecialchars($namaKelas); ?></a></td>
+                                <td class="p-4"><a href="./detailKelas.php?ID=<?php echo $kelasID; ?>"><?php echo htmlspecialchars($namaKelas); ?></a></td>
                                 <td class="p-4"><?php echo date('d F Y', strtotime($tanggalDibuat)); ?></td>
                                 <td class="p-4"><?php echo htmlspecialchars($mataKuliah); ?></td>
                                 <td class="p-4"><?php echo htmlspecialchars($kodeKelas); ?></td>
@@ -366,11 +366,6 @@ $stmt->close();
                 </table>
             </div>
         </div>
-        <?php if (!empty($error)): ?>
-            <div id="" class="text-red-500 mb-4">
-                <?php echo $error; ?>
-            </div>
-        <?php endif; ?>
     </div>
     <script>
         const hamburger = document.querySelector('.hamburger');
