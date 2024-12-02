@@ -5,6 +5,8 @@ include('/xampp/htdocs/FP/assets/db/config.php');
 if (!isset($_SESSION['U_ID'])) {
     header('Location: ../home/login.php');
     exit();
+} else if ($_SESSION['role'] !== 'dosen') {
+    header('Location: ../../auth/access-denied.php');
 }
 
 $userID = $_SESSION['U_ID'];
