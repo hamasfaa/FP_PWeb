@@ -1,3 +1,26 @@
+<?php
+session_start();
+include('../../assets/db/config.php');
+include('../../auth/aksesMahasiswa.php');
+
+$userID = $_SESSION['U_ID'];
+$sql = "SELECT U_Nama, U_Role, U_Foto FROM User WHERE U_ID = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param('i', $userID);
+$stmt->execute();
+$stmt->store_result();
+
+if ($stmt->num_rows > 0) {
+    $stmt->bind_result($name, $role, $photo);
+    $stmt->fetch();
+} else {
+    header('Location: ../home/login.php');
+    exit();
+}
+
+$stmt->close();
+?>
+
 <!DOCTYPE html>
 <html lang="id">
 
@@ -179,7 +202,7 @@
         <div>
             <ul class="flex flex-col space-y-6 px-6 pt-2 pb-6 text-white">
                 <li>
-                    <a href="../peserta/beranda.html"
+                    <a href="../mahasiswa/beranda.html"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">home</span>
                         <span class="link-text ml-3">Beranda</span>
@@ -187,7 +210,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="../peserta/kelas.html"
+                    <a href="../mahasiswa/kelas.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">school</span>
                         <span class="link-text ml-3">Kelas</span>
@@ -195,7 +218,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="../peserta/nilai.html"
+                    <a href="../mahasiswa/nilai.html"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">monitoring</span>
                         <span class="link-text ml-3">Penilaian</span>
@@ -203,7 +226,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="../peserta/presensi.html"
+                    <a href="../mahasiswa/presensi.html"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">overview</span>
                         <span class="link-text ml-3">Presensi</span>
@@ -230,10 +253,10 @@
 
         <!-- Profil -->
         <div class="profile-container flex items-center space-x-4 p-6 mt-auto">
-            <img src="../../assets/img/anies.jpg" alt="Foto Profil" class="rounded-xl w-12 h-12">
+            <img src="<?php echo $photo ?>" alt="Foto Profil" class="rounded-xl w-12 h-12">
             <div class="flex flex-col profile-text">
-                <span class="font-bold text-xl text-white">Anies Baswedan</span>
-                <span class="text-white">Mahasiswa</span>
+                <span class="font-bold text-xl text-white"><?php echo htmlspecialchars($name); ?></span>
+                <span class="text-white"><?php echo htmlspecialchars(strtoupper($role)); ?></span>
             </div>
         </div>
     </div>

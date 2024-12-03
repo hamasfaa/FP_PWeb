@@ -1,3 +1,36 @@
+<?php
+session_start();
+include('../../assets/db/config.php');
+include('../../auth/aksesMahasiswa.php');
+
+$userID = $_SESSION['U_ID'];
+
+$sql = "SELECT U_Nama, U_Role, U_Foto FROM User WHERE U_ID = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param('i', $userID);
+$stmt->execute();
+$stmt->store_result();
+
+if ($stmt->num_rows > 0) {
+    $stmt->bind_result($name, $role, $photo);
+    $stmt->fetch();
+} else {
+    header('Location: ../home/login.php');
+    exit();
+}
+
+$query = "SELECT K.K_NamaKelas, K.K_MataKuliah, KM.TanggalAmbil
+          FROM Kelas K
+          JOIN KelasMahasiswa KM ON K.K_ID = KM.Kelas_K_ID
+          WHERE KM.User_U_ID = ?";
+$stmt = $conn->prepare($query);
+$stmt->bind_param("i", $userID);
+$stmt->execute();
+$result = $stmt->get_result();
+$stmt->close();
+?>
+
+
 <!DOCTYPE html>
 <html lang="id">
 
@@ -178,8 +211,8 @@
         </div>
         <div>
             <ul class="flex flex-col space-y-6 px-6 pt-2 pb-6 text-white">
-                <li>
-                    <a href="../peserta/beranda.html"
+            <li>
+                    <a href="../mahasiswa/beranda.html"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">home</span>
                         <span class="link-text ml-3">Beranda</span>
@@ -187,7 +220,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="../peserta/kelas.html"
+                    <a href="../mahasiswa/kelas.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">school</span>
                         <span class="link-text ml-3">Kelas</span>
@@ -195,7 +228,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="../peserta/nilai.html"
+                    <a href="../mahasiswa/nilai.html"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">monitoring</span>
                         <span class="link-text ml-3">Penilaian</span>
@@ -203,7 +236,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="../peserta/presensi.html"
+                    <a href="../mahasiswa/presensi.html"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">overview</span>
                         <span class="link-text ml-3">Presensi</span>
@@ -243,24 +276,40 @@
     <div class="w-full md:w-5/6 load">
         <div class="p-6 rounded-lg shadow-md flex flex-row justify-between">
             <div class="header mb-4">
-                <h1 class="px-4 text-3xl font-bold text-dark-teal uppercase mb-2">Ambil Kelas</h1>
-                <p class="px-4 text-xl text-teal-600 italic">Minta kode unik kepada dosen Anda</p>
+                <h1 class="px-4 text-3xl font-bold text-dark-teal uppercase mb-2">Kelas Saya</h1>
+                <p class="px-4 text-xl text-teal-600 italic">Belajar adalah kunci keberhasilan</p>
             </div>
+            <a href="ambilKelas.php"
+                class="bg-light-teal text-white text-lg px-4 py-2 w-fit h-fit rounded border hover:bg-white hover:border-light-teal hover:text-light-teal">Ambil Kelas
+            </a>
         </div>
-        <div class="p-6 rounded-lg">
-            <form>
-                <div class="mb-4 px-4">
-                    <label for="className" class="block text-gray-700 font-bold mb-2 text-xl">Kode Unik Kelas:</label>
-                    <input type="text" id="className" name="className"
-                        class="px-3 shadow appearance-none border rounded w-full md:w-1/3 py-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        placeholder="Masukkan kode kelas">
-                </div>
-                <div class="flex items-center justify-between px-4">
-                    <button type="submit"
-                        class="bg-dark-teal hover:bg-teal-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full md:w-auto">Ambil Kelas
-                    </button>
-                </div>
-            </form>
+        <div class="p-6 rounded-lg flex flex-row justify-between">
+            <table class="class-table w-full mt-6 border-collapse">
+                <thead>
+                    <tr class="text-dark-teal">
+                        <th class="border-b p-4 text-left font-medium">Kelas</th>
+                        <th class="border-b p-4 text-left font-medium">Diambil Pada</th>
+                        <th class="border-b p-4 text-left font-medium">Mata Kuliah</th>
+                        <th class="border-b p-4 text-left font-medium">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php while ($row = $result->fetch_assoc()): ?>
+                    <tr>
+                        <td class="px-4 py-2"><?= htmlspecialchars($row['K_NamaKelas']); ?></td>
+                        <td class="px-4 py-2"><?= htmlspecialchars($row['TanggalAmbil']); ?></td>
+                        <td class="px-4 py-2"><?= htmlspecialchars($row['K_MataKuliah']); ?></td>
+                        <td class="p-4">
+                            <a href="tugas.html"
+                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Tugas
+                                <div class="absolute top-0 right-0 -mr-1 -mt-1 w-4 h-4 bg-red-500 rounded-full animate-ping"></div>
+                                <div class="absolute top-0 right-0 -mr-1 -mt-1 w-4 h-4 bg-red-500 rounded-full"></div>
+                            </a>
+                        </td>
+                    </tr>
+                    <?php endwhile; ?>
+                </tbody>        
+            </table>
         </div>
     </div>
     <script>

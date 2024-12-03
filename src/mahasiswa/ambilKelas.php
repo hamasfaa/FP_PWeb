@@ -1,3 +1,68 @@
+<?php
+session_start();
+include('../../assets/db/config.php');
+include('../../auth/aksesMahasiswa.php');
+
+$userID = $_SESSION['U_ID']; // Pastikan session sudah menyimpan U_ID
+$sql = "SELECT U_Nama, U_Role, U_Foto FROM User WHERE U_ID = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param('i', $userID);
+$stmt->execute();
+$stmt->store_result();
+
+if ($stmt->num_rows > 0) {
+    $stmt->bind_result($name, $role, $photo);
+    $stmt->fetch();
+} else {
+    header('Location: ../home/login.php');
+    exit();
+}
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $kodeKelas = $_POST['classCode'];
+
+    // Periksa apakah kelas dengan kode tersebut ada
+    $query = "SELECT K.K_ID, K.K_NamaKelas, K.K_MataKuliah FROM Kelas K WHERE K.K_KodeKelas = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("s", $kodeKelas);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        $kelas = $result->fetch_assoc();
+        $kelasId = $kelas['K_ID'];
+        
+        // Periksa apakah mahasiswa sudah terdaftar di kelas ini
+        $checkQuery = "SELECT * FROM KelasMahasiswa WHERE Kelas_K_ID = ? AND User_U_ID = ?";
+        $checkStmt = $conn->prepare($checkQuery);
+        $checkStmt->bind_param("ii", $kelasId, $userID); // Ganti $userId menjadi $userID
+        $checkStmt->execute();
+        $checkResult = $checkStmt->get_result();
+
+        if ($checkResult->num_rows == 0) {
+            // Tambahkan mahasiswa ke kelas
+            $insertQuery = "INSERT INTO KelasMahasiswa (Kelas_K_ID, User_U_ID, TanggalAmbil) VALUES (?, ?, NOW())";
+            $insertStmt = $conn->prepare($insertQuery);
+            $insertStmt->bind_param("ii", $kelasId, $userID); // Ganti $userId menjadi $userID
+            if ($insertStmt->execute()) {
+                $message = "Berhasil mengambil kelas: " . $kelas['K_NamaKelas'];
+            } else {
+                $message = "Gagal mengambil kelas. Silakan coba lagi.";
+            }
+            $insertStmt->close();
+        } else {
+            $message = "Anda sudah terdaftar di kelas ini.";
+        }
+        $checkStmt->close();
+    } else {
+        $message = "Kode kelas tidak valid.";
+    }
+    $stmt->close();
+}
+
+$conn->close();
+?>
+
 <!DOCTYPE html>
 <html lang="id">
 
@@ -178,8 +243,8 @@
         </div>
         <div>
             <ul class="flex flex-col space-y-6 px-6 pt-2 pb-6 text-white">
-                <li>
-                    <a href="../peserta/beranda.html"
+            <li>
+                    <a href="../mahasiswa/beranda.html"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">home</span>
                         <span class="link-text ml-3">Beranda</span>
@@ -187,7 +252,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#"
+                    <a href="../mahasiswa/kelas.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">school</span>
                         <span class="link-text ml-3">Kelas</span>
@@ -195,7 +260,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="../peserta/nilai.html"
+                    <a href="../mahasiswa/nilai.html"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">monitoring</span>
                         <span class="link-text ml-3">Penilaian</span>
@@ -203,7 +268,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="../peserta/presensi.html"
+                    <a href="../mahasiswa/presensi.html"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">overview</span>
                         <span class="link-text ml-3">Presensi</span>
@@ -240,84 +305,33 @@
 
     </div>
     <!-- UTAMA -->
-    <div class="w-full md:w-5/6 load">
-        <div class="p-6 rounded-lg shadow-md flex flex-row justify-between">
-            <div class="header mb-4">
-                <h1 class="px-4 text-3xl font-bold text-dark-teal uppercase mb-2">Kelas Saya</h1>
-                <p class="px-4 text-xl text-teal-600 italic">Belajar adalah kunci keberhasilan</p>
+    <div class="p-6 rounded-lg shadow-md flex flex-row justify-between load">
+        <div class="header mb-4">
+            <h1 class="px-4 text-3xl font-bold text-dark-teal uppercase mb-2">Ambil Kelas</h1>
+            <p class="px-4 text-xl text-teal-600 italic">Masukkan kode kelas yang Anda ingin ambil</p>
+        </div>
+    </div>
+
+    <?php if (isset($message)): ?>
+        <div class="px-4 py-2 text-center <?= strpos($message, 'Berhasil') !== false ? 'text-green-500' : 'text-red-500' ?>">
+            <?= htmlspecialchars($message); ?>
+        </div>
+    <?php endif; ?>
+
+    <div class="p-6 rounded-lg load">
+        <form method="POST">
+            <div class="mb-4 px-4">
+                <label for="classCode" class="block text-gray-700 font-bold mb-2 text-xl">Kode Unik Kelas:</label>
+                <input type="text" id="classCode" name="classCode"
+                    class="px-3 shadow appearance-none border rounded w-full md:w-1/3 py-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    placeholder="Masukkan kode kelas" required>
             </div>
-            <a href="ambilKelas.html"
-                class="bg-light-teal text-white text-lg px-4 py-2 w-fit h-fit rounded border hover:bg-white hover:border-light-teal hover:text-light-teal">Ambil Kelas
-            </a>
-        </div>
-        <div class="p-6 rounded-lg flex flex-row justify-between">
-            <table class="class-table w-full mt-6 border-collapse">
-                <thead>
-                    <tr class="text-dark-teal">
-                        <th class="border-b p-4 text-left font-medium">Kelas</th>
-                        <th class="border-b p-4 text-left font-medium">Diambil Pada</th>
-                        <th class="border-b p-4 text-left font-medium">Mata Kuliah</th>
-                        <th class="border-b p-4 text-left font-medium">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr class="transition">
-                        <td class="p-4"><a href="./detailKelas.html">Kelas A</a></td>
-                        <td class="p-4">12 Agustus 2024</td>
-                        <td class="p-4">Pemrograman Web</td>
-                        <td class="p-4">
-                            <a href="tugas.html"
-                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Tugas
-                                <div class="absolute top-0 right-0 -mr-1 -mt-1 w-4 h-4 bg-red-500 rounded-full animate-ping"></div>
-                                <div class="absolute top-0 right-0 -mr-1 -mt-1 w-4 h-4 bg-red-500 rounded-full"></div>
-                            </a>
-                        </td>
-                    </tr>
-                    <tr class="transition">
-                        <td class="p-4">Kelas B</td>
-                        <td class="p-4">13 Agustus 2024</td>
-                        <td class="p-4">Sistem Operasi</td>
-                        <td class="p-4">
-                            <a href="tugas.html"
-                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Tugas
-                            </a>
-                        </td>
-                    </tr>
-                    <tr class="transition">
-                        <td class="p-4">Kelas D</td>
-                        <td class="p-4">14 Agustus 2024</td>
-                        <td class="p-4">Struktur Data</td>
-                        <td class="p-4">
-                            <a href="tugas.html"
-                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Tugas
-                            </a>
-                        </td>
-                    </tr>
-                    <tr class="transition">
-                        <td class="p-4">Kelas F</td>
-                        <td class="p-4">10 Agustus 2024</td>
-                        <td class="p-4">Jaringan Komputer</td>
-                        <td class="p-4">
-                            <a href="tugas.html"
-                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Tugas
-                                <div class="absolute top-0 right-0 -mr-1 -mt-1 w-4 h-4 bg-red-500 rounded-full animate-ping"></div>
-                                <div class="absolute top-0 right-0 -mr-1 -mt-1 w-4 h-4 bg-red-500 rounded-full"></div>
-                            </a>
-                        </td>
-                    </tr>
-                    <tr class="transition">
-                        <td class="p-4">Kelas E</td>
-                        <td class="p-4">17 Agustus 2024</td>
-                        <td class="p-4">Teori graf</td>
-                        <td class="p-4">
-                            <a href="tugas.html"
-                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Tugas
-                            </a>
-                        </td>
-                    </tr>
-                </tbody>                
-            </table>
-        </div>
+            <div class="flex items-center justify-between px-4">
+                <button type="submit"
+                        class="bg-dark-teal hover:bg-teal-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full md:w-auto">Ambil Kelas
+                </button>
+            </div>
+        </form>
     </div>
     <script>
         function confirmLogout(event) {
