@@ -1,3 +1,43 @@
+<?php
+session_start();
+include('../../assets/db/config.php');
+include('../../auth/aksesMahasiswa.php');
+
+$userID = $_SESSION['U_ID'];
+
+$sqlUser = "SELECT U_Nama, U_Role, U_Foto FROM User WHERE U_ID = ?";
+$stmtUser = $conn->prepare($sqlUser);
+$stmtUser->bind_param('i', $userID);
+$stmtUser->execute();
+$stmtUser->store_result();
+
+if ($stmtUser->num_rows > 0) {
+    $stmtUser->bind_result($name, $role, $photo);
+    $stmtUser->fetch();
+} else {
+    header('Location: ../home/login.php');
+    exit();
+}
+
+$stmtUser->close();
+$sqlKelas = "SELECT 
+                km.KM_ID,
+                k.K_ID,
+                k.K_NamaKelas,
+                k.K_MataKuliah,
+                k.K_KodeKelas,
+                k.K_TanggalDibuat,
+                km.TanggalAmbil
+             FROM KelasMahasiswa km
+             INNER JOIN Kelas k ON km.Kelas_K_ID = k.K_ID
+             WHERE km.User_U_ID = ?";
+
+$stmtKelas = $conn->prepare($sqlKelas);
+$stmtKelas->bind_param('i', $userID);
+$stmtKelas->execute();
+$resultKelas = $stmtKelas->get_result();
+?>
+
 <!DOCTYPE html>
 <html lang="id">
 
@@ -136,36 +176,6 @@
                 opacity: 1; /* Sidebar terlihat */
             }
         }
-
-        /* Style untuk modal (overlay) */
-        .modal {
-            display: none; /* Tersembunyi secara default */
-            position: fixed; /* Tetap di tempat */
-            z-index: 1; /* Berada di atas */
-            left: 0;
-            top: 0;
-            width: 100%; /* Lebar penuh */
-            height: 100%; /* Tinggi penuh */
-            overflow: auto; /* Aktifkan scroll jika diperlukan */
-            background-color: rgba(0,0,0,0.4); /* Hitam dengan opasitas */
-        }
-
-        /* Tombol Tutup */
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .close:hover,
-        .close:focus {
-            color: red;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
         
     </style>
 </head>
@@ -209,7 +219,7 @@
         <div>
             <ul class="flex flex-col space-y-6 px-6 pt-2 pb-6 text-white">
                 <li>
-                    <a href="../peserta/beranda.html"
+                    <a href="../mahasiswa/beranda.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">home</span>
                         <span class="link-text ml-3">Beranda</span>
@@ -217,7 +227,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="../peserta/kelas.html"
+                    <a href="../mahasiswa/kelas.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">school</span>
                         <span class="link-text ml-3">Kelas</span>
@@ -225,7 +235,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="../peserta/nilai.html"
+                    <a href="../mahasiswa/nilai.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">monitoring</span>
                         <span class="link-text ml-3">Penilaian</span>
@@ -233,7 +243,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="../peserta/presensi.html"
+                    <a href="../mahasiswa/presensi.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">overview</span>
                         <span class="link-text ml-3">Presensi</span>
@@ -241,7 +251,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="../pengaturan.html"
+                    <a href="../pengaturan.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">settings</span>
                         <span class="link-text ml-3">Pengaturan</span>
@@ -257,13 +267,12 @@
                 </li>
             </ul>
         </div>
-
         <!-- Profil -->
         <div class="profile-container flex items-center space-x-4 p-6 mt-auto">
-            <img src="../../assets/img/anies.jpg" alt="Foto Profil" class="rounded-xl w-12 h-12">
+            <img src="<?php echo $photo ?>" alt="Foto Profil" class="rounded-xl w-12 h-12">
             <div class="flex flex-col profile-text">
-                <span class="font-bold text-xl text-white">Anies Baswedan</span>
-                <span class="text-white">Mahasiswa</span>
+                <span class="font-bold text-xl text-white"><?php echo htmlspecialchars($name); ?></span>
+                <span class="text-white"><?php echo htmlspecialchars(strtoupper($role)); ?></span>
             </div>
         </div>
     </div>
@@ -273,98 +282,66 @@
     <div class="w-full md:w-5/6 load">
         <div class="p-6 rounded-lg shadow-md flex flex-row justify-between">
             <div class="header mb-4">
-                <h1 class="px-4 text-3xl font-bold text-dark-teal uppercase mb-1">Pemrograman Web</h1>
-                <p class="px-4 text-lg text-teal-600 italic mb-3">
-                    Senin, 07:00 - 08:50
-                </p>
-                <h2 class="px-4 text-2xl text-teal-600 font-bold mb-2">Dosen:</h2>
-                <p class="px-4 text-xl text-teal-600 italic mb-1">Bintang Nuralamsyah, S.Kom., M.Kom.</p>
-                <p class="px-4 text-xl text-teal-600 italic mb-1">Dr. Agus Budi Raharjo, S.Kom., M.Kom.</p>
+                <h1 class="px-4 text-3xl font-bold text-dark-teal uppercase mb-2">Presensi</h1>
+                <p class="px-4 text-xl text-teal-600 italic">Gaboleh tipsen ya adik adik</p>
             </div>
         </div>
         <div class="p-6 rounded-lg flex flex-row justify-between">
             <table class="class-table w-full mt-6 border-collapse">
                 <thead>
                     <tr class="text-dark-teal">
-                        <th class="border-b p-4 text-left font-medium">Tugas</th>
-                        <th class="border-b p-4 text-left font-medium">Deadline</th>
-                        <th class="border-b p-4 text-left font-medium">Nama Tugas</th>
-                        <th class="border-b p-4 text-left font-medium">Status</th>
+                        <th class="border-b p-4 text-left font-medium">Kelas</th>
+                        <th class="border-b p-4 text-left font-medium">Tanggal Diambil</th>
+                        <th class="border-b p-4 text-left font-medium">Mata Kuliah</th>
                         <th class="border-b p-4 text-left font-medium">Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr class="transition">
-                        <td class="p-4"><a href="./detailKelas.html">1</a></td>
-                        <td class="p-4">12 Agustus 2024, 23:59</td>
-                        <td class="p-4">Membuat todolist</td>
-                        <td class="p-4 text-green-600 font-bold">SUDAH MENGUMPULKAN</td>
-                        <td class="p-4">
-                            <a href="detailtugas.html"
-                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Detail Tugas
-                            </a>
-                        </td>
-                    </tr>
-                    <tr class="transition">
-                        <td class="p-4"><a href="./detailKelas.html">2</a></td>
-                        <td class="p-4">19 Agustus 2024, 23:59</td>
-                        <td class="p-4">Membuat CV dengan HTML</td>
-                        <td class="p-4 text-green-600 font-bold">SUDAH MENGUMPULKAN</td>
-                        <td class="p-4">
-                            <a href="detailtugas.html"
-                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Detail Tugas
-                            </a>
-                        </td>
-                    </tr>
-                    <tr class="transition">
-                        <td class="p-4"><a href="./detailKelas.html">3</a></td>
-                        <td class="p-4">20 Agustus 2024, 23:59</td>
-                        <td class="p-4">Membuat login page</td>
-                        <td class="p-4 text-green-600 font-bold">SUDAH MENGUMPULKAN</td>
-                        <td class="p-4">
-                            <a href="detailtugas.html"
-                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Detail Tugas
-                            </a>
-                        </td>
-                    </tr>
-                    <tr class="transition">
-                        <td class="p-4"><a href="./detailKelas.html">4</a></td>
-                        <td class="p-4">27 Agustus 2024, 23:59</td>
-                        <td class="p-4">Final Project 1</td>
-                        <td class="p-4 text-green-600 font-bold">SUDAH MENGUMPULKAN</td>
-                        <td class="p-4">
-                            <a href="detailtugas.html"
-                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Detail Tugas
-                            </a>
-                        </td>
-                    </tr>
-                    <tr class="transition">
-                        <td class="p-4"><a href="./detailKelas.html">5</a></td>
-                        <td class="p-4">30 Agustus 2024, 23:59</td>
-                        <td class="p-4">Final Project 2</td>
-                        <td class="p-4 text-red-600 font-bold">BELUM MENGUMPULKAN</td>
-                        <td class="p-4">
-                            <a href="detailtugas.html"
-                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Detail Tugas
-                            </a>
-                        </td>
-                    </tr>
+                    <?php
+                    if ($resultKelas->num_rows > 0) {
+                        while ($row = $resultKelas->fetch_assoc()) {
+                            // Jika Anda memiliki informasi jadwal, misalnya K_Jadwal, tambahkan di sini
+                            // Asumsikan ada kolom K_Jadwal di tabel Kelas
+                            // Jika tidak, Anda bisa menghapus atau menggantinya dengan data yang tersedia
+                            // Contoh:
+                            // echo '<td class="p-4">' . htmlspecialchars($row['K_Jadwal']) . '</td>';
+                            
+                            // Namun berdasarkan skema tabel yang Anda berikan, tidak ada kolom jadwal.
+                            // Jadi, saya akan menggunakan TanggalAmbil sebagai pengganti jadwal.
+                            // Jika Anda memiliki jadwal di tempat lain, silakan sesuaikan.
+
+                            echo '<tr class="transition">';
+                            echo '<td class="p-4"><a href="./detailKelas.php?kelas_id=' . htmlspecialchars($row['K_ID']) . '">' . htmlspecialchars($row['K_NamaKelas']) . '</a></td>';
+                            echo '<td class="p-4">' . htmlspecialchars($row['TanggalAmbil']) . '</td>';
+                            echo '<td class="p-4">' . htmlspecialchars($row['K_MataKuliah']) . '</td>';
+                            echo '<td class="p-4">
+                                    <a href="absen.php?kelas_id=' . htmlspecialchars($row['K_ID']) . '" 
+                                    class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">
+                                    Absen
+                                    </a>
+                                </td>';
+                            echo '</tr>';
+                        }
+                    } else {
+                        echo '<tr><td colspan="4" class="p-4 text-center">Anda belum mengambil kelas apapun.</td></tr>';
+                    }
+
+                    $stmtKelas->close();
+                    $conn->close();
+                    ?>
                 </tbody>                
             </table>
         </div>
     </div>
-    
-     
-    
     <script>
         function confirmLogout(event) {
             event.preventDefault(); // Mencegah link untuk navigasi
             const confirmation = confirm("Apakah Anda ingin keluar?");
-            
-            if (confirmation) {
-                window.location.href = '../home/login.html'; 
-            } else {
 
+            if (confirmation) {
+                window.location.href = '../../auth/logout.php';
+            } else {
+                return;
             }
         }
         const hamburger = document.querySelector('.hamburger');
@@ -400,24 +377,6 @@
         sidebar.addEventListener('click', function (e) {
             e.stopPropagation();
         });
-
-        // Mendapatkan modal
-        var modal = document.getElementById("myModal");
-
-        // Mendapatkan tombol yang membuka modal
-        var btn = document.querySelector(".open-modal-btn");
-
-        // Fungsi untuk membuka modal
-        function openModal() {
-            modal.style.display = "block";
-        }
-
-        // Fungsi untuk menutup modal
-        function closeModal() {
-            modal.style.display = "none";
-        }
-
-
     </script>
 </body>
 

@@ -243,8 +243,8 @@ $conn->close();
         </div>
         <div>
             <ul class="flex flex-col space-y-6 px-6 pt-2 pb-6 text-white">
-            <li>
-                    <a href="../mahasiswa/beranda.html"
+                <li>
+                    <a href="../mahasiswa/beranda.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">home</span>
                         <span class="link-text ml-3">Beranda</span>
@@ -260,7 +260,7 @@ $conn->close();
                     </a>
                 </li>
                 <li>
-                    <a href="../mahasiswa/nilai.html"
+                    <a href="../mahasiswa/nilai.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">monitoring</span>
                         <span class="link-text ml-3">Penilaian</span>
@@ -268,7 +268,7 @@ $conn->close();
                     </a>
                 </li>
                 <li>
-                    <a href="../mahasiswa/presensi.html"
+                    <a href="../mahasiswa/presensi.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">overview</span>
                         <span class="link-text ml-3">Presensi</span>
@@ -276,7 +276,7 @@ $conn->close();
                     </a>
                 </li>
                 <li>
-                    <a href="../pengaturan.html"
+                    <a href="../pengaturan.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">settings</span>
                         <span class="link-text ml-3">Pengaturan</span>
@@ -292,13 +292,12 @@ $conn->close();
                 </li>
             </ul>
         </div>
-
         <!-- Profil -->
         <div class="profile-container flex items-center space-x-4 p-6 mt-auto">
-            <img src="../../assets/img/anies.jpg" alt="Foto Profil" class="rounded-xl w-12 h-12">
+            <img src="<?php echo $photo ?>" alt="Foto Profil" class="rounded-xl w-12 h-12">
             <div class="flex flex-col profile-text">
-                <span class="font-bold text-xl text-white">Anies Baswedan</span>
-                <span class="text-white">Mahasiswa</span>
+                <span class="font-bold text-xl text-white"><?php echo htmlspecialchars($name); ?></span>
+                <span class="text-white"><?php echo htmlspecialchars(strtoupper($role)); ?></span>
             </div>
         </div>
     </div>
@@ -337,11 +336,11 @@ $conn->close();
         function confirmLogout(event) {
             event.preventDefault(); // Mencegah link untuk navigasi
             const confirmation = confirm("Apakah Anda ingin keluar?");
-            
-            if (confirmation) {
-                window.location.href = '../home/login.html'; 
-            } else {
 
+            if (confirmation) {
+                window.location.href = '../../auth/logout.php';
+            } else {
+                return;
             }
         }
         const hamburger = document.querySelector('.hamburger');

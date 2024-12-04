@@ -202,7 +202,7 @@ $stmt->close();
         <div>
             <ul class="flex flex-col space-y-6 px-6 pt-2 pb-6 text-white">
                 <li>
-                    <a href="../mahasiswa/beranda.html"
+                    <a href="../mahasiswa/beranda.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">home</span>
                         <span class="link-text ml-3">Beranda</span>
@@ -218,7 +218,7 @@ $stmt->close();
                     </a>
                 </li>
                 <li>
-                    <a href="../mahasiswa/nilai.html"
+                    <a href="../mahasiswa/nilai.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">monitoring</span>
                         <span class="link-text ml-3">Penilaian</span>
@@ -226,7 +226,7 @@ $stmt->close();
                     </a>
                 </li>
                 <li>
-                    <a href="../mahasiswa/presensi.html"
+                    <a href="../mahasiswa/presensi.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">overview</span>
                         <span class="link-text ml-3">Presensi</span>
@@ -234,7 +234,7 @@ $stmt->close();
                     </a>
                 </li>
                 <li>
-                    <a href="../pengaturan.html"
+                    <a href="../pengaturan.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">settings</span>
                         <span class="link-text ml-3">Pengaturan</span>
@@ -250,7 +250,6 @@ $stmt->close();
                 </li>
             </ul>
         </div>
-
         <!-- Profil -->
         <div class="profile-container flex items-center space-x-4 p-6 mt-auto">
             <img src="<?php echo $photo ?>" alt="Foto Profil" class="rounded-xl w-12 h-12">
@@ -269,11 +268,11 @@ $stmt->close();
         function confirmLogout(event) {
             event.preventDefault(); // Mencegah link untuk navigasi
             const confirmation = confirm("Apakah Anda ingin keluar?");
-            
-            if (confirmation) {
-                window.location.href = '../home/login.html'; 
-            } else {
 
+            if (confirmation) {
+                window.location.href = '../../auth/logout.php';
+            } else {
+                return;
             }
         }
         const hamburger = document.querySelector('.hamburger');

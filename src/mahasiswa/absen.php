@@ -1,3 +1,74 @@
+<?php
+session_start();
+include('../../assets/db/config.php');
+include('../../auth/aksesMahasiswa.php');
+
+$userID = $_SESSION['U_ID'];
+
+// Mengambil informasi pengguna (dosen)
+$sql_profile = "SELECT U_Nama, U_Role, U_Foto FROM User WHERE U_ID = ?";
+$stmt_profile = $conn->prepare($sql_profile);
+$stmt_profile->bind_param('i', $userID);
+$stmt_profile->execute();
+$stmt_profile->store_result();
+
+$error_message = '';
+
+if ($stmt_profile->num_rows > 0) {
+    $stmt_profile->bind_result($name, $role, $photo);
+    $stmt_profile->fetch();
+} else {
+    header('Location: ../home/login.php');
+    exit();
+}
+
+$stmt_profile->close();
+
+// Menentukan kelas yang akan ditampilkan
+if (isset($_GET['kelas_id'])) {
+    $kelasID = intval($_GET['kelas_id']);
+} else {
+    // Handle error jika kelas_id tidak ditentukan
+    echo "Kelas tidak ditentukan.";
+    exit();
+}
+
+// Mengambil informasi kelas
+$sql_kelas = "SELECT K_NamaKelas, K_MataKuliah FROM Kelas WHERE K_ID = ?";
+$stmt_kelas = $conn->prepare($sql_kelas);
+$stmt_kelas->bind_param('i', $kelasID);
+$stmt_kelas->execute();
+$result_kelas = $stmt_kelas->get_result();
+
+if ($result_kelas->num_rows > 0) {
+    $kelas = $result_kelas->fetch_assoc();
+    $namaKelas = $kelas['K_NamaKelas'];
+    $mataKuliah = $kelas['K_MataKuliah'];
+} else {
+    // Handle jika kelas tidak ditemukan
+    echo "Kelas tidak ditemukan.";
+    exit();
+}
+
+$stmt_kelas->close();
+
+// Mengambil daftar dosen terkait kelas tersebut
+$sql_dosen = "SELECT U.U_Nama 
+              FROM User U
+              INNER JOIN User_Kelas UK ON U.U_ID = UK.User_U_ID
+              WHERE UK.Kelas_K_ID = ? AND U.U_Role = 'dosen'";
+$stmt_dosen = $conn->prepare($sql_dosen);
+$stmt_dosen->bind_param('i', $kelasID);
+$stmt_dosen->execute();
+$result_dosen = $stmt_dosen->get_result();
+
+$dosen_names = [];
+while ($row = $result_dosen->fetch_assoc()) {
+    $dosen_names[] = $row['U_Nama'];
+}
+
+$stmt_dosen->close();
+?>
 <!DOCTYPE html>
 <html lang="id">
 
@@ -174,7 +245,7 @@
     <!-- NAV -->
     <nav class="flex flex-col md:flex-row md:items-center justify-between p-10 text-light-teal w-full">
         <div class="flex items-center justify-between w-full md:w-auto">
-            <a href="../home/login.html" class="font-modak text-4xl text-dark-teal">KelasKu</a>
+            <a href="../home/login.php" class="font-modak text-4xl text-dark-teal">KelasKu</a>
             <!-- Ikon Hamburger untuk Mobile -->
             <div class="md:hidden">
                 <span id="hamburger-mobile" class="material-symbols-outlined text-3xl cursor-pointer">
@@ -209,7 +280,7 @@
         <div>
             <ul class="flex flex-col space-y-6 px-6 pt-2 pb-6 text-white">
                 <li>
-                    <a href="../peserta/beranda.html"
+                    <a href="../mahasiswa/beranda.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">home</span>
                         <span class="link-text ml-3">Beranda</span>
@@ -217,7 +288,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="../peserta/kelas.html"
+                    <a href="../mahasiswa/kelas.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">school</span>
                         <span class="link-text ml-3">Kelas</span>
@@ -225,7 +296,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="../peserta/nilai.html"
+                    <a href="../mahasiswa/nilai.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">monitoring</span>
                         <span class="link-text ml-3">Penilaian</span>
@@ -233,7 +304,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="../peserta/presensi.html"
+                    <a href="../mahasiswa/presensi.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">overview</span>
                         <span class="link-text ml-3">Presensi</span>
@@ -241,7 +312,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="../pengaturan.html"
+                    <a href="../pengaturan.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">settings</span>
                         <span class="link-text ml-3">Pengaturan</span>
@@ -260,10 +331,10 @@
 
         <!-- Profil -->
         <div class="profile-container flex items-center space-x-4 p-6 mt-auto">
-            <img src="../../assets/img/anies.jpg" alt="Foto Profil" class="rounded-xl w-12 h-12">
+            <img src="<?php echo $photo ?>" alt="Foto Profil" class="rounded-xl w-12 h-12">
             <div class="flex flex-col profile-text">
-                <span class="font-bold text-xl text-white">Anies Baswedan</span>
-                <span class="text-white">Mahasiswa</span>
+                <span class="font-bold text-xl text-white"><?php echo htmlspecialchars($name); ?></span>
+                <span class="text-white"><?php echo htmlspecialchars(strtoupper($role)); ?></span>
             </div>
         </div>
     </div>
@@ -273,13 +344,23 @@
     <div class="w-full md:w-5/6 load">
         <div class="p-6 rounded-lg shadow-md flex flex-row justify-between">
             <div class="header mb-4">
-                <h1 class="px-4 text-3xl font-bold text-dark-teal uppercase mb-1">Pemrograman Web</h1>
-                <p class="px-4 text-lg text-teal-600 italic mb-3">
-                    Senin, 07:00 - 08:50
-                </p>
+                <!-- Menampilkan Nama Kelas dari Database -->
+                <h1 class="px-4 text-3xl font-bold text-dark-teal uppercase mb-1">
+                    <?php echo htmlspecialchars($namaKelas); ?>
+                </h1>
+                
                 <h2 class="px-4 text-2xl text-teal-600 font-bold mb-2">Dosen:</h2>
-                <p class="px-4 text-xl text-teal-600 italic mb-1">Bintang Nuralamsyah, S.Kom., M.Kom.</p>
-                <p class="px-4 text-xl text-teal-600 italic mb-1">Dr. Agus Budi Raharjo, S.Kom., M.Kom.</p>
+                
+                <!-- Menampilkan Daftar Dosen dari Database -->
+                <?php
+                if (!empty($dosen_names)) {
+                    foreach ($dosen_names as $dosen) {
+                        echo '<p class="px-4 text-xl text-teal-600 italic mb-1">' . htmlspecialchars($dosen) . '</p>';
+                    }
+                } else {
+                    echo '<p class="px-4 text-xl text-teal-600 italic mb-1">Tidak ada dosen yang terdaftar.</p>';
+                }
+                ?>
             </div>
         </div>
         <div class="p-6 rounded-lg flex flex-col md:flex-row items-center justify-center w-1/2 mx-auto h-auto bg-green-100 mt-8">
@@ -432,11 +513,11 @@
         function confirmLogout(event) {
             event.preventDefault(); // Mencegah link untuk navigasi
             const confirmation = confirm("Apakah Anda ingin keluar?");
-            
-            if (confirmation) {
-                window.location.href = '../home/login.html'; 
-            } else {
 
+            if (confirmation) {
+                window.location.href = '../../auth/logout.php';
+            } else {
+                return;
             }
         }
         const hamburger = document.querySelector('.hamburger');
