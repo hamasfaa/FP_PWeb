@@ -62,7 +62,7 @@ CREATE TABLE Tugas_Mahasiswa (
 
 -- Table: User
 CREATE TABLE User (
-    U_ID int  NOT NULL AUTO_INCREMENT,
+    U_ID int  NOT NULL,
     U_Nama varchar(100)  NOT NULL,
     U_Email varchar(100)  NOT NULL,
     U_Password varchar(255)  NOT NULL,
