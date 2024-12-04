@@ -1,6 +1,7 @@
 <?php
 session_start();
-include('/xampp/htdocs/FP/assets/db/config.php');
+include('../FP/assets/db/config.php');
+include('../FP/auth/auth_redirect.php');
 
 $error = '';
 
