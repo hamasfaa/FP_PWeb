@@ -4,21 +4,38 @@ include('../../assets/db/config.php');
 include('../../auth/aksesMahasiswa.php');
 
 $userID = $_SESSION['U_ID'];
-$sql = "SELECT U_Nama, U_Role, U_Foto FROM User WHERE U_ID = ?";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param('i', $userID);
-$stmt->execute();
-$stmt->store_result();
 
-if ($stmt->num_rows > 0) {
-    $stmt->bind_result($name, $role, $photo);
-    $stmt->fetch();
+$sqlUser = "SELECT U_Nama, U_Role, U_Foto FROM User WHERE U_ID = ?";
+$stmtUser = $conn->prepare($sqlUser);
+$stmtUser->bind_param('i', $userID);
+$stmtUser->execute();
+$stmtUser->store_result();
+
+if ($stmtUser->num_rows > 0) {
+    $stmtUser->bind_result($name, $role, $photo);
+    $stmtUser->fetch();
 } else {
     header('Location: ../home/login.php');
     exit();
 }
 
-$stmt->close();
+$stmtUser->close();
+$sqlKelas = "SELECT 
+                km.KM_ID,
+                k.K_ID,
+                k.K_NamaKelas,
+                k.K_MataKuliah,
+                k.K_KodeKelas,
+                k.K_TanggalDibuat,
+                km.TanggalAmbil
+             FROM KelasMahasiswa km
+             INNER JOIN Kelas k ON km.Kelas_K_ID = k.K_ID
+             WHERE km.User_U_ID = ?";
+
+$stmtKelas = $conn->prepare($sqlKelas);
+$stmtKelas->bind_param('i', $userID);
+$stmtKelas->execute();
+$resultKelas = $stmtKelas->get_result();
 ?>
 
 <!DOCTYPE html>
@@ -274,62 +291,44 @@ $stmt->close();
                 <thead>
                     <tr class="text-dark-teal">
                         <th class="border-b p-4 text-left font-medium">Kelas</th>
-                        <th class="border-b p-4 text-left font-medium">Jadwal</th>
+                        <th class="border-b p-4 text-left font-medium">Tanggal Diambil</th>
                         <th class="border-b p-4 text-left font-medium">Mata Kuliah</th>
                         <th class="border-b p-4 text-left font-medium">Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr class="transition">
-                        <td class="p-4"><a href="./detailKelas.html">Kelas A</a></td>
-                        <td class="p-4">Senin, 07:00 - 08:50</td>
-                        <td class="p-4">Pemrograman Web</td>
-                        <td class="p-4">
-                            <a href="absen.html"
-                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Absen
-                            </a>
-                        </td>
-                    </tr>
-                    <tr class="transition">
-                        <td class="p-4">Kelas B</td>
-                        <td class="p-4">Senin, 13:00 - 14:50</td>
-                        <td class="p-4">Sistem Operasi</td>
-                        <td class="p-4">
-                            <a href="absen.html"
-                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Absen
-                            </a>
-                        </td>
-                    </tr>
-                    <tr class="transition">
-                        <td class="p-4">Kelas D</td>
-                        <td class="p-4">Kamis, 15:30 - 17:20</td>
-                        <td class="p-4">Struktur Data</td>
-                        <td class="p-4">
-                            <a href="absen.html"
-                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Absen
-                            </a>
-                        </td>
-                    </tr>
-                    <tr class="transition">
-                        <td class="p-4">Kelas F</td>
-                        <td class="p-4">Rabu, 10:00 - 11:50</td>
-                        <td class="p-4">Jaringan Komputer</td>
-                        <td class="p-4">
-                            <a href="absen.html"
-                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Absen
-                            </a>
-                        </td>
-                    </tr>
-                    <tr class="transition">
-                        <td class="p-4">Kelas E</td>
-                        <td class="p-4">Rabu, 07:00 - 08:50</td>
-                        <td class="p-4">Teori graf</td>
-                        <td class="p-4">
-                            <a href="absen.html"
-                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Absen
-                            </a>
-                        </td>
-                    </tr>
+                    <?php
+                    if ($resultKelas->num_rows > 0) {
+                        while ($row = $resultKelas->fetch_assoc()) {
+                            // Jika Anda memiliki informasi jadwal, misalnya K_Jadwal, tambahkan di sini
+                            // Asumsikan ada kolom K_Jadwal di tabel Kelas
+                            // Jika tidak, Anda bisa menghapus atau menggantinya dengan data yang tersedia
+                            // Contoh:
+                            // echo '<td class="p-4">' . htmlspecialchars($row['K_Jadwal']) . '</td>';
+                            
+                            // Namun berdasarkan skema tabel yang Anda berikan, tidak ada kolom jadwal.
+                            // Jadi, saya akan menggunakan TanggalAmbil sebagai pengganti jadwal.
+                            // Jika Anda memiliki jadwal di tempat lain, silakan sesuaikan.
+
+                            echo '<tr class="transition">';
+                            echo '<td class="p-4"><a href="./detailKelas.php?kelas_id=' . htmlspecialchars($row['K_ID']) . '">' . htmlspecialchars($row['K_NamaKelas']) . '</a></td>';
+                            echo '<td class="p-4">' . htmlspecialchars($row['TanggalAmbil']) . '</td>';
+                            echo '<td class="p-4">' . htmlspecialchars($row['K_MataKuliah']) . '</td>';
+                            echo '<td class="p-4">
+                                    <a href="absen.php?kelas_id=' . htmlspecialchars($row['K_ID']) . '" 
+                                    class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">
+                                    Absen
+                                    </a>
+                                </td>';
+                            echo '</tr>';
+                        }
+                    } else {
+                        echo '<tr><td colspan="4" class="p-4 text-center">Anda belum mengambil kelas apapun.</td></tr>';
+                    }
+
+                    $stmtKelas->close();
+                    $conn->close();
+                    ?>
                 </tbody>                
             </table>
         </div>
