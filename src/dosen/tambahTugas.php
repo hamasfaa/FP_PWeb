@@ -1,3 +1,43 @@
+<?php
+session_start();
+include('../../assets/db/config.php');
+include('../../auth/aksesDosen.php');
+
+$userID = $_SESSION['U_ID'];
+$sql = "SELECT U_Nama, U_Role, U_Foto FROM User WHERE U_ID = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param('i', $userID);
+$stmt->execute();
+$stmt->store_result();
+
+$error = '';
+
+if ($stmt->num_rows > 0) {
+    $stmt->bind_result($name, $role, $photo);
+    $stmt->fetch();
+} else {
+    header('Location: ../home/login.php');
+    exit();
+}
+
+if (isset($_GET['ID'])) {
+    $kelasID = $_GET['ID'];
+    $kelasID = htmlspecialchars($kelasID);
+} else {
+    $error = 'Kelas tidak ditemukan';
+}
+
+$header_sql = "SELECT K_MataKuliah, K_NamaKelas FROM Kelas WHERE K_ID = ?";
+$stmt_header = $conn->prepare($header_sql);
+$stmt_header->bind_param('i', $kelasID);
+$stmt_header->execute();
+$stmt_header->store_result();
+$stmt_header->bind_result($mataKuliah, $namaKelas);
+$stmt_header->fetch();
+
+
+?>
+
 <!DOCTYPE html>
 <html lang="id">
 
@@ -244,12 +284,12 @@
     <div class="w-full md:w-5/6 load p-6 rounded-lg">
         <div class="bg-white shadow-md rounded-lg p-6 mb-6 flex flex-row justify-between">
             <div class="header mb-4">
-                <h1 class="text-3xl font-bold text-dark-teal uppercase mb-2">Tugas Kelas A</h1>
-                <p class="text-xl text-teal-600 italic">IPA</p>
+                <h1 class="text-3xl font-bold text-dark-teal uppercase mb-2">Tugas <?php echo $namaKelas ?></h1>
+                <p class="text-xl text-teal-600 italic"><?php echo $mataKuliah ?></p>
             </div>
         </div>
         <div class="bg-white shadow-lg rounded-lg p-8">
-            <form>
+            <form method="POST" enctype="multipart/form-data">
                 <div class="mb-6">
                     <label for="newTask" class="block text-dark-teal font-semibold mb-2 text-lg">Nama Tugas:</label>
                     <input type="text" id="newTask" name="newTask"
@@ -269,7 +309,7 @@
                             file_upload
                         </span>
                         <p class="text-teal-600 mb-4">Drag & Drop your files here or click to upload</p>
-                        <input type="file" id="fileUpload" name="fileUpload" class="hidden">
+                        <input type="file" id="fileElem" multiple accept="*/*" class="hidden" onchange="handleFiles(this.files)">
                     </div>
                 </div>
                 <div class="flex items-center justify-between">
@@ -314,6 +354,39 @@
         sidebar.addEventListener('click', function(e) {
             e.stopPropagation();
         });
+
+        let dropArea = document.getElementById('drop-area');
+        let fileInput = document.getElementById('fileElem');
+
+        dropArea.addEventListener('dragover', (event) => {
+            event.preventDefault();
+            dropArea.classList.add('border-teal-600');
+        });
+
+        dropArea.addEventListener('dragleave', () => {
+            dropArea.classList.remove('border-teal-600');
+        });
+
+        dropArea.addEventListener('drop', (event) => {
+            event.preventDefault();
+            dropArea.classList.remove('border-teal-600');
+            let files = event.dataTransfer.files;
+        });
+
+        dropArea.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        function confirmLogout(event) {
+            event.preventDefault(); // Mencegah link untuk navigasi
+            const confirmation = confirm("Apakah Anda ingin keluar?");
+
+            if (confirmation) {
+                window.location.href = '../../auth/logout.php';
+            } else {
+                return;
+            }
+        }
     </script>
 </body>
 

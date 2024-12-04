@@ -37,8 +37,6 @@ $stmt_kode->bind_result($mataKuliah, $namaKelas, $tanggalDibuat, $kodeKelas);
 $stmt_kode->fetch();
 // $error = $kelasID;
 
-
-
 $list_sql = "SELECT UK.User_U_ID, U.U_Nama, U.U_Role FROM User_Kelas UK JOIN User U ON UK.User_U_ID = U.U_ID WHERE UK.Kelas_K_ID = ? ORDER BY U.U_ID ASC";
 $stmt_list = $conn->prepare($list_sql);
 $stmt_list->bind_param('i', $kelasID);
@@ -367,6 +365,17 @@ if ($stmt_list->num_rows > 0) {
         sidebar.addEventListener('click', function(e) {
             e.stopPropagation();
         });
+
+        function confirmLogout(event) {
+            event.preventDefault(); // Mencegah link untuk navigasi
+            const confirmation = confirm("Apakah Anda ingin keluar?");
+
+            if (confirmation) {
+                window.location.href = '../../auth/logout.php';
+            } else {
+                return;
+            }
+        }
     </script>
 </body>
 

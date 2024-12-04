@@ -397,6 +397,17 @@ $stmt->close();
         sidebar.addEventListener('click', function(e) {
             e.stopPropagation();
         });
+
+        function confirmLogout(event) {
+            event.preventDefault(); // Mencegah link untuk navigasi
+            const confirmation = confirm("Apakah Anda ingin keluar?");
+
+            if (confirmation) {
+                window.location.href = '../../auth/logout.php';
+            } else {
+                return;
+            }
+        }
     </script>
 </body>
 

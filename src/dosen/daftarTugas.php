@@ -20,7 +20,29 @@ if ($stmt->num_rows > 0) {
     exit();
 }
 
-// $tugas_sql = "SELECT TD_ID, TD_"
+if (isset($_GET['ID'])) {
+    $kelasID = $_GET['ID'];
+    $kelasID = htmlspecialchars($kelasID);
+} else {
+    $error = 'Kelas tidak ditemukan';
+}
+
+$header_sql = "SELECT K_MataKuliah, K_NamaKelas FROM Kelas WHERE K_ID = ?";
+$stmt_header = $conn->prepare($header_sql);
+$stmt_header->bind_param('i', $kelasID);
+$stmt_header->execute();
+$stmt_header->store_result();
+$stmt_header->bind_result($mataKuliah, $namaKelas);
+$stmt_header->fetch();
+
+$tugas_sql = "SELECT TD_ID, TD_Judul, TD_Deskripsi, TD_TanggalDibuat, TD_Deadline, TD_Status, TD_FileSoal FROM Tugas_Dosen WHERE Kelas_K_ID = ? AND USER_U_ID = ?";
+$tugas_stmt = $conn->prepare($tugas_sql);
+$tugas_stmt->bind_param('ii', $kelasID, $userID);
+$tugas_stmt->execute();
+$tugas_stmt->store_result();
+$tugas_stmt->bind_result($tugasID, $judul, $deskripsi, $tanggalDibuat, $deadline, $status, $fileSoal);
+
+echo $tugasID . $judul . $deskripsi . $tanggalDibuat . $deadline . $status . $fileSoal;
 ?>
 
 <!DOCTYPE html>
@@ -269,10 +291,10 @@ if ($stmt->num_rows > 0) {
     <div class="w-full md:w-5/6 load p-6">
         <div class="bg-white shadow-md rounded-lg p-6 mb-6 flex flex-row justify-between">
             <div class="header mb-4">
-                <h1 class="text-3xl font-bold text-dark-teal uppercase mb-2">Tugas Kelas A</h1>
-                <p class="text-xl text-teal-600 italic">IPA</p>
+                <h1 class="text-3xl font-bold text-dark-teal uppercase mb-2">Tugas <?php echo $namaKelas ?></h1>
+                <p class="text-xl text-teal-600 italic"><?php echo $mataKuliah ?></p>
             </div>
-            <a href="tambahTugas.html"
+            <a href="tambahTugas.php?ID=<?php echo $kelasID ?>"
                 class="bg-dark-teal text-white text-lg px-4 py-2 h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal transition duration-300">Tambah
                 Tugas</a>
         </div>
@@ -373,6 +395,17 @@ if ($stmt->num_rows > 0) {
         sidebar.addEventListener('click', function(e) {
             e.stopPropagation();
         });
+
+        function confirmLogout(event) {
+            event.preventDefault(); // Mencegah link untuk navigasi
+            const confirmation = confirm("Apakah Anda ingin keluar?");
+
+            if (confirmation) {
+                window.location.href = '../../auth/logout.php';
+            } else {
+                return;
+            }
+        }
     </script>
 </body>
 
