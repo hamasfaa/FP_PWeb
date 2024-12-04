@@ -1,3 +1,26 @@
+<?php
+session_start();
+include('../../assets/db/config.php');
+include('../../auth/aksesMahasiswa.php');
+
+$userID = $_SESSION['U_ID'];
+$sql = "SELECT U_Nama, U_Role, U_Foto FROM User WHERE U_ID = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param('i', $userID);
+$stmt->execute();
+$stmt->store_result();
+
+if ($stmt->num_rows > 0) {
+    $stmt->bind_result($name, $role, $photo);
+    $stmt->fetch();
+} else {
+    header('Location: ../home/login.php');
+    exit();
+}
+
+$stmt->close();
+?>
+
 <!DOCTYPE html>
 <html lang="id">
 
@@ -179,7 +202,7 @@
         <div>
             <ul class="flex flex-col space-y-6 px-6 pt-2 pb-6 text-white">
                 <li>
-                    <a href="../peserta/beranda.html"
+                    <a href="../mahasiswa/beranda.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">home</span>
                         <span class="link-text ml-3">Beranda</span>
@@ -187,7 +210,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="../peserta/kelas.html"
+                    <a href="../mahasiswa/kelas.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">school</span>
                         <span class="link-text ml-3">Kelas</span>
@@ -195,7 +218,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="../peserta/nilai.html"
+                    <a href="../mahasiswa/nilai.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">monitoring</span>
                         <span class="link-text ml-3">Penilaian</span>
@@ -203,7 +226,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="../peserta/presensi.html"
+                    <a href="../mahasiswa/presensi.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">overview</span>
                         <span class="link-text ml-3">Presensi</span>
@@ -211,7 +234,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="../pengaturan.html"
+                    <a href="../pengaturan.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">settings</span>
                         <span class="link-text ml-3">Pengaturan</span>
@@ -227,13 +250,12 @@
                 </li>
             </ul>
         </div>
-
         <!-- Profil -->
         <div class="profile-container flex items-center space-x-4 p-6 mt-auto">
-            <img src="../../assets/img/anies.jpg" alt="Foto Profil" class="rounded-xl w-12 h-12">
+            <img src="<?php echo $photo ?>" alt="Foto Profil" class="rounded-xl w-12 h-12">
             <div class="flex flex-col profile-text">
-                <span class="font-bold text-xl text-white">Anies Baswedan</span>
-                <span class="text-white">Mahasiswa</span>
+                <span class="font-bold text-xl text-white"><?php echo htmlspecialchars($name); ?></span>
+                <span class="text-white"><?php echo htmlspecialchars(strtoupper($role)); ?></span>
             </div>
         </div>
     </div>
@@ -241,90 +263,16 @@
     </div>
     <!-- UTAMA -->
     <div class="w-full md:w-5/6 load">
-        <div class="p-6 rounded-lg shadow-md flex flex-row justify-between">
-            <div class="header mb-4">
-                <h1 class="px-4 text-3xl font-bold text-dark-teal uppercase mb-2">Penilaian</h1>
-                <p class="px-4 text-xl text-teal-600 italic">Hasil tidak akan mengkhianati usaha</p>
-            </div>
-            <a href="rekap.html"
-                class="bg-light-teal text-white text-lg px-4 py-2 w-fit h-fit rounded border hover:bg-white hover:border-light-teal hover:text-light-teal">Rekap Nilai
-            </a>
-        </div>
-        <div class="p-6 rounded-lg flex flex-row justify-between">
-            <table class="class-table w-full mt-6 border-collapse">
-                <thead>
-                    <tr class="text-dark-teal">
-                        <th class="border-b p-4 text-left font-medium">Kelas</th>
-                        <th class="border-b p-4 text-left font-medium">Diambil Pada</th>
-                        <th class="border-b p-4 text-left font-medium">Mata Kuliah</th>
-                        <th class="border-b p-4 text-left font-medium">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr class="transition">
-                        <td class="p-4"><a href="./detailKelas.html">Kelas A</a></td>
-                        <td class="p-4">12 Agustus 2024</td>
-                        <td class="p-4">Pemrograman Web</td>
-                        <td class="p-4">
-                            <a href="lihatnilai.html"
-                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Lihat Nilai
-                            </a>
-                        </td>
-                    </tr>
-                    <tr class="transition">
-                        <td class="p-4">Kelas B</td>
-                        <td class="p-4">13 Agustus 2024</td>
-                        <td class="p-4">Sistem Operasi</td>
-                        <td class="p-4">
-                            <a href="lihatnilai.html"
-                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Lihat Nilai
-                            </a>
-                        </td>
-                    </tr>
-                    <tr class="transition">
-                        <td class="p-4">Kelas D</td>
-                        <td class="p-4">14 Agustus 2024</td>
-                        <td class="p-4">Struktur Data</td>
-                        <td class="p-4">
-                            <a href="lihatnilai.html"
-                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Lihat Nilai
-                            </a>
-                        </td>
-                    </tr>
-                    <tr class="transition">
-                        <td class="p-4">Kelas F</td>
-                        <td class="p-4">10 Agustus 2024</td>
-                        <td class="p-4">Jaringan Komputer</td>
-                        <td class="p-4">
-                            <a href="lihatnilai.html"
-                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Lihat Nilai
-                            </a>
-                        </td>
-                    </tr>
-                    <tr class="transition">
-                        <td class="p-4">Kelas E</td>
-                        <td class="p-4">17 Agustus 2024</td>
-                        <td class="p-4">Teori graf</td>
-                        <td class="p-4">
-                            <a href="lihatnilai.html"
-                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Lihat Nilai
-                            </a>
-                        </td>
-                    </tr>
-                </tbody>                
-            </table>
-        </div>
-    </div>
     </div>
     <script>
         function confirmLogout(event) {
             event.preventDefault(); // Mencegah link untuk navigasi
             const confirmation = confirm("Apakah Anda ingin keluar?");
-            
-            if (confirmation) {
-                window.location.href = '../home/login.html'; 
-            } else {
 
+            if (confirmation) {
+                window.location.href = '../../auth/logout.php';
+            } else {
+                return;
             }
         }
         const hamburger = document.querySelector('.hamburger');

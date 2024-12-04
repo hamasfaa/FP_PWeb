@@ -1,3 +1,26 @@
+<?php
+session_start();
+include('../../assets/db/config.php');
+include('../../auth/aksesMahasiswa.php');
+
+$userID = $_SESSION['U_ID'];
+$sql = "SELECT U_Nama, U_Role, U_Foto FROM User WHERE U_ID = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param('i', $userID);
+$stmt->execute();
+$stmt->store_result();
+
+if ($stmt->num_rows > 0) {
+    $stmt->bind_result($name, $role, $photo);
+    $stmt->fetch();
+} else {
+    header('Location: ../home/login.php');
+    exit();
+}
+
+$stmt->close();
+?>
+
 <!DOCTYPE html>
 <html lang="id">
 
@@ -174,7 +197,7 @@
     <!-- NAV -->
     <nav class="flex flex-col md:flex-row md:items-center justify-between p-10 text-light-teal w-full">
         <div class="flex items-center justify-between w-full md:w-auto">
-            <a href="../home/login.html" class="font-modak text-4xl text-dark-teal">KelasKu</a>
+            <a href="../home/login.php" class="font-modak text-4xl text-dark-teal">KelasKu</a>
             <!-- Ikon Hamburger untuk Mobile -->
             <div class="md:hidden">
                 <span id="hamburger-mobile" class="material-symbols-outlined text-3xl cursor-pointer">
@@ -209,7 +232,7 @@
         <div>
             <ul class="flex flex-col space-y-6 px-6 pt-2 pb-6 text-white">
                 <li>
-                    <a href="../peserta/beranda.html"
+                    <a href="../mahasiswa/beranda.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">home</span>
                         <span class="link-text ml-3">Beranda</span>
@@ -217,7 +240,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="../peserta/kelas.html"
+                    <a href="../mahasiswa/kelas.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">school</span>
                         <span class="link-text ml-3">Kelas</span>
@@ -225,7 +248,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="../peserta/nilai.html"
+                    <a href="../mahasiswa/nilai.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">monitoring</span>
                         <span class="link-text ml-3">Penilaian</span>
@@ -233,7 +256,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="../peserta/presensi.html"
+                    <a href="../mahasiswa/presensi.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">overview</span>
                         <span class="link-text ml-3">Presensi</span>
@@ -241,7 +264,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="../pengaturan.html"
+                    <a href="../pengaturan.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">settings</span>
                         <span class="link-text ml-3">Pengaturan</span>
@@ -260,10 +283,10 @@
 
         <!-- Profil -->
         <div class="profile-container flex items-center space-x-4 p-6 mt-auto">
-            <img src="../../assets/img/anies.jpg" alt="Foto Profil" class="rounded-xl w-12 h-12">
+            <img src="<?php echo $photo ?>" alt="Foto Profil" class="rounded-xl w-12 h-12">
             <div class="flex flex-col profile-text">
-                <span class="font-bold text-xl text-white">Anies Baswedan</span>
-                <span class="text-white">Mahasiswa</span>
+                <span class="font-bold text-xl text-white"><?php echo htmlspecialchars($name); ?></span>
+                <span class="text-white"><?php echo htmlspecialchars(strtoupper($role)); ?></span>
             </div>
         </div>
     </div>
@@ -282,75 +305,147 @@
                 <p class="px-4 text-xl text-teal-600 italic mb-1">Dr. Agus Budi Raharjo, S.Kom., M.Kom.</p>
             </div>
         </div>
-        <div class="p-6 rounded-lg flex flex-row justify-between">
-            <table class="class-table w-full mt-6 border-collapse">
+        <div class="p-6 rounded-lg flex flex-col md:flex-row items-center justify-center w-1/2 mx-auto h-auto bg-green-100 mt-8">
+            <div class="w-full md:w-1/2">
+                <table class="w-full text-center border-collapse text-lg lg:text-xl">
+                    <thead class="font-bold">
+                        <tr>
+                            <th class="border-r border-gray-300 w-1/4 text-blue-700 py-2">HADIR</th>
+                            <th class="border-r border-gray-300 w-1/4 text-purple-700">IZIN</th>
+                            <th class="border-r border-gray-300 w-1/4 text-yellow-600">SAKIT</th>
+                            <th class="w-1/4 text-red-600">ALPA</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="border-r border-gray-300 py-2">3</td>
+                            <td class="border-r border-gray-300">1</td>
+                            <td class="border-r border-gray-300">1</td>
+                            <td>1</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="w-full md:w-1/2 mt-4 md:mt-0">
+                <table class="w-full text-center md:text-right border-collapse text-lg lg:text-xl">
+                    <thead class="font-bold">
+                        <tr>
+                            <th class="py-2">TOTAL TATAP MUKA TERLAKSANA</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="py-2">6</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="p-6 rounded-lg flex flex-col md:flex-row items-center justify-center w-5/6 mx-auto h-auto bg-gray-100 mt-8">
+            <table class="class-table w-full border-collapse">
                 <thead>
-                    <tr class="text-dark-teal">
-                        <th class="border-b p-4 text-left font-medium">Tugas</th>
-                        <th class="border-b p-4 text-left font-medium">Deadline</th>
-                        <th class="border-b p-4 text-left font-medium">Nama Tugas</th>
+                    <tr class="text-dark-teal w-1/5">
+                        <th class="border-b p-4 text-left font-medium">Tatap muka</th>
+                        <th class="border-b p-4 text-left font-medium">Jadwal</th>
+                        <th class="border-b p-4 text-left font-medium">Dosen</th>
                         <th class="border-b p-4 text-left font-medium">Status</th>
-                        <th class="border-b p-4 text-left font-medium">Action</th>
+                        <th class="border-b p-4 text-left font-medium">Keterangan</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr class="transition">
-                        <td class="p-4"><a href="./detailKelas.html">1</a></td>
-                        <td class="p-4">12 Agustus 2024, 23:59</td>
-                        <td class="p-4">Membuat todolist</td>
-                        <td class="p-4 text-green-600 font-bold">SUDAH MENGUMPULKAN</td>
+                        <td class="p-4">1</td>
+                        <td class="p-4">12 Agustus 2024</td>
+                        <td class="p-4">Bintang Nuralamsyah, S.Kom., M.Kom.</td>
+                        <td class="p-4 text-blue-700 font-bold">HADIR</td>
                         <td class="p-4">
-                            <a href="detailtugas.html"
-                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Detail Tugas
-                            </a>
+                            <button 
+                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal" 
+                                onclick="openModal()">Kode
+                            </button>
                         </td>
                     </tr>
                     <tr class="transition">
-                        <td class="p-4"><a href="./detailKelas.html">2</a></td>
-                        <td class="p-4">19 Agustus 2024, 23:59</td>
-                        <td class="p-4">Membuat CV dengan HTML</td>
-                        <td class="p-4 text-green-600 font-bold">SUDAH MENGUMPULKAN</td>
+                        <td class="p-4">2</td>
+                        <td class="p-4">19 Agustus 2024</td>
+                        <td class="p-4">Bintang Nuralamsyah, S.Kom., M.Kom.</td>
+                        <td class="p-4 text-purple-700 font-bold">IZIN</td>
                         <td class="p-4">
-                            <a href="detailtugas.html"
-                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Detail Tugas
-                            </a>
+                            <button 
+                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal" 
+                                onclick="openModal()">Kode
+                            </button>
                         </td>
                     </tr>
                     <tr class="transition">
-                        <td class="p-4"><a href="./detailKelas.html">3</a></td>
-                        <td class="p-4">20 Agustus 2024, 23:59</td>
-                        <td class="p-4">Membuat login page</td>
-                        <td class="p-4 text-green-600 font-bold">SUDAH MENGUMPULKAN</td>
+                        <td class="p-4">3</td>
+                        <td class="p-4">26 Agustus 2024</td>
+                        <td class="p-4">Bintang Nuralamsyah, S.Kom., M.Kom.</td>
+                        <td class="p-4 text-yellow-600 font-bold">SAKIT</td>
                         <td class="p-4">
-                            <a href="detailtugas.html"
-                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Detail Tugas
-                            </a>
+                            <button 
+                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal" 
+                                onclick="openModal()">Kode
+                            </button>
                         </td>
                     </tr>
                     <tr class="transition">
-                        <td class="p-4"><a href="./detailKelas.html">4</a></td>
-                        <td class="p-4">27 Agustus 2024, 23:59</td>
-                        <td class="p-4">Final Project 1</td>
-                        <td class="p-4 text-green-600 font-bold">SUDAH MENGUMPULKAN</td>
+                        <td class="p-4">4</td>
+                        <td class="p-4">2 September 2024</td>
+                        <td class="p-4">Bintang Nuralamsyah, S.Kom., M.Kom.</td>
+                        <td class="p-4 text-blue-700 font-bold">HADIR</td>
                         <td class="p-4">
-                            <a href="detailtugas.html"
-                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Detail Tugas
-                            </a>
+                            <button 
+                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal" 
+                                onclick="openModal()">Kode
+                            </button>
                         </td>
                     </tr>
                     <tr class="transition">
-                        <td class="p-4"><a href="./detailKelas.html">5</a></td>
-                        <td class="p-4">30 Agustus 2024, 23:59</td>
-                        <td class="p-4">Final Project 2</td>
-                        <td class="p-4 text-red-600 font-bold">BELUM MENGUMPULKAN</td>
+                        <td class="p-4">5</td>
+                        <td class="p-4">9 September 2024</td>
+                        <td class="p-4">Bintang Nuralamsyah, S.Kom., M.Kom.</td>
+                        <td class="p-4 text-blue-700 font-bold">HADIR</td>
                         <td class="p-4">
-                            <a href="detailtugas.html"
-                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Detail Tugas
-                            </a>
+                            <button 
+                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal" 
+                                onclick="openModal()">Kode
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="transition">
+                        <td class="p-4">6</td>
+                        <td class="p-4">16 September 2024</td>
+                        <td class="p-4">Bintang Nuralamsyah, S.Kom., M.Kom.</td>
+                        <td class="p-4 text-red-600 font-bold">ALPA</td>
+                        <td class="p-4">
+                            <button 
+                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal" 
+                                onclick="openModal()">Kode
+                            </button>
                         </td>
                     </tr>
                 </tbody>                
             </table>
+        </div>
+        <div id="myModal" class="modal">
+            <form class="modal-content bg-white p-5 border border-gray-300 rounded-lg shadow-lg mx-auto mt-20 w-1/3" action="submit_path" method="POST">
+                <span class="close text-2xl font-bold text-gray-500 cursor-pointer float-right" onclick="closeModal()">&times;</span>
+                <div class="mt-5">
+                    <label for="code" class="block text-sm font-medium text-gray-700">Masukkan 6 Digit Kode Presensi: <span class="text-red-500">*</span></label>
+                    <input type="text" id="code" name="code" required minlength="6" maxlength="6" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                    <p class="mt-4 mb-2 text-sm font-medium text-gray-700">Kehadiran Kuliah <span class="text-red-500">*</span></p>
+                    <div class="flex items-center mb-4">
+                        <input type="radio" id="class" name="attendance" value="class" required class="text-indigo-600 border-gray-300 focus:ring-indigo-500">
+                        <label for="class" class="ml-2 text-sm text-gray-700">Saya hadir kuliah di kelas</label>
+                    </div>
+                    <div class="flex items-center mb-4">
+                        <input type="radio" id="online" name="attendance" value="online" required class="text-indigo-600 border-gray-300 focus:ring-indigo-500">
+                        <label for="online" class="ml-2 text-sm text-gray-700">Saya hadir kuliah secara online</label>
+                    </div>
+                    <button type="submit" class="w-full bg-dark-teal hover:bg-light-teal text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Simpan</button>
+                </div>
+            </form>                       
         </div>
     </div>
     
@@ -360,11 +455,11 @@
         function confirmLogout(event) {
             event.preventDefault(); // Mencegah link untuk navigasi
             const confirmation = confirm("Apakah Anda ingin keluar?");
-            
-            if (confirmation) {
-                window.location.href = '../home/login.html'; 
-            } else {
 
+            if (confirmation) {
+                window.location.href = '../../auth/logout.php';
+            } else {
+                return;
             }
         }
         const hamburger = document.querySelector('.hamburger');

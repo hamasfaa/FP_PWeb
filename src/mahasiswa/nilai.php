@@ -1,3 +1,26 @@
+<?php
+session_start();
+include('../../assets/db/config.php');
+include('../../auth/aksesMahasiswa.php');
+
+$userID = $_SESSION['U_ID'];
+$sql = "SELECT U_Nama, U_Role, U_Foto FROM User WHERE U_ID = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param('i', $userID);
+$stmt->execute();
+$stmt->store_result();
+
+if ($stmt->num_rows > 0) {
+    $stmt->bind_result($name, $role, $photo);
+    $stmt->fetch();
+} else {
+    header('Location: ../home/login.php');
+    exit();
+}
+
+$stmt->close();
+?>
+
 <!DOCTYPE html>
 <html lang="id">
 
@@ -136,36 +159,6 @@
                 opacity: 1; /* Sidebar terlihat */
             }
         }
-
-        /* Style untuk modal (overlay) */
-        .modal {
-            display: none; /* Tersembunyi secara default */
-            position: fixed; /* Tetap di tempat */
-            z-index: 1; /* Berada di atas */
-            left: 0;
-            top: 0;
-            width: 100%; /* Lebar penuh */
-            height: 100%; /* Tinggi penuh */
-            overflow: auto; /* Aktifkan scroll jika diperlukan */
-            background-color: rgba(0,0,0,0.4); /* Hitam dengan opasitas */
-        }
-
-        /* Tombol Tutup */
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .close:hover,
-        .close:focus {
-            color: red;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
         
     </style>
 </head>
@@ -209,7 +202,7 @@
         <div>
             <ul class="flex flex-col space-y-6 px-6 pt-2 pb-6 text-white">
                 <li>
-                    <a href="../peserta/beranda.html"
+                    <a href="../mahasiswa/beranda.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">home</span>
                         <span class="link-text ml-3">Beranda</span>
@@ -217,7 +210,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="../peserta/kelas.html"
+                    <a href="../mahasiswa/kelas.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">school</span>
                         <span class="link-text ml-3">Kelas</span>
@@ -225,7 +218,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="../peserta/nilai.html"
+                    <a href="../mahasiswa/nilai.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">monitoring</span>
                         <span class="link-text ml-3">Penilaian</span>
@@ -233,7 +226,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="../peserta/presensi.html"
+                    <a href="../mahasiswa/presensi.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">overview</span>
                         <span class="link-text ml-3">Presensi</span>
@@ -241,7 +234,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="../pengaturan.html"
+                    <a href="../pengaturan.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">settings</span>
                         <span class="link-text ml-3">Pengaturan</span>
@@ -257,13 +250,12 @@
                 </li>
             </ul>
         </div>
-
         <!-- Profil -->
         <div class="profile-container flex items-center space-x-4 p-6 mt-auto">
-            <img src="../../assets/img/anies.jpg" alt="Foto Profil" class="rounded-xl w-12 h-12">
+            <img src="<?php echo $photo ?>" alt="Foto Profil" class="rounded-xl w-12 h-12">
             <div class="flex flex-col profile-text">
-                <span class="font-bold text-xl text-white">Anies Baswedan</span>
-                <span class="text-white">Mahasiswa</span>
+                <span class="font-bold text-xl text-white"><?php echo htmlspecialchars($name); ?></span>
+                <span class="text-white"><?php echo htmlspecialchars(strtoupper($role)); ?></span>
             </div>
         </div>
     </div>
@@ -271,60 +263,90 @@
     </div>
     <!-- UTAMA -->
     <div class="w-full md:w-5/6 load">
-        <div class="p-6 rounded-lg flex flex-col justify-between">
+        <div class="p-6 rounded-lg shadow-md flex flex-row justify-between">
             <div class="header mb-4">
-                <h1 class="px-4 text-3xl font-bold text-dark-teal uppercase mb-1">Pemrograman Web</h1>
+                <h1 class="px-4 text-3xl font-bold text-dark-teal uppercase mb-2">Penilaian</h1>
+                <p class="px-4 text-xl text-teal-600 italic">Hasil tidak akan mengkhianati usaha</p>
             </div>
-            <div class="mt-8 w-full pl-4">
-                <div class="p-4 bg-gray-100 rounded-lg">
-                    <h2 class="text-4xl text-dark-teal">Final Project 2</h2>
-                    <p class="text-gray-600 text-lg mt-2 mb-2">Buatlah sebuah todolist menggunakan HTML, CSS, dan JavaScript. Silahkan mancari referensi dari google atau lihat materi yang saya upload</p>
-                    <div class="mt-8 mb-8">
-                        <a href="https://drive.google.com/uc?export=download&id=1ooUGlOMmOgWF_ehz23dhXO-boBKxA_Po"
-                            class="relative bg-light-teal text-white text-base px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Download File
-                        </a>
-                    </div>
-                    <div class="mb-6" style="margin-top: 100px;">
-                        <label for="deadline" class="block text-dark-teal font-semibold mb-6 text-2xl">Status:
-                            <span class="text-red-600 font-bold ml-2">BELUM MENGUMPULKAN</span>
-                        </label>
-                        <label for="deadline" class="block text-dark-teal font-semibold mb-2 text-2xl">Deadline:
-                            <span class="text-gray-600 ml-2">30 Agustus 2024, 23:59</span>
-                        </label>
-                    </div>
-                    <div class="mb-6">
-                        <label for="fileUpload" class="block text-dark-teal font-semibold mb-2 text-2xl">Upload File:</label>
-                        <div id="drop-area"
-                            class="bg-white border-dashed border-2 border-teal-400 rounded-lg p-6 text-center w-full flex flex-col items-center justify-center transition duration-300 hover:border-teal-600">
-                            <span class="material-symbols-outlined text-teal-500 mb-2">
-                                file_upload
-                            </span>
-                            <p class="text-teal-600 mb-4">Drag & Drop your files here or click to upload</p>
-                            <input type="file" id="fileUpload" name="fileUpload" class="hidden">
-                        </div>
-                    </div>
-                    <div class="mt-8 mb-8">
-                        <a href="tugas.html"
-                            class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Kumpulkan
-                        </a>
-                    </div>
-                </div>
-            </div>
-            
+            <a href="rekap.html"
+                class="bg-light-teal text-white text-lg px-4 py-2 w-fit h-fit rounded border hover:bg-white hover:border-light-teal hover:text-light-teal">Rekap Nilai
+            </a>
+        </div>
+        <div class="p-6 rounded-lg flex flex-row justify-between">
+            <table class="class-table w-full mt-6 border-collapse">
+                <thead>
+                    <tr class="text-dark-teal">
+                        <th class="border-b p-4 text-left font-medium">Kelas</th>
+                        <th class="border-b p-4 text-left font-medium">Diambil Pada</th>
+                        <th class="border-b p-4 text-left font-medium">Mata Kuliah</th>
+                        <th class="border-b p-4 text-left font-medium">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="transition">
+                        <td class="p-4"><a href="./detailKelas.html">Kelas A</a></td>
+                        <td class="p-4">12 Agustus 2024</td>
+                        <td class="p-4">Pemrograman Web</td>
+                        <td class="p-4">
+                            <a href="lihatnilai.html"
+                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Lihat Nilai
+                            </a>
+                        </td>
+                    </tr>
+                    <tr class="transition">
+                        <td class="p-4">Kelas B</td>
+                        <td class="p-4">13 Agustus 2024</td>
+                        <td class="p-4">Sistem Operasi</td>
+                        <td class="p-4">
+                            <a href="lihatnilai.html"
+                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Lihat Nilai
+                            </a>
+                        </td>
+                    </tr>
+                    <tr class="transition">
+                        <td class="p-4">Kelas D</td>
+                        <td class="p-4">14 Agustus 2024</td>
+                        <td class="p-4">Struktur Data</td>
+                        <td class="p-4">
+                            <a href="lihatnilai.html"
+                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Lihat Nilai
+                            </a>
+                        </td>
+                    </tr>
+                    <tr class="transition">
+                        <td class="p-4">Kelas F</td>
+                        <td class="p-4">10 Agustus 2024</td>
+                        <td class="p-4">Jaringan Komputer</td>
+                        <td class="p-4">
+                            <a href="lihatnilai.html"
+                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Lihat Nilai
+                            </a>
+                        </td>
+                    </tr>
+                    <tr class="transition">
+                        <td class="p-4">Kelas E</td>
+                        <td class="p-4">17 Agustus 2024</td>
+                        <td class="p-4">Teori graf</td>
+                        <td class="p-4">
+                            <a href="lihatnilai.html"
+                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Lihat Nilai
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>                
+            </table>
         </div>
     </div>
-    
-     
-    
+    </div>
     <script>
         function confirmLogout(event) {
             event.preventDefault(); // Mencegah link untuk navigasi
             const confirmation = confirm("Apakah Anda ingin keluar?");
-            
-            if (confirmation) {
-                window.location.href = '../home/login.html'; 
-            } else {
 
+            if (confirmation) {
+                window.location.href = '../../auth/logout.php';
+            } else {
+                return;
             }
         }
         const hamburger = document.querySelector('.hamburger');
@@ -360,24 +382,6 @@
         sidebar.addEventListener('click', function (e) {
             e.stopPropagation();
         });
-
-        // Mendapatkan modal
-        var modal = document.getElementById("myModal");
-
-        // Mendapatkan tombol yang membuka modal
-        var btn = document.querySelector(".open-modal-btn");
-
-        // Fungsi untuk membuka modal
-        function openModal() {
-            modal.style.display = "block";
-        }
-
-        // Fungsi untuk menutup modal
-        function closeModal() {
-            modal.style.display = "none";
-        }
-
-
     </script>
 </body>
 
