@@ -35,7 +35,45 @@ $stmt_header->store_result();
 $stmt_header->bind_result($mataKuliah, $namaKelas);
 $stmt_header->fetch();
 
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $namaTugas = $_POST['newTask'];
+    $deskripsi = $_POST['deskripsi'];
+    $deadline = $_POST['deadline'];
 
+    $targetDir = "/xampp/htdocs/FP/storages/task/";
+    $fileName = basename($_FILES["fileUpload"]["name"]);
+    $uploadOK = 1;
+    $fileType = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+
+    if (file_exists($targetDir . $fileName)) {
+        $error = "File sudah ada";
+        $uploadOK = 0;
+    }
+
+    if ($_FILES["fileUpload"]["size"] > 5000000) {
+        $error = "Ukuran file terlalu besar";
+        $uploadOK = 0;
+    }
+
+    if ($fileType != "pdf" && $fileType != "doc" && $fileType != "docx") {
+        $error = "Hanya file PDF, DOC, dan DOCX yang diperbolehkan";
+        $uploadOK = 0;
+    }
+
+    if ($uploadOK == 1) {
+        if (move_uploaded_file($_FILES["fileUpload"]["tmp_name"], $targetDir . $fileName)) {
+            // $sql = "INSERT INTO Tugas_Dosen (T_Nama, T_Deskripsi, T_Deadline, T_File, K_ID) VALUES (?, ?, ?, ?, ?)";
+            // $stmt = $conn->prepare($sql);
+            // $stmt->bind_param('ssssi', $namaTugas, $deskripsi, $deadline, $fileName, $kelasID);
+            // $stmt->execute();
+            // $stmt->close();
+            // header('Location: tugas.php?ID=' . $kelasID);
+            $task_sql = "INSERT INTO TUGAS_DOSEN(TD_ID,TD_Judul,TD_Deskripsi,TD_Deadline,TD_Status, TD_FileSoal, Kelas_) VALUES (NULL,?,?,?,?,?)";
+        } else {
+            $error = "Terjadi kesalahan saat mengupload file";
+        }
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -297,6 +335,12 @@ $stmt_header->fetch();
                         placeholder="Tambahkan Tugas Baru">
                 </div>
                 <div class="mb-6">
+                    <label for="newTask" class="block text-dark-teal font-semibold mb-2 text-lg">Deskripsi:</label>
+                    <textarea id="deskripsi" name="deskripsi"
+                        class="border border-teal-300 rounded-lg w-full p-4 focus:outline-none focus:border-teal-500 transition duration-300"
+                        placeholder="Tambahkan Deskripsi Tugas Baru" rows="4"></textarea>
+                </div>
+                <div class="mb-6">
                     <label for="deadline" class="block text-dark-teal font-semibold mb-2 text-lg">Deadline:</label>
                     <input type="date" id="deadline" name="deadline"
                         class="border border-teal-300 rounded-lg w-full p-4 focus:outline-none focus:border-teal-500 transition duration-300">
@@ -304,7 +348,7 @@ $stmt_header->fetch();
                 <div class="mb-6">
                     <label for="fileUpload" class="block text-dark-teal font-semibold mb-2 text-lg">Upload File:</label>
                     <div id="drop-area"
-                        class="border-dashed border-2 border-teal-400 rounded-lg p-6 text-center w-full flex flex-col items-center justify-center transition duration-300 hover:border-teal-600">
+                        class="border-dashed border-2 border-teal-400 rounded-lg p-6 text-center w-full flex flex-col items-center justify-center transition duration-300 hover:border-teal-600 cursor-pointer">
                         <span class="material-symbols-outlined text-teal-500 mb-2">
                             file_upload
                         </span>

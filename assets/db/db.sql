@@ -4,7 +4,7 @@
 -- tables
 -- Table: Absen_Dosen
 CREATE TABLE Absen_Dosen (
-    AD_ID int  NOT NULL,
+    AD_ID int  NOT NULL AUTO_INCREMENT,
     AD_TanggalDibuat date  NOT NULL,
     AD_Pertemuan int  NOT NULL,
     AD_Kode char(6)  NOT NULL,
@@ -15,7 +15,7 @@ CREATE TABLE Absen_Dosen (
 
 -- Table: Absen_Mahasiswa
 CREATE TABLE Absen_Mahasiswa (
-    AM_ID int  NOT NULL,
+    AM_ID int  NOT NULL AUTO_INCREMENT,
     AM_Status int  NOT NULL,
     Absen_Dosen_AD_ID int  NOT NULL,
     Kelas_K_ID int  NOT NULL,
@@ -25,7 +25,7 @@ CREATE TABLE Absen_Mahasiswa (
 
 -- Table: Kelas
 CREATE TABLE Kelas (
-    K_ID int  NOT NULL,
+    K_ID int  NOT NULL AUTO_INCREMENT,
     K_MataKuliah varchar(50)  NOT NULL,
     K_NamaKelas varchar(50)  NOT NULL,
     K_TanggalDibuat date  NOT NULL,
@@ -35,7 +35,7 @@ CREATE TABLE Kelas (
 
 -- Table: Tugas_Dosen
 CREATE TABLE Tugas_Dosen (
-    TD_ID int  NOT NULL,
+    TD_ID int  NOT NULL AUTO_INCREMENT,
     TD_Judul varchar(100)  NOT NULL,
     TD_Deskripsi longtext  NOT NULL,
     TD_TanggalDibuat date  NOT NULL,
@@ -49,7 +49,7 @@ CREATE TABLE Tugas_Dosen (
 
 -- Table: Tugas_Mahasiswa
 CREATE TABLE Tugas_Mahasiswa (
-    TM_ID int  NOT NULL,
+    TM_ID int  NOT NULL AUTO_INCREMENT,
     TM_WaktuPengumpulan datetime  NOT NULL,
     TM_Status boolean  NOT NULL,
     TM_FileTugas varchar(255)  NOT NULL,
@@ -62,7 +62,7 @@ CREATE TABLE Tugas_Mahasiswa (
 
 -- Table: User
 CREATE TABLE User (
-    U_ID int  NOT NULL,
+    U_ID int  NOT NULL AUTO_INCREMENT,
     U_Nama varchar(100)  NOT NULL,
     U_Email varchar(100)  NOT NULL,
     U_Password varchar(255)  NOT NULL,
