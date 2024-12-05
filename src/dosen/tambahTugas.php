@@ -444,28 +444,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
         }
 
-        function handleFiles(files) {
-            const fileNameDisplay = document.getElementById('fileName');
-            const fileIcon = document.getElementById('fileIcon');
-            const fileText = document.getElementById('fileText');
-            const uploadIcon = document.getElementById('uploadIcon');
-            const uploadText = document.getElementById('uploadText');
-            const file = files[0];
+        const fileNameDisplay = document.getElementById('fileName');
+        const fileIcon = document.getElementById('fileIcon');
+        const fileText = document.getElementById('fileText');
+        const uploadIcon = document.getElementById('uploadIcon');
+        const uploadText = document.getElementById('uploadText');
+        const file = files[0];
 
-            if (file) {
-                uploadIcon.style.display = 'none';
-                uploadText.style.display = 'none';
+        if (file) {
+            uploadIcon.style.display = 'none';
+            uploadText.style.display = 'none';
 
-                fileIcon.style.display = 'inline';
-                fileText.style.display = 'inline';
-                fileText.textContent = file.name;
-            } else {
-                uploadIcon.style.display = 'inline';
-                uploadText.style.display = 'inline';
+            fileIcon.style.display = 'inline';
+            fileText.style.display = 'inline';
+            fileText.textContent = file.name;
+        } else {
+            uploadIcon.style.display = 'inline';
+            uploadText.style.display = 'inline';
 
-                fileIcon.style.display = 'none';
-                fileText.style.display = 'none';
-            }
+            fileIcon.style.display = 'none';
+            fileText.style.display = 'none';
         }
     </script>
 </body>
