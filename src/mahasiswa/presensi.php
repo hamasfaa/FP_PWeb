@@ -5,6 +5,7 @@ include('../../auth/aksesMahasiswa.php');
 
 $userID = $_SESSION['U_ID'];
 
+// Query untuk mengambil informasi pengguna
 $sqlUser = "SELECT U_Nama, U_Role, U_Foto FROM User WHERE U_ID = ?";
 $stmtUser = $conn->prepare($sqlUser);
 $stmtUser->bind_param('i', $userID);
@@ -21,16 +22,16 @@ if ($stmtUser->num_rows > 0) {
 
 $stmtUser->close();
 $sqlKelas = "SELECT 
-                km.KM_ID,
+                uk.UK_ID,
                 k.K_ID,
                 k.K_NamaKelas,
                 k.K_MataKuliah,
                 k.K_KodeKelas,
                 k.K_TanggalDibuat,
-                km.TanggalAmbil
-             FROM KelasMahasiswa km
-             INNER JOIN Kelas k ON km.Kelas_K_ID = k.K_ID
-             WHERE km.User_U_ID = ?";
+                uk.TanggalAmbil
+             FROM User_Kelas uk
+             INNER JOIN Kelas k ON uk.Kelas_K_ID = k.K_ID
+             WHERE uk.User_U_ID = ?";
 
 $stmtKelas = $conn->prepare($sqlKelas);
 $stmtKelas->bind_param('i', $userID);
@@ -306,16 +307,6 @@ $resultKelas = $stmtKelas->get_result();
                     <?php
                     if ($resultKelas->num_rows > 0) {
                         while ($row = $resultKelas->fetch_assoc()) {
-                            // Jika Anda memiliki informasi jadwal, misalnya K_Jadwal, tambahkan di sini
-                            // Asumsikan ada kolom K_Jadwal di tabel Kelas
-                            // Jika tidak, Anda bisa menghapus atau menggantinya dengan data yang tersedia
-                            // Contoh:
-                            // echo '<td class="p-4">' . htmlspecialchars($row['K_Jadwal']) . '</td>';
-
-                            // Namun berdasarkan skema tabel yang Anda berikan, tidak ada kolom jadwal.
-                            // Jadi, saya akan menggunakan TanggalAmbil sebagai pengganti jadwal.
-                            // Jika Anda memiliki jadwal di tempat lain, silakan sesuaikan.
-
                             echo '<tr class="transition">';
                             echo '<td class="p-4"><a href="./detailKelas.php?kelas_id=' . htmlspecialchars($row['K_ID']) . '">' . htmlspecialchars($row['K_NamaKelas']) . '</a></td>';
                             echo '<td class="p-4">' . htmlspecialchars($row['TanggalAmbil']) . '</td>';

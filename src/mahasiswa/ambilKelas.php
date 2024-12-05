@@ -32,20 +32,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $kelas = $result->fetch_assoc();
         $kelasId = $kelas['K_ID'];
 
-        // Periksa apakah mahasiswa sudah terdaftar di kelas ini
-        $checkQuery = "SELECT * FROM KelasMahasiswa WHERE Kelas_K_ID = ? AND User_U_ID = ?";
+        // Periksa apakah mahasiswa sudah terdaftar di kelas ini (ubah tabel KelasMahasiswa menjadi User_Kelas)
+        $checkQuery = "SELECT * FROM User_Kelas WHERE Kelas_K_ID = ? AND User_U_ID = ?";
         $checkStmt = $conn->prepare($checkQuery);
-        $checkStmt->bind_param("ii", $kelasId, $userID); // Ganti $userId menjadi $userID
+        $checkStmt->bind_param("ii", $kelasId, $userID); // Ganti $userID
         $checkStmt->execute();
         $checkResult = $checkStmt->get_result();
 
         if ($checkResult->num_rows == 0) {
-            // Tambahkan mahasiswa ke kelas
-            $insertQuery = "INSERT INTO KelasMahasiswa (Kelas_K_ID, User_U_ID, TanggalAmbil) VALUES (?, ?, NOW())";
+            // Tambahkan mahasiswa ke kelas (ubah tabel KelasMahasiswa menjadi User_Kelas)
+            $insertQuery = "INSERT INTO User_Kelas (Kelas_K_ID, User_U_ID, TanggalAmbil) VALUES (?, ?, NOW())";
             $insertStmt = $conn->prepare($insertQuery);
-            $insertStmt->bind_param("ii", $kelasId, $userID); // Ganti $userId menjadi $userID
+            $insertStmt->bind_param("ii", $kelasId, $userID); // Ganti $userID
             if ($insertStmt->execute()) {
                 $message = "Berhasil mengambil kelas: " . $kelas['K_NamaKelas'];
+                // Redirect ke kelas.php setelah berhasil mengambil kelas
+                header('Location: kelas.php');
+                exit(); // Pastikan kode berikutnya tidak dieksekusi setelah redirect
             } else {
                 $message = "Gagal mengambil kelas. Silakan coba lagi.";
             }
