@@ -19,10 +19,10 @@ if ($stmt->num_rows > 0) {
     exit();
 }
 
-$query = "SELECT K.K_NamaKelas, K.K_MataKuliah, KM.TanggalAmbil
+$query = "SELECT K.K_NamaKelas, K.K_MataKuliah, UK.TanggalAmbil
           FROM Kelas K
-          JOIN KelasMahasiswa KM ON K.K_ID = KM.Kelas_K_ID
-          WHERE KM.User_U_ID = ?";
+          JOIN User_Kelas UK ON K.K_ID = UK.Kelas_K_ID
+          WHERE UK.User_U_ID = ?";
 $stmt = $conn->prepare($query);
 $stmt->bind_param("i", $userID);
 $stmt->execute();
