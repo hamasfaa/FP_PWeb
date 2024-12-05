@@ -346,7 +346,7 @@ $stmt_dosen->close();
             <div class="header mb-4">
                 <!-- Menampilkan Nama Kelas dari Database -->
                 <h1 class="px-4 text-3xl font-bold text-dark-teal uppercase mb-1">
-                    <?php echo htmlspecialchars($namaKelas); ?>
+                    <?php echo htmlspecialchars($mataKuliah); ?>
                 </h1>
                 
                 <h2 class="px-4 text-2xl text-teal-600 font-bold mb-2">Dosen:</h2>

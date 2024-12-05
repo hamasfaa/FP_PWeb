@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $sql = "INSERT INTO Kelas (K_NamaKelas, K_MataKuliah, K_TanggalDibuat, K_KodeKelas) VALUES (?, ?, NOW(), ?)";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param('sss', $namaKelas, $mataKuliah, $kodeKelas);
-
+        $error = $namaKelas;
         if ($stmt->execute()) {
             $kelasID = $stmt->insert_id;
 
