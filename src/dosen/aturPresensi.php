@@ -245,7 +245,7 @@
     <!-- NAV -->
     <nav class="flex flex-col md:flex-row md:items-center justify-between p-10 text-light-teal w-full">
         <div class="flex items-center justify-between w-full md:w-auto">
-            <a href="../home/login.html" class="font-modak text-4xl text-dark-teal">KelasKu</a>
+            <a href="../home/login.php" class="font-modak text-4xl text-dark-teal">KelasKu</a>
             <!-- Ikon Hamburger untuk Mobile -->
             <div class="md:hidden">
                 <span id="hamburger-mobile" class="material-symbols-outlined text-3xl cursor-pointer">
@@ -342,7 +342,7 @@
                 <h1 class="text-2xl sm:text-3xl font-bold text-dark-teal uppercase mb-2">Presensi Kelas A</h1>
                 <p class="text-lg sm:text-xl text-teal-600 italic">IPA</p>
             </div>
-            <button href="tambahPertemuan.html"
+            <button href="tambahPertemuan.php"
                 class="bg-dark-teal text-white text-lg px-4 py-2 h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal transition duration-300"
                 onclick="openModal()">Tambah
                 Pertemuan</button>
@@ -359,7 +359,7 @@
                     </thead>
                     <tbody>
                         <tr class="transition duration-300 hover:bg-teal-50">
-                            <td class="p-4"><a href="./detailPresensi.html">1</a></td>
+                            <td class="p-4"><a href="./detailPresensi.php">1</a></td>
                             <td class="p-4">HTML</td>
                             <td class="p-4">12 Agustus 2024</td>
                         </tr>

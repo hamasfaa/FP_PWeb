@@ -150,7 +150,7 @@
     <!-- NAV -->
     <nav class="flex flex-col md:flex-row md:items-center justify-between p-10 text-light-teal w-full">
         <div class="flex items-center justify-between w-full md:w-auto">
-            <a href="../home/login.html" class="font-modak text-4xl text-dark-teal">KelasKu</a>
+            <a href="../home/login.php" class="font-modak text-4xl text-dark-teal">KelasKu</a>
             <!-- Ikon Hamburger untuk Mobile -->
             <div class="md:hidden">
                 <span id="hamburger-mobile" class="material-symbols-outlined text-3xl cursor-pointer">
@@ -256,7 +256,7 @@
             const confirmation = confirm("Apakah Anda ingin keluar?");
 
             if (confirmation) {
-                window.location.href = '../src/home/login.html';
+                window.location.href = '../src/home/login.php';
             } else {
 
             }
@@ -267,7 +267,7 @@
         const closeSidebarMobile = document.getElementById('closeSidebar-mobile');
 
         // Fungsi untuk meng-toggle sidebar pada desktop (collapse)
-        hamburger.addEventListener('click', function () {
+        hamburger.addEventListener('click', function() {
             sidebar.classList.toggle('sidebar-collapsed');
         });
 
@@ -282,7 +282,7 @@
         closeSidebarMobile.addEventListener('click', toggleSidebar);
 
         // Menutup sidebar saat mengklik di luar sidebar pada mobile
-        document.addEventListener('click', function (event) {
+        document.addEventListener('click', function(event) {
             if (window.innerWidth <= 768) { // Hanya berlaku pada mobile
                 if (!sidebar.contains(event.target) && !hamburgerMobile.contains(event.target) && !closeSidebarMobile.contains(event.target)) {
                     sidebar.classList.remove('active');
@@ -291,7 +291,7 @@
         });
 
         // Mencegah penutupan sidebar saat mengklik di dalam sidebar
-        sidebar.addEventListener('click', function (e) {
+        sidebar.addEventListener('click', function(e) {
             e.stopPropagation();
         });
     </script>

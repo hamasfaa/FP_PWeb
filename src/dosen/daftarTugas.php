@@ -40,9 +40,61 @@ $tugas_stmt = $conn->prepare($tugas_sql);
 $tugas_stmt->bind_param('ii', $kelasID, $userID);
 $tugas_stmt->execute();
 $tugas_stmt->store_result();
-$tugas_stmt->bind_result($tugasID, $judul, $deskripsi, $tanggalDibuat, $deadline, $status, $fileSoal);
 
-echo $tugasID . $judul . $deskripsi . $tanggalDibuat . $deadline . $status . $fileSoal;
+if ($tugas_stmt->num_rows > 0) {
+    $tugas_stmt->bind_result($tugasID, $judul, $deskripsi, $tanggalDibuat, $deadline, $status, $fileSoal);
+} else {
+    $tugasID = $judul = $deskripsi = $tanggalDibuat = $deadline = $status = $fileSoal = '';
+}
+
+// echo $tugasID . $judul . $deskripsi . $tanggalDibuat . $deadline . $status . $fileSoal;
+if (isset($_POST['tugasID']) && isset($_POST['action'])) {
+
+    if ($_POST['action'] == 'update') {
+        $tugasID = $_POST['tugasID'];
+        $status = $_POST['status'];
+        $update_sql = "UPDATE Tugas_Dosen SET TD_Status = ? WHERE TD_ID = ?";
+        $update_stmt = $conn->prepare($update_sql);
+        $update_stmt->bind_param('ii', $status, $tugasID);
+        if ($update_stmt->execute()) {
+            header('Location: daftarTugas.php?ID=' . $kelasID);
+        } else {
+            $error = 'Gagal mengubah status tugas';
+        }
+    } else if ($_POST['action'] == 'delete') {
+        $tugasID = $_POST['tugasID'];
+
+        $file_sql = "SELECT TD_FileSoal FROM Tugas_Dosen WHERE TD_ID = ?";
+        $file_stmt = $conn->prepare($file_sql);
+        $file_stmt->bind_param('i', $tugasID);
+        $file_stmt->execute();
+        $file_stmt->store_result();
+        $file_stmt->bind_result($fileSoal);
+        $file_stmt->fetch();
+
+        $targetDir = "/xampp/htdocs/FP/storage/task/";
+
+        if ($fileSoal && file_exists($targetDir . $fileSoal)) {
+            if (unlink($targetDir . $fileSoal)) {
+                echo "File berhasil dihapus dari lokal.";
+            } else {
+                echo "Gagal menghapus file.";
+            }
+        } else {
+            echo "File tidak ditemukan.";
+        }
+
+        $delete_sql = "DELETE FROM Tugas_Dosen WHERE TD_ID = ?";
+        $delete_stmt = $conn->prepare($delete_sql);
+        $delete_stmt->bind_param('i', $tugasID);
+        if ($delete_stmt->execute()) {
+            header('Location: daftarTugas.php?ID=' . $kelasID);
+        } else {
+            $error = 'Gagal menghapus tugas';
+        }
+    }
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -197,7 +249,7 @@ echo $tugasID . $judul . $deskripsi . $tanggalDibuat . $deadline . $status . $fi
     <!-- NAV -->
     <nav class="flex flex-col md:flex-row md:items-center justify-between p-10 text-light-teal w-full">
         <div class="flex items-center justify-between w-full md:w-auto">
-            <a href="../home/login.html" class="font-modak text-4xl text-dark-teal">KelasKu</a>
+            <a href="../home/login.php" class="font-modak text-4xl text-dark-teal">KelasKu</a>
             <!-- Ikon Hamburger untuk Mobile -->
             <div class="md:hidden">
                 <span id="hamburger-mobile" class="material-symbols-outlined text-3xl cursor-pointer">
@@ -311,51 +363,39 @@ echo $tugasID . $judul . $deskripsi . $tanggalDibuat . $deadline . $status . $fi
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="transition duration-300 hover:bg-teal-50">
-                            <td class="p-4">Buat HTML</td>
-                            <td class="p-4">12 Agustus 2024</td>
-                            <td class="p-4">12 Agustus 2024</td>
-                            <td class="p-4">SOAL.PDF</td>
-                            <td class="p-4">
-                                <a href="./beriNilai.html"
-                                    class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Beri
-                                    Nilai</a>
-                                <button
-                                    class="relative bg-yellow-700 text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-yellow-500 hover:text-yellow-500">Sembunyikan</button>
-                                <button
-                                    class="relative bg-red-700 text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-red-500 hover:text-red-500 cursor-pointer">Hapus</button>
-                            </td>
-                        </tr>
-                        <tr class="transition duration-300 hover:bg-teal-50">
-                            <td class="p-4">Buat CSS</td>
-                            <td class="p-4">12 Agustus 2024</td>
-                            <td class="p-4">12 Agustus 2024</td>
-                            <td class="p-4">SOAL.PDF</td>
-                            <td class="p-4">
-                                <a href="./beriNilai.html"
-                                    class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Beri
-                                    Nilai</a>
-                                <button
-                                    class="relative bg-yellow-700 text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-yellow-500 hover:text-yellow-500">Sembunyikan</button>
-                                <button
-                                    class="relative bg-red-700 text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-red-500 hover:text-red-500 cursor-pointer">Hapus</button>
-                            </td>
-                        </tr>
-                        <tr class="transition duration-300 hover:bg-teal-50">
-                            <td class="p-4">Buat JS</td>
-                            <td class="p-4">12 Agustus 2024</td>
-                            <td class="p-4">12 Agustus 2024</td>
-                            <td class="p-4">-</td>
-                            <td class="p-4">
-                                <a href="./beriNilai.html"
-                                    class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Beri
-                                    Nilai</a>
-                                <button
-                                    class="relative bg-yellow-700 text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-yellow-500 hover:text-yellow-500">Sembunyikan</button>
-                                <button
-                                    class="relative bg-red-700 text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-red-500 hover:text-red-500 cursor-pointer">Hapus</button>
-                            </td>
-                        </tr>
+                        <?php while ($tugas_stmt->fetch()): ?>
+                            <tr class="transition duration-300 hover:bg-teal-50">
+                                <td class="p-4"><?php echo htmlspecialchars($judul); ?></td>
+                                <td class="p-4"><?php echo date('d F Y', strtotime($tanggalDibuat)); ?></td>
+                                <td class="p-4"><?php echo date('d F Y', strtotime($deadline)); ?></td>
+                                <td class="p-4"><?php if ($fileSoal): ?>
+                                        <a href="/FP/storage/task/<?php echo htmlspecialchars($fileSoal); ?>" target="_blank" class="text-blue-600 hover:underline">
+                                            <?php echo htmlspecialchars($fileSoal); ?>
+                                        </a>
+                                    <?php else: ?>
+                                        Tidak ada file
+                                    <?php endif; ?>
+                                </td>
+                                <td class="p-4 flex">
+                                    <a href="./beriNilai.php"
+                                        class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Beri
+                                        Nilai</a>
+                                    <form action="" method="POST">
+                                        <input type="hidden" name="tugasID" value="<?php echo htmlspecialchars($tugasID) ?>">
+                                        <input type="hidden" name="status" value="<?php echo ($status == 0) ? 1 : 0 ?>">
+                                        <input type="hidden" name="action" value="update">
+                                        <button
+                                            class="relative bg-yellow-700 text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-yellow-500 hover:text-yellow-500"><?php echo ($status == 0) ? 'Tampilkan' : 'Sembunyikan' ?></button>
+                                    </form>
+                                    <form action="" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus tugas ini?');">
+                                        <input type="hidden" name="tugasID" value="<?php echo htmlspecialchars($tugasID) ?>">
+                                        <input type="hidden" name="action" value="delete">
+                                        <button
+                                            class="relative bg-red-700 text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-red-500 hover:text-red-500 cursor-pointer">Hapus</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <?php endwhile; ?>
                     </tbody>
                 </table>
             </div>

@@ -150,7 +150,7 @@
     <!-- NAV -->
     <nav class="flex flex-col md:flex-row md:items-center justify-between p-10 text-light-teal w-full">
         <div class="flex items-center justify-between w-full md:w-auto">
-            <a href="../home/login.html" class="font-modak text-4xl text-dark-teal">KelasKu</a>
+            <a href="../home/login.php" class="font-modak text-4xl text-dark-teal">KelasKu</a>
             <!-- Ikon Hamburger untuk Mobile -->
             <div class="md:hidden">
                 <span id="hamburger-mobile" class="material-symbols-outlined text-3xl cursor-pointer">
@@ -266,7 +266,7 @@
                             <td class="p-4">12 Agustus 2021</td>
                             <td class="p-4">IPA</td>
                             <td class="p-4">
-                                <a href="./aturPresensi.html"
+                                <a href="./aturPresensi.php"
                                     class="relative bg-dark-teal text-white text-sm sm:text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Atur
                                     Presensi</a>
                             </td>
@@ -276,7 +276,7 @@
                             <td class="p-4">13 Agustus 2021</td>
                             <td class="p-4">IPS</td>
                             <td class="p-4">
-                                <a href="./aturPresensi.html"
+                                <a href="./aturPresensi.php"
                                     class="relative bg-dark-teal text-white text-sm sm:text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Atur
                                     Presensi</a>
                             </td>
@@ -286,7 +286,7 @@
                             <td class="p-4">14 Agustus 2021</td>
                             <td class="p-4">IPA</td>
                             <td class="p-4">
-                                <a href="./aturPresensi.html"
+                                <a href="./aturPresensi.php"
                                     class="relative bg-dark-teal text-white text-sm sm:text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Atur
                                     Presensi</a>
                             </td>

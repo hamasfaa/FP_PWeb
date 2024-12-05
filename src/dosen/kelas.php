@@ -33,7 +33,7 @@ if ($class_stmt->num_rows > 0) {
     $namaKelas = $tanggalDibuat = $mataKuliah = $kodeKelas = '';
 }
 
-if (isset($_POST['kelasDEL']) && !empty($_POST['kelasDEL'])) {
+if (isset($_POST['kelasDEL'])) {
     $kelasKode = $_POST['kelasDEL'];
     // $error = $kelasID;
 

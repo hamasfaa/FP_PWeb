@@ -106,15 +106,18 @@ $stmt->close();
             white-space: nowrap;
             z-index: 1000;
         }
+
         .sidebar-collapsed .menu-item:hover .tooltip {
             opacity: 1;
         }
-        
+
         /* Sidebar tersembunyi pada mobile */
         @media (max-width: 768px) {
             #sidebar {
-                transform: translateX(100%); /* Sembunyikan sidebar di luar layar kanan */
-                width: 50%; /* Lebar sidebar pada mobile, sesuaikan jika diperlukan */
+                transform: translateX(100%);
+                /* Sembunyikan sidebar di luar layar kanan */
+                width: 50%;
+                /* Lebar sidebar pada mobile, sesuaikan jika diperlukan */
             }
 
             /* Sidebar terlihat saat memiliki kelas 'active' */
@@ -142,35 +145,46 @@ $stmt->close();
 
         /* Sidebar terlihat pada desktop */
         @media (min-width: 769px) {
+
             #hamburger-mobile,
             #closeSidebar-mobile {
                 display: none;
             }
         }
+
         /* Tambahkan animasi buka tutup untuk sidebar di mode mobile */
         @media (max-width: 768px) {
             #sidebar {
                 transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
-                opacity: 0; /* Sidebar tersembunyi secara default */
+                opacity: 0;
+                /* Sidebar tersembunyi secara default */
             }
 
             /* Sidebar terlihat saat memiliki kelas 'active' */
             #sidebar.active {
-                opacity: 1; /* Sidebar terlihat */
+                opacity: 1;
+                /* Sidebar terlihat */
             }
         }
 
         /* Style untuk modal (overlay) */
         .modal {
-            display: none; /* Tersembunyi secara default */
-            position: fixed; /* Tetap di tempat */
-            z-index: 1; /* Berada di atas */
+            display: none;
+            /* Tersembunyi secara default */
+            position: fixed;
+            /* Tetap di tempat */
+            z-index: 1;
+            /* Berada di atas */
             left: 0;
             top: 0;
-            width: 100%; /* Lebar penuh */
-            height: 100%; /* Tinggi penuh */
-            overflow: auto; /* Aktifkan scroll jika diperlukan */
-            background-color: rgba(0,0,0,0.4); /* Hitam dengan opasitas */
+            width: 100%;
+            /* Lebar penuh */
+            height: 100%;
+            /* Tinggi penuh */
+            overflow: auto;
+            /* Aktifkan scroll jika diperlukan */
+            background-color: rgba(0, 0, 0, 0.4);
+            /* Hitam dengan opasitas */
         }
 
         /* Tombol Tutup */
@@ -188,8 +202,6 @@ $stmt->close();
             text-decoration: none;
             cursor: pointer;
         }
-
-        
     </style>
 </head>
 
@@ -197,7 +209,7 @@ $stmt->close();
     <!-- NAV -->
     <nav class="flex flex-col md:flex-row md:items-center justify-between p-10 text-light-teal w-full">
         <div class="flex items-center justify-between w-full md:w-auto">
-            <a href="../home/login.html" class="font-modak text-4xl text-dark-teal">KelasKu</a>
+            <a href="../home/login.php" class="font-modak text-4xl text-dark-teal">KelasKu</a>
             <!-- Ikon Hamburger untuk Mobile -->
             <div class="md:hidden">
                 <span id="hamburger-mobile" class="material-symbols-outlined text-3xl cursor-pointer">
@@ -216,7 +228,7 @@ $stmt->close();
     </nav>
     <!-- SIDEBAR -->
     <div id="sidebar"
-    class="fixed top-0 right-0 h-full md:w-1/6 bg-dark-teal transform translate-x-full md:translate-x-0 transition-transform duration-300 z-50 bg-opacity-90 shadow-lg flex flex-col">
+        class="fixed top-0 right-0 h-full md:w-1/6 bg-dark-teal transform translate-x-full md:translate-x-0 transition-transform duration-300 z-50 bg-opacity-90 shadow-lg flex flex-col">
 
         <!-- Ikon Hamburger untuk Mobile (Berfungsi Sebagai Tombol Close) -->
         <div class="text-white px-6 py-2 cursor-pointer flex md:hidden">
@@ -326,18 +338,18 @@ $stmt->close();
                         </div>
                     </div>
                     <div class="mt-8 mb-8">
-                        <a href="tugas.html"
+                        <a href="tugas.php"
                             class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Kumpulkan
                         </a>
                     </div>
                 </div>
             </div>
-            
+
         </div>
     </div>
-    
-     
-    
+
+
+
     <script>
         function confirmLogout(event) {
             event.preventDefault(); // Mencegah link untuk navigasi
@@ -355,7 +367,7 @@ $stmt->close();
         const closeSidebarMobile = document.getElementById('closeSidebar-mobile');
 
         // Fungsi untuk meng-toggle sidebar pada desktop (collapse)
-        hamburger.addEventListener('click', function () {
+        hamburger.addEventListener('click', function() {
             sidebar.classList.toggle('sidebar-collapsed');
         });
 
@@ -370,7 +382,7 @@ $stmt->close();
         closeSidebarMobile.addEventListener('click', toggleSidebar);
 
         // Menutup sidebar saat mengklik di luar sidebar pada mobile
-        document.addEventListener('click', function (event) {
+        document.addEventListener('click', function(event) {
             if (window.innerWidth <= 768) { // Hanya berlaku pada mobile
                 if (!sidebar.contains(event.target) && !hamburgerMobile.contains(event.target) && !closeSidebarMobile.contains(event.target)) {
                     sidebar.classList.remove('active');
@@ -379,7 +391,7 @@ $stmt->close();
         });
 
         // Mencegah penutupan sidebar saat mengklik di dalam sidebar
-        sidebar.addEventListener('click', function (e) {
+        sidebar.addEventListener('click', function(e) {
             e.stopPropagation();
         });
 
@@ -398,8 +410,6 @@ $stmt->close();
         function closeModal() {
             modal.style.display = "none";
         }
-
-
     </script>
 </body>
 

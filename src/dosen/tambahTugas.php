@@ -42,46 +42,52 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $targetDir = "/xampp/htdocs/FP/storage/task/";
     $status = 1;
-    $fileName = basename($_FILES["fileUpload"]["name"]);
+    $fileName = '';
     $uploadOK = 1;
-    $fileType = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
 
-    if (file_exists($targetDir . $fileName)) {
-        $error = "File sudah ada";
-        $uploadOK = 0;
-    }
+    if (isset($_FILES["fileUpload"]) && $_FILES["fileUpload"]["error"] == 0) {
+        $fileName = basename($_FILES["fileUpload"]["name"]);
+        $fileType = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
 
-    if ($_FILES["fileUpload"]["size"] > 5000000) {
-        $error = "Ukuran file terlalu besar";
-        $uploadOK = 0;
-    }
+        if (file_exists($targetDir . $fileName)) {
+            $error = "File sudah ada";
+            $uploadOK = 0;
+        }
 
-    if ($fileType != "pdf" && $fileType != "doc" && $fileType != "docx") {
-        $error = "Hanya file PDF, DOC, dan DOCX yang diperbolehkan";
-        $uploadOK = 0;
-    }
+        if ($_FILES["fileUpload"]["size"] > 5000000) {
+            $error = "Ukuran file terlalu besar";
+            $uploadOK = 0;
+        }
 
-    if ($uploadOK == 1) {
-        if (move_uploaded_file($_FILES["fileUpload"]["tmp_name"], $targetDir . $fileName)) {
-            $task_sql = "INSERT INTO TUGAS_DOSEN(TD_Judul,TD_Deskripsi,TD_Deadline,TD_Status, TD_FileSoal, Kelas_K_ID, User_U_ID, TD_TanggalDibuat) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())";
-            $stmt_task = $conn->prepare($task_sql);
-            $stmt_task->bind_param('sssisii', $namaTugas, $deskripsi, $deadline, $status, $fileName, $kelasID, $userID);
-            // $stmt_task->execute();
-            if ($stmt_task->execute()) {
-                // $stmt_task->close();
-                header('Location: tugas.php?ID=' . $kelasID);
-            } else {
+        if ($fileType != "pdf" && $fileType != "doc" && $fileType != "docx") {
+            $error = "Hanya file PDF, DOC, dan DOCX yang diperbolehkan";
+            $uploadOK = 0;
+        }
+
+        if ($uploadOK == 1) {
+            if (!move_uploaded_file($_FILES["fileUpload"]["tmp_name"], $targetDir . $fileName)) {
                 $error = "Terjadi kesalahan saat mengupload file";
-                // $error = $targetDir . $fileName;
+                $uploadOK = 0;
             }
-            $stmt_task->close();
-            header('Location: tugas.php?ID=' . $kelasID);
-        } else {
-            $error = "Terjadi kesalahan saat mengupload file";
-            // $error = $targetDir . $fileName;
         }
     }
+
+    if ($uploadOK == 1 || $fileName == '') {
+        $task_sql = "INSERT INTO TUGAS_DOSEN(TD_Judul, TD_Deskripsi, TD_Deadline, TD_Status, TD_FileSoal, Kelas_K_ID, User_U_ID, TD_TanggalDibuat) 
+                     VALUES (?, ?, ?, ?, ?, ?, ?, NOW())";
+        $stmt_task = $conn->prepare($task_sql);
+        $stmt_task->bind_param('sssisii', $namaTugas, $deskripsi, $deadline, $status, $fileName, $kelasID, $userID);
+
+        if ($stmt_task->execute()) {
+            header('Location: tugas.php?ID=' . $kelasID);
+        } else {
+            $error = "Terjadi kesalahan saat menyimpan data tugas";
+        }
+
+        $stmt_task->close();
+    }
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -236,7 +242,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <!-- NAV -->
     <nav class="flex flex-col md:flex-row md:items-center justify-between p-10 text-light-teal w-full">
         <div class="flex items-center justify-between w-full md:w-auto">
-            <a href="../home/login.html" class="font-modak text-4xl text-dark-teal">KelasKu</a>
+            <a href="../home/login.php" class="font-modak text-4xl text-dark-teal">KelasKu</a>
             <!-- Ikon Hamburger untuk Mobile -->
             <div class="md:hidden">
                 <span id="hamburger-mobile" class="material-symbols-outlined text-3xl cursor-pointer">
@@ -444,26 +450,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
         }
 
-        const fileNameDisplay = document.getElementById('fileName');
-        const fileIcon = document.getElementById('fileIcon');
-        const fileText = document.getElementById('fileText');
-        const uploadIcon = document.getElementById('uploadIcon');
-        const uploadText = document.getElementById('uploadText');
-        const file = files[0];
+        function handleFiles(files) {
+            const fileNameDisplay = document.getElementById('fileName');
+            const fileIcon = document.getElementById('fileIcon');
+            const fileText = document.getElementById('fileText');
+            const uploadIcon = document.getElementById('uploadIcon');
+            const uploadText = document.getElementById('uploadText');
+            const file = files[0];
 
-        if (file) {
-            uploadIcon.style.display = 'none';
-            uploadText.style.display = 'none';
+            if (file) {
+                uploadIcon.style.display = 'none';
+                uploadText.style.display = 'none';
 
-            fileIcon.style.display = 'inline';
-            fileText.style.display = 'inline';
-            fileText.textContent = file.name;
-        } else {
-            uploadIcon.style.display = 'inline';
-            uploadText.style.display = 'inline';
+                fileIcon.style.display = 'inline';
+                fileText.style.display = 'inline';
+                fileText.textContent = file.name;
+            } else {
+                uploadIcon.style.display = 'inline';
+                uploadText.style.display = 'inline';
 
-            fileIcon.style.display = 'none';
-            fileText.style.display = 'none';
+                fileIcon.style.display = 'none';
+                fileText.style.display = 'none';
+            }
         }
     </script>
 </body>
