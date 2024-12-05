@@ -76,20 +76,13 @@ CREATE TABLE User (
 
 -- Table: User_Kelas
 CREATE TABLE User_Kelas (
-    User_U_ID int  NOT NULL,
-    Kelas_K_ID int  NOT NULL,
-    CONSTRAINT User_Kelas_pk PRIMARY KEY (User_U_ID,Kelas_K_ID)
-);
-
--- Table: KelasMahasiswa
-CREATE TABLE KelasMahasiswa (
-    KM_ID int NOT NULL AUTO_INCREMENT,          -- ID utama untuk relasi
+    UK_ID int NOT NULL AUTO_INCREMENT,          -- ID utama untuk relasi
     Kelas_K_ID int NOT NULL,                    -- Kelas yang diambil oleh mahasiswa
     User_U_ID int NOT NULL,                     -- Mahasiswa yang mengambil kelas
     TanggalAmbil date NOT NULL,                 -- Tanggal kelas diambil oleh mahasiswa
-    CONSTRAINT KelasMahasiswa_pk PRIMARY KEY (KM_ID),
-    CONSTRAINT FK_Kelas_KelasMahasiswa FOREIGN KEY (Kelas_K_ID) REFERENCES Kelas (K_ID) ON DELETE CASCADE,
-    CONSTRAINT FK_User_KelasMahasiswa FOREIGN KEY (User_U_ID) REFERENCES User (U_ID) ON DELETE CASCADE
+    CONSTRAINT User_Kelas_pk PRIMARY KEY (UK_ID),
+    CONSTRAINT FK_Kelas_User_Kelas FOREIGN KEY (Kelas_K_ID) REFERENCES Kelas (K_ID) ON DELETE CASCADE,
+    CONSTRAINT FK_User_User_Kelas FOREIGN KEY (User_U_ID) REFERENCES User (U_ID) ON DELETE CASCADE
 );
 
 -- foreign keys
@@ -133,13 +126,6 @@ ALTER TABLE Tugas_Mahasiswa ADD CONSTRAINT Tugas_Mahasiswa_Kelas FOREIGN KEY Tug
 ALTER TABLE Tugas_Mahasiswa ADD CONSTRAINT Tugas_Mahasiswa_User FOREIGN KEY Tugas_Mahasiswa_User (User_U_ID)
     REFERENCES User (U_ID);
 
--- Reference: User_Kelas_Kelas (table: User_Kelas)
-ALTER TABLE User_Kelas ADD CONSTRAINT User_Kelas_Kelas FOREIGN KEY User_Kelas_Kelas (Kelas_K_ID)
-    REFERENCES Kelas (K_ID);
-
--- Reference: User_Kelas_User (table: User_Kelas)
-ALTER TABLE User_Kelas ADD CONSTRAINT User_Kelas_User FOREIGN KEY User_Kelas_User (User_U_ID)
-    REFERENCES User (U_ID);
 
 -- End of file.
 
