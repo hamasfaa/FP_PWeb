@@ -40,7 +40,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $deskripsi = $_POST['deskripsi'];
     $deadline = $_POST['deadline'];
 
-    $targetDir = "/xampp/htdocs/FP/storages/task/";
+    $targetDir = "/xampp/htdocs/FP/storage/task/";
+    $status = 1;
     $fileName = basename($_FILES["fileUpload"]["name"]);
     $uploadOK = 1;
     $fileType = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
@@ -62,15 +63,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($uploadOK == 1) {
         if (move_uploaded_file($_FILES["fileUpload"]["tmp_name"], $targetDir . $fileName)) {
-            // $sql = "INSERT INTO Tugas_Dosen (T_Nama, T_Deskripsi, T_Deadline, T_File, K_ID) VALUES (?, ?, ?, ?, ?)";
-            // $stmt = $conn->prepare($sql);
-            // $stmt->bind_param('ssssi', $namaTugas, $deskripsi, $deadline, $fileName, $kelasID);
-            // $stmt->execute();
-            // $stmt->close();
-            // header('Location: tugas.php?ID=' . $kelasID);
-            $task_sql = "INSERT INTO TUGAS_DOSEN(TD_ID,TD_Judul,TD_Deskripsi,TD_Deadline,TD_Status, TD_FileSoal, Kelas_) VALUES (NULL,?,?,?,?,?)";
+            $task_sql = "INSERT INTO TUGAS_DOSEN(TD_Judul,TD_Deskripsi,TD_Deadline,TD_Status, TD_FileSoal, Kelas_K_ID, User_U_ID, TD_TanggalDibuat) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())";
+            $stmt_task = $conn->prepare($task_sql);
+            $stmt_task->bind_param('sssisii', $namaTugas, $deskripsi, $deadline, $status, $fileName, $kelasID, $userID);
+            // $stmt_task->execute();
+            if ($stmt_task->execute()) {
+                // $stmt_task->close();
+                header('Location: tugas.php?ID=' . $kelasID);
+            } else {
+                $error = "Terjadi kesalahan saat mengupload file";
+                // $error = $targetDir . $fileName;
+            }
+            $stmt_task->close();
+            header('Location: tugas.php?ID=' . $kelasID);
         } else {
             $error = "Terjadi kesalahan saat mengupload file";
+            // $error = $targetDir . $fileName;
         }
     }
 }
@@ -349,11 +357,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <label for="fileUpload" class="block text-dark-teal font-semibold mb-2 text-lg">Upload File:</label>
                     <div id="drop-area"
                         class="border-dashed border-2 border-teal-400 rounded-lg p-6 text-center w-full flex flex-col items-center justify-center transition duration-300 hover:border-teal-600 cursor-pointer">
-                        <span class="material-symbols-outlined text-teal-500 mb-2">
+                        <span id="uploadIcon" class="material-symbols-outlined text-teal-500 mb-2">
                             file_upload
                         </span>
-                        <p class="text-teal-600 mb-4">Drag & Drop your files here or click to upload</p>
-                        <input type="file" id="fileElem" multiple accept="*/*" class="hidden" onchange="handleFiles(this.files)">
+                        <p id="uploadText" class="text-teal-600 mb-4">Drag & Drop your files here or click to upload</p>
+                        <input type="file" id="fileElem" name="fileUpload" multiple accept="*/*" class="hidden" onchange="handleFiles(this.files)">
+                        <div id="fileName" class="flex items-center mt-4 text-teal-600">
+                            <span id="fileIcon" class="material-symbols-outlined text-teal-500 mr-2" style="display:none;">insert_drive_file</span>
+                            <span id="fileText" style="display:none;">No file chosen</span>
+                        </div>
                     </div>
                 </div>
                 <div class="flex items-center justify-between">
@@ -429,6 +441,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 window.location.href = '../../auth/logout.php';
             } else {
                 return;
+            }
+        }
+
+        function handleFiles(files) {
+            const fileNameDisplay = document.getElementById('fileName');
+            const fileIcon = document.getElementById('fileIcon');
+            const fileText = document.getElementById('fileText');
+            const uploadIcon = document.getElementById('uploadIcon');
+            const uploadText = document.getElementById('uploadText');
+            const file = files[0];
+
+            if (file) {
+                uploadIcon.style.display = 'none';
+                uploadText.style.display = 'none';
+
+                fileIcon.style.display = 'inline';
+                fileText.style.display = 'inline';
+                fileText.textContent = file.name;
+            } else {
+                uploadIcon.style.display = 'inline';
+                uploadText.style.display = 'inline';
+
+                fileIcon.style.display = 'none';
+                fileText.style.display = 'none';
             }
         }
     </script>
