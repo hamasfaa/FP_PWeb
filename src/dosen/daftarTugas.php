@@ -34,6 +34,7 @@ $stmt_header->execute();
 $stmt_header->store_result();
 $stmt_header->bind_result($mataKuliah, $namaKelas);
 $stmt_header->fetch();
+$stmt_header->close();
 
 $tugas_sql = "SELECT TD_ID, TD_Judul, TD_Deskripsi, TD_TanggalDibuat, TD_Deadline, TD_Status, TD_FileSoal FROM Tugas_Dosen WHERE Kelas_K_ID = ? AND USER_U_ID = ?";
 $tugas_stmt = $conn->prepare($tugas_sql);

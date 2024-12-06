@@ -1,3 +1,82 @@
+<?php
+session_start();
+include('../../assets/db/config.php');
+include('../../auth/aksesDosen.php');
+
+$userID = $_SESSION['U_ID'];
+$sql = "SELECT U_Nama, U_Role, U_Foto FROM User WHERE U_ID = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param('i', $userID);
+$stmt->execute();
+$stmt->store_result();
+
+$error = '';
+
+if ($stmt->num_rows > 0) {
+    $stmt->bind_result($name, $role, $photo);
+    $stmt->fetch();
+} else {
+    header('Location: ../home/login.php');
+    exit();
+}
+
+if (isset($_GET['ID'])) {
+    $kelasID = $_GET['ID'];
+    $kelasID = htmlspecialchars($kelasID);
+} else {
+    $error = 'Kelas tidak ditemukan';
+}
+
+$header_sql = "SELECT K_MataKuliah, K_NamaKelas FROM Kelas WHERE K_ID = ?";
+$stmt_header = $conn->prepare($header_sql);
+$stmt_header->bind_param('i', $kelasID);
+$stmt_header->execute();
+$stmt_header->store_result();
+$stmt_header->bind_result($mataKuliah, $namaKelas);
+$stmt_header->fetch();
+$stmt_header->close();
+
+$absen_sql = "SELECT AD_ID, AD_Pertemuan, AD_Deskripsi, AD_TanggalDibuat, AD_Kode FROM Absen_Dosen WHERE Kelas_K_ID = ? AND USER_U_ID = ?";
+$stmt_absen = $conn->prepare($absen_sql);
+$stmt_absen->bind_param('ii', $kelasID, $userID);
+$stmt_absen->execute();
+$stmt_absen->store_result();
+
+if ($stmt_absen->num_rows > 0) {
+    $stmt_absen->bind_result($absenID,  $pertemuan, $deskripsi, $tanggalDibuat, $kodeAbsen);
+} else {
+    $absenID = $deskripsi = $pertemuan = $tanggalDibuat = $kodeAbsen = '';
+}
+
+function generateKodeAbsen()
+{
+    $kode = str_pad(mt_rand(0, 999999), 6, '0', STR_PAD_LEFT);
+    return $kode;
+}
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $meetingNumber = $_POST['meetingNumber'];
+    $description = $_POST['description'];
+    $date = $_POST['date'];
+
+    if (empty($meetingNumber) || empty($description) || empty($date)) {
+        $error = 'Semua kolom harus diisi';
+    } else {
+        $kodeAbsen = generateKodeAbsen();
+
+        $pertemuan_sql = "INSERT INTO Absen_Dosen (AD_Pertemuan, AD_Deskripsi, AD_TanggalDibuat, AD_Kode, Kelas_K_ID, USER_U_ID) VALUES (?, ?, ?, ?, ?, ?)";
+        $stmt_pertemuan = $conn->prepare($pertemuan_sql);
+        $stmt_pertemuan->bind_param('issiii', $meetingNumber, $description, $date, $kodeAbsen, $kelasID, $userID);
+        $stmt_pertemuan->execute();
+
+        header('Location: ./aturPresensi.php?ID=' . $kelasID);
+        exit();
+
+        $stmt_pertemuan->close();
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="id">
 
@@ -339,10 +418,10 @@
     <div class="w-full md:w-5/6 load p-4 md:p-6">
         <div class="bg-white shadow-md rounded-lg p-4 md:p-6 mb-6 flex flex-col sm:flex-row justify-between">
             <div class="header mb-4 sm:mb-0">
-                <h1 class="text-2xl sm:text-3xl font-bold text-dark-teal uppercase mb-2">Presensi Kelas A</h1>
-                <p class="text-lg sm:text-xl text-teal-600 italic">IPA</p>
+                <h1 class="text-2xl sm:text-3xl font-bold text-dark-teal uppercase mb-2">Presensi <?php echo $namaKelas ?></h1>
+                <p class="text-lg sm:text-xl text-teal-600 italic"><?php echo $mataKuliah ?></p>
             </div>
-            <button href="tambahPertemuan.php"
+            <button
                 class="bg-dark-teal text-white text-lg px-4 py-2 h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal transition duration-300"
                 onclick="openModal()">Tambah
                 Pertemuan</button>
@@ -355,29 +434,23 @@
                             <th class="border-b p-4 text-left font-medium">Pertemuan</th>
                             <th class="border-b p-4 text-left font-medium">Deskripsi</th>
                             <th class="border-b p-4 text-left font-medium">Tanggal</th>
+                            <th class="border-b p-4 text-left font-medium">Kode</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="transition duration-300 hover:bg-teal-50">
-                            <td class="p-4"><a href="./detailPresensi.php">1</a></td>
-                            <td class="p-4">HTML</td>
-                            <td class="p-4">12 Agustus 2024</td>
-                        </tr>
-                        <tr class="transition duration-300 hover:bg-teal-50">
-                            <td class="p-4">2</td>
-                            <td class="p-4">CSS</td>
-                            <td class="p-4">13 Agustus 2021</td>
-                        </tr>
-                        <tr class="transition duration-300 hover:bg-teal-50">
-                            <td class="p-4">3</td>
-                            <td class="p-4">JS</td>
-                            <td class="p-4">14 Agustus 2021</td>
-                        </tr>
+                        <?php while ($stmt_absen->fetch()): ?>
+                            <tr class="transition duration-300 hover:bg-teal-50">
+                                <td class="p-4"><a href="./detailPresensi.php?ID=<?php echo $kelasID; ?>"><?php echo $pertemuan ?></a></td>
+                                <td class="p-4"><?php echo htmlspecialchars($deskripsi) ?></td>
+                                <td class="p-4"><?php echo htmlspecialchars($tanggalDibuat) ?></td>
+                                <td class="p-4"><?php echo htmlspecialchars($kodeAbsen) ?></td>
+                            </tr>
+                        <?php endwhile; ?>
                     </tbody>
                 </table>
             </div>
             <div id="myModal" class="modal justify-center">
-                <form class="modal-content" action="submit_path" method="POST">
+                <form class="modal-content" action="" method="POST">
                     <!-- <span class="close" onclick="closeModal()"></span> -->
                     <span class="material-symbols-outlined close" onclick="closeModal()">close</span>
                     <div class="mt-5">
@@ -397,6 +470,11 @@
                     </div>
                 </form>
             </div>
+            <?php if (!empty($error)): ?>
+                <div id="" class="text-red-500 mb-4">
+                    <?php echo $error; ?>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
     <script>
@@ -473,3 +551,7 @@
 </body>
 
 </html>
+
+<?php
+$stmt_absen->close();
+?>

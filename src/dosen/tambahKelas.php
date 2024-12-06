@@ -21,11 +21,11 @@ if ($stmt_profile->num_rows > 0) {
     exit();
 }
 
-function generateKodeKelas($length = 6)
+function generateKodeKelas()
 {
     $huruf = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     $kode = '';
-    for ($i = 0; $i < $length; $i++) {
+    for ($i = 0; $i < 6; $i++) {
         $kode .= $huruf[rand(0, strlen($huruf) - 1)];
     }
     return $kode;
@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $sql = "INSERT INTO Kelas (K_NamaKelas, K_MataKuliah, K_TanggalDibuat, K_KodeKelas) VALUES (?, ?, NOW(), ?)";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param('sss', $namaKelas, $mataKuliah, $kodeKelas);
-        $error = $namaKelas;
+        // $error = $namaKelas;
         if ($stmt->execute()) {
             $kelasID = $stmt->insert_id;
 

@@ -361,3 +361,6 @@ if ($class_stmt->num_rows > 0) {
 </body>
 
 </html>
+<?php
+$class_stmt->close();
+?>

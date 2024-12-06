@@ -1,3 +1,39 @@
+<?php
+session_start();
+include('../../assets/db/config.php');
+include('../../auth/aksesDosen.php');
+
+$userID = $_SESSION['U_ID'];
+$sql = "SELECT U_Nama, U_Role, U_Foto FROM User WHERE U_ID = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param('i', $userID);
+$stmt->execute();
+$stmt->store_result();
+
+$error = '';
+
+if ($stmt->num_rows > 0) {
+    $stmt->bind_result($name, $role, $photo);
+    $stmt->fetch();
+} else {
+    header('Location: ../home/login.php');
+    exit();
+}
+
+$class_sql =
+    "SELECT K.K_ID,K.K_NamaKelas, K.K_MataKuliah FROM Kelas K JOIN User_Kelas UK ON K.K_ID = UK.Kelas_K_ID WHERE UK.User_U_ID = ?";
+$class_stmt = $conn->prepare($class_sql);
+$class_stmt->bind_param('i', $userID);
+$class_stmt->execute();
+$class_stmt->store_result();
+
+if ($class_stmt->num_rows > 0) {
+    $class_stmt->bind_result($kelasID, $namaKelas,  $mataKuliah);
+} else {
+    $namaKelas  = $mataKuliah  = '';
+}
+?>
+
 <!DOCTYPE html>
 <html lang="id">
 
@@ -244,7 +280,7 @@
     <div class="w-full md:w-5/6 load p-4 md:p-6">
         <div class="bg-white shadow-md rounded-lg p-4 md:p-6 mb-6 flex flex-col sm:flex-row justify-between">
             <div class="header mb-4 sm:mb-0">
-                <h1 class="text-2xl sm:text-3xl font-bold text-dark-teal uppercase mb-2">Presensi Kelas A</h1>
+                <h1 class="text-2xl sm:text-3xl font-bold text-dark-teal uppercase mb-2">Presensi <?php echo $namaKelas ?></h1>
                 <p class="text-lg sm:text-xl text-teal-600 italic">IPA <span class="font-bold">[Pertemuan 1]</span></p>
             </div>
             <div

@@ -6,6 +6,7 @@
 CREATE TABLE Absen_Dosen (
     AD_ID int  NOT NULL AUTO_INCREMENT,
     AD_TanggalDibuat date  NOT NULL,
+    AD_Deskripsi longtext  NOT NULL,
     AD_Pertemuan int  NOT NULL,
     AD_Kode char(6)  NOT NULL,
     Kelas_K_ID int  NOT NULL,
