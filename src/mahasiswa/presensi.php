@@ -22,7 +22,7 @@ if ($stmtUser->num_rows > 0) {
 
 $stmtUser->close();
 $sqlKelas = "SELECT 
-                uk.UK_ID,
+                -- uk.UK_ID,
                 k.K_ID,
                 k.K_NamaKelas,
                 k.K_MataKuliah,

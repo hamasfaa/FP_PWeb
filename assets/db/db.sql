@@ -76,11 +76,9 @@ CREATE TABLE User (
 
 -- Table: User_Kelas
 CREATE TABLE User_Kelas (
-    UK_ID int NOT NULL AUTO_INCREMENT,          -- ID utama untuk relasi
-    Kelas_K_ID int NOT NULL,                    -- Kelas yang diambil oleh mahasiswa
-    User_U_ID int NOT NULL,                     -- Mahasiswa yang mengambil kelas
-    TanggalAmbil date NOT NULL,                 -- Tanggal kelas diambil oleh mahasiswa
-    CONSTRAINT User_Kelas_pk PRIMARY KEY (UK_ID),
+    Kelas_K_ID int NOT NULL,                   
+    User_U_ID int NOT NULL,                    
+    TanggalAmbil date NOT NULL,                 
     CONSTRAINT FK_Kelas_User_Kelas FOREIGN KEY (Kelas_K_ID) REFERENCES Kelas (K_ID) ON DELETE CASCADE,
     CONSTRAINT FK_User_User_Kelas FOREIGN KEY (User_U_ID) REFERENCES User (U_ID) ON DELETE CASCADE
 );
