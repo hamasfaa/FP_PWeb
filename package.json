@@ -4,5 +4,9 @@
   },
   "scripts": {
     "build:css": "npx tailwindcss -i ./assets/input.css -o ./assets/output.css --watch"
+  },
+  "dependencies": {
+    "flowbite": "^2.5.2",
+    "holidayapi": "^6.0.1"
   }
 }

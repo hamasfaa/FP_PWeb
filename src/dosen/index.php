@@ -19,6 +19,11 @@ if ($stmt->num_rows > 0) {
 }
 
 $stmt->close();
+
+date_default_timezone_set("Asia/Jakarta");
+$date = new DateTime();
+$hari = $date->format('l');
+$tanggal = $date->format('d F Y')
 ?>
 
 <!DOCTYPE html>
@@ -166,6 +171,12 @@ $stmt->close();
                 /* Sidebar terlihat */
             }
         }
+
+        .class-card,
+        .task-card {
+            max-height: 200px;
+            overflow-y: auto;
+        }
     </style>
 </head>
 
@@ -266,6 +277,115 @@ $stmt->close();
     </div>
     <!-- UTAMA -->
     <div id="utama" class="w-full md:w-5/6 load">
+        <div id="default-carousel" class="relative w-full" data-carousel="slide">
+            <!-- Carousel wrapper -->
+            <div class="relative h-56 overflow-hidden rounded-lg md:h-96">
+                <!-- Item 1 -->
+                <div class="hidden duration-700 ease-in-out" data-carousel-item>
+                    <img src="../../assets/img/carousel.png" class="absolute block w-full h-full object-contain -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
+                </div>
+                <!-- Item 2 -->
+                <div class="hidden duration-700 ease-in-out" data-carousel-item>
+                    <img src="../../assets/img/carousel.png" class="absolute block w-full h-full object-contain -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
+                </div>
+                <!-- Item 3 -->
+                <div class="hidden duration-700 ease-in-out" data-carousel-item>
+                    <img src="../../assets/img/carousel.png" class="absolute block w-full h-full object-contain -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
+                </div>
+                <!-- Item 4 -->
+                <div class="hidden duration-700 ease-in-out" data-carousel-item>
+                    <img src="../../assets/img/carousel.png" class="absolute block w-full h-full object-contain -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
+                </div>
+                <!-- Item 5 -->
+                <div class="hidden duration-700 ease-in-out" data-carousel-item>
+                    <img src="../../assets/img/carousel.png" class="absolute block w-full h-full object-contain -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
+                </div>
+            </div>
+            <!-- Slider indicators -->
+            <div class="absolute z-30 flex -translate-x-1/2 bottom-5 left-1/2 space-x-3 rtl:space-x-reverse">
+                <button type="button" class="w-3 h-3 rounded-full" aria-current="true" aria-label="Slide 1" data-carousel-slide-to="0"></button>
+                <button type="button" class="w-3 h-3 rounded-full" aria-current="false" aria-label="Slide 2" data-carousel-slide-to="1"></button>
+                <button type="button" class="w-3 h-3 rounded-full" aria-current="false" aria-label="Slide 3" data-carousel-slide-to="2"></button>
+                <button type="button" class="w-3 h-3 rounded-full" aria-current="false" aria-label="Slide 4" data-carousel-slide-to="3"></button>
+                <button type="button" class="w-3 h-3 rounded-full" aria-current="false" aria-label="Slide 5" data-carousel-slide-to="4"></button>
+            </div>
+            <!-- Slider controls -->
+            <button type="button" class="absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" data-carousel-prev>
+                <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-800/30 group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-gray-800/70 group-focus:outline-none">
+                    <svg class="w-4 h-4 text-gray-800 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4" />
+                    </svg>
+                    <span class="sr-only">Previous</span>
+                </span>
+            </button>
+            <button type="button" class="absolute top-0 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" data-carousel-next>
+                <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-800/30 group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-gray-800/70 group-focus:outline-none">
+                    <svg class="w-4 h-4 text-gray-800 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4" />
+                    </svg>
+                    <span class="sr-only">Next</span>
+                </span>
+            </button>
+        </div>
+        <div class="bg-white rounded-lg p-8 flex flex-col items-center text-center mb-6">
+            <h1 class="text-4xl font-bold text-dark-teal uppercase mb-4">Selamat Datang, <?php echo htmlspecialchars($name); ?></h1>
+            <p class="text-xl text-gray-700 italic mb-6"><?php echo $hari . ', ' . $tanggal; ?></p>
+            <div id="clock" class="text-2xl text-gray-700"></div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="bg-white shadow-lg rounded-lg p-8 mb-6">
+                <h2 class="text-2xl font-semibold text-dark-teal mb-4">Daftar Kelas</h2>
+                <div class="class-card space-y-4">
+                    <div class="flex justify-between border-b py-2">
+                        <a href="#" class="text-dark-teal">Kelas 1: Pemrograman Web</a>
+                        <span class="text-gray-500">Matakuliah</span>
+                    </div>
+                    <div class="flex justify-between border-b py-2">
+                        <a href="#" class="text-dark-teal">Kelas 2: Sistem Informasi</a>
+                        <span class="text-gray-500">Matakuliah</span>
+                    </div>
+                    <div class="flex justify-between border-b py-2">
+                        <a href="#" class="text-dark-teal">Kelas 3: Basis Data</a>
+                        <span class="text-gray-500">Matakuliah</span>
+                    </div>
+                    <div class="flex justify-between border-b py-2">
+                        <a href="#" class="text-dark-teal">Kelas 4: Algoritma</a>
+                        <span class="text-gray-500">Matakuliah</span>
+                    </div>
+                    <div class="flex justify-between border-b py-2">
+                        <a href="#" class="text-dark-teal">Kelas 5: Keamanan Jaringan</a>
+                        <span class="text-gray-500">Matakuliah</span>
+                    </div>
+                    <div class="flex justify-between border-b py-2">
+                        <a href="#" class="text-dark-teal">Kelas 6: Teknologi Cloud</a>
+                        <span class="text-gray-500">Matakuliah</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white shadow-lg rounded-lg p-8 mb-6">
+                <h2 class="text-2xl font-semibold text-dark-teal mb-4">Daftar Tugas</h2>
+                <div class="task-card space-y-4">
+                    <!-- Static task items -->
+                    <div class="flex justify-between border-b py-2">
+                        <a href="#" class="text-dark-teal">Tugas 1: Implementasi CRUD</a>
+                        <span class="text-gray-500">Batas: 15 Desember 2024</span>
+                    </div>
+                    <div class="flex justify-between border-b py-2">
+                        <a href="#" class="text-dark-teal">Tugas 2: Ujian Tengah Semester</a>
+                        <span class="text-gray-500">Batas: 20 Desember 2024</span>
+                    </div>
+                    <div class="flex justify-between border-b py-2">
+                        <a href="#" class="text-dark-teal">Tugas 3: Proyek Akhir</a>
+                        <span class="text-gray-500">Batas: 25 Desember 2024</span>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white shadow-lg rounded-lg p-6">
+                <h2 class="text-2xl font-bold text-dark-teal mb-4">Kalender</h2>
+                <div id="calendar" class="w-full"></div>
+            </div>
+        </div>
     </div>
     <script>
         const hamburger = document.querySelector('.hamburger');
@@ -321,7 +441,31 @@ $stmt->close();
                 return;
             }
         }
+
+        // Jam Real Time
+        function updateClock() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('clock').textContent = `${hours}:${minutes}:${seconds}`;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // Kalender
+        const calendarEl = document.getElementById('calendar');
+        const calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            locale: 'id'
+        });
+        calendar.render();
     </script>
+    <script src="../../node_modules/flowbite/dist/flowbite.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/core@5.10.1/main.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@5.10.1/main.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fullcalendar/core@5.10.1/main.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@5.10.1/main.min.css">
 </body>
 
 </html>
