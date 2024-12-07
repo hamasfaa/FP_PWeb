@@ -154,15 +154,18 @@ $stmt_dosen->close();
             white-space: nowrap;
             z-index: 1000;
         }
+
         .sidebar-collapsed .menu-item:hover .tooltip {
             opacity: 1;
         }
-        
+
         /* Sidebar tersembunyi pada mobile */
         @media (max-width: 768px) {
             #sidebar {
-                transform: translateX(100%); /* Sembunyikan sidebar di luar layar kanan */
-                width: 50%; /* Lebar sidebar pada mobile, sesuaikan jika diperlukan */
+                transform: translateX(100%);
+                /* Sembunyikan sidebar di luar layar kanan */
+                width: 50%;
+                /* Lebar sidebar pada mobile, sesuaikan jika diperlukan */
             }
 
             /* Sidebar terlihat saat memiliki kelas 'active' */
@@ -190,35 +193,46 @@ $stmt_dosen->close();
 
         /* Sidebar terlihat pada desktop */
         @media (min-width: 769px) {
+
             #hamburger-mobile,
             #closeSidebar-mobile {
                 display: none;
             }
         }
+
         /* Tambahkan animasi buka tutup untuk sidebar di mode mobile */
         @media (max-width: 768px) {
             #sidebar {
                 transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
-                opacity: 0; /* Sidebar tersembunyi secara default */
+                opacity: 0;
+                /* Sidebar tersembunyi secara default */
             }
 
             /* Sidebar terlihat saat memiliki kelas 'active' */
             #sidebar.active {
-                opacity: 1; /* Sidebar terlihat */
+                opacity: 1;
+                /* Sidebar terlihat */
             }
         }
 
         /* Style untuk modal (overlay) */
         .modal {
-            display: none; /* Tersembunyi secara default */
-            position: fixed; /* Tetap di tempat */
-            z-index: 1; /* Berada di atas */
+            display: none;
+            /* Tersembunyi secara default */
+            position: fixed;
+            /* Tetap di tempat */
+            z-index: 1;
+            /* Berada di atas */
             left: 0;
             top: 0;
-            width: 100%; /* Lebar penuh */
-            height: 100%; /* Tinggi penuh */
-            overflow: auto; /* Aktifkan scroll jika diperlukan */
-            background-color: rgba(0,0,0,0.4); /* Hitam dengan opasitas */
+            width: 100%;
+            /* Lebar penuh */
+            height: 100%;
+            /* Tinggi penuh */
+            overflow: auto;
+            /* Aktifkan scroll jika diperlukan */
+            background-color: rgba(0, 0, 0, 0.4);
+            /* Hitam dengan opasitas */
         }
 
         /* Tombol Tutup */
@@ -236,8 +250,6 @@ $stmt_dosen->close();
             text-decoration: none;
             cursor: pointer;
         }
-
-        
     </style>
 </head>
 
@@ -264,7 +276,7 @@ $stmt_dosen->close();
     </nav>
     <!-- SIDEBAR -->
     <div id="sidebar"
-    class="fixed top-0 right-0 h-full md:w-1/6 bg-dark-teal transform translate-x-full md:translate-x-0 transition-transform duration-300 z-50 bg-opacity-90 shadow-lg flex flex-col">
+        class="fixed top-0 right-0 h-full md:w-1/6 bg-dark-teal transform translate-x-full md:translate-x-0 transition-transform duration-300 z-50 bg-opacity-90 shadow-lg flex flex-col">
 
         <!-- Ikon Hamburger untuk Mobile (Berfungsi Sebagai Tombol Close) -->
         <div class="text-white px-6 py-2 cursor-pointer flex md:hidden">
@@ -280,7 +292,7 @@ $stmt_dosen->close();
         <div>
             <ul class="flex flex-col space-y-6 px-6 pt-2 pb-6 text-white">
                 <li>
-                    <a href="../mahasiswa/beranda.php"
+                    <a href="../mahasiswa/index.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">home</span>
                         <span class="link-text ml-3">Beranda</span>
@@ -312,7 +324,7 @@ $stmt_dosen->close();
                     </a>
                 </li>
                 <li>
-                    <a href="../pengaturan.php"
+                    <a href="../mahasiswa/pengaturan.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">settings</span>
                         <span class="link-text ml-3">Pengaturan</span>
@@ -348,9 +360,9 @@ $stmt_dosen->close();
                 <h1 class="px-4 text-3xl font-bold text-dark-teal uppercase mb-1">
                     <?php echo htmlspecialchars($mataKuliah); ?>
                 </h1>
-                
+
                 <h2 class="px-4 text-2xl text-teal-600 font-bold mb-2">Dosen:</h2>
-                
+
                 <!-- Menampilkan Daftar Dosen dari Database -->
                 <?php
                 if (!empty($dosen_names)) {
@@ -417,8 +429,8 @@ $stmt_dosen->close();
                         <td class="p-4">Bintang Nuralamsyah, S.Kom., M.Kom.</td>
                         <td class="p-4 text-blue-700 font-bold">HADIR</td>
                         <td class="p-4">
-                            <button 
-                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal" 
+                            <button
+                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal"
                                 onclick="openModal()">Kode
                             </button>
                         </td>
@@ -429,8 +441,8 @@ $stmt_dosen->close();
                         <td class="p-4">Bintang Nuralamsyah, S.Kom., M.Kom.</td>
                         <td class="p-4 text-purple-700 font-bold">IZIN</td>
                         <td class="p-4">
-                            <button 
-                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal" 
+                            <button
+                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal"
                                 onclick="openModal()">Kode
                             </button>
                         </td>
@@ -441,8 +453,8 @@ $stmt_dosen->close();
                         <td class="p-4">Bintang Nuralamsyah, S.Kom., M.Kom.</td>
                         <td class="p-4 text-yellow-600 font-bold">SAKIT</td>
                         <td class="p-4">
-                            <button 
-                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal" 
+                            <button
+                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal"
                                 onclick="openModal()">Kode
                             </button>
                         </td>
@@ -453,8 +465,8 @@ $stmt_dosen->close();
                         <td class="p-4">Bintang Nuralamsyah, S.Kom., M.Kom.</td>
                         <td class="p-4 text-blue-700 font-bold">HADIR</td>
                         <td class="p-4">
-                            <button 
-                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal" 
+                            <button
+                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal"
                                 onclick="openModal()">Kode
                             </button>
                         </td>
@@ -465,8 +477,8 @@ $stmt_dosen->close();
                         <td class="p-4">Bintang Nuralamsyah, S.Kom., M.Kom.</td>
                         <td class="p-4 text-blue-700 font-bold">HADIR</td>
                         <td class="p-4">
-                            <button 
-                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal" 
+                            <button
+                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal"
                                 onclick="openModal()">Kode
                             </button>
                         </td>
@@ -477,13 +489,13 @@ $stmt_dosen->close();
                         <td class="p-4">Bintang Nuralamsyah, S.Kom., M.Kom.</td>
                         <td class="p-4 text-red-600 font-bold">ALPA</td>
                         <td class="p-4">
-                            <button 
-                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal" 
+                            <button
+                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal"
                                 onclick="openModal()">Kode
                             </button>
                         </td>
                     </tr>
-                </tbody>                
+                </tbody>
             </table>
         </div>
         <div id="myModal" class="modal">
@@ -503,12 +515,12 @@ $stmt_dosen->close();
                     </div>
                     <button type="submit" class="w-full bg-dark-teal hover:bg-light-teal text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Simpan</button>
                 </div>
-            </form>                       
+            </form>
         </div>
     </div>
-    
-     
-    
+
+
+
     <script>
         function confirmLogout(event) {
             event.preventDefault(); // Mencegah link untuk navigasi
@@ -526,7 +538,7 @@ $stmt_dosen->close();
         const closeSidebarMobile = document.getElementById('closeSidebar-mobile');
 
         // Fungsi untuk meng-toggle sidebar pada desktop (collapse)
-        hamburger.addEventListener('click', function () {
+        hamburger.addEventListener('click', function() {
             sidebar.classList.toggle('sidebar-collapsed');
         });
 
@@ -541,7 +553,7 @@ $stmt_dosen->close();
         closeSidebarMobile.addEventListener('click', toggleSidebar);
 
         // Menutup sidebar saat mengklik di luar sidebar pada mobile
-        document.addEventListener('click', function (event) {
+        document.addEventListener('click', function(event) {
             if (window.innerWidth <= 768) { // Hanya berlaku pada mobile
                 if (!sidebar.contains(event.target) && !hamburgerMobile.contains(event.target) && !closeSidebarMobile.contains(event.target)) {
                     sidebar.classList.remove('active');
@@ -550,7 +562,7 @@ $stmt_dosen->close();
         });
 
         // Mencegah penutupan sidebar saat mengklik di dalam sidebar
-        sidebar.addEventListener('click', function (e) {
+        sidebar.addEventListener('click', function(e) {
             e.stopPropagation();
         });
 
@@ -569,8 +581,6 @@ $stmt_dosen->close();
         function closeModal() {
             modal.style.display = "none";
         }
-
-
     </script>
 </body>
 

@@ -1,36 +1,3 @@
-<?php
-session_start();
-include('../../assets/db/config.php');
-include('../../auth/aksesMahasiswa.php');
-
-$userID = $_SESSION['U_ID'];
-
-$sql = "SELECT U_Nama, U_Role, U_Foto FROM User WHERE U_ID = ?";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param('i', $userID);
-$stmt->execute();
-$stmt->store_result();
-
-if ($stmt->num_rows > 0) {
-    $stmt->bind_result($name, $role, $photo);
-    $stmt->fetch();
-} else {
-    header('Location: ../home/login.php');
-    exit();
-}
-
-$query = "SELECT K.K_NamaKelas, K.K_MataKuliah, UK.TanggalAmbil
-          FROM Kelas K
-          JOIN User_Kelas UK ON K.K_ID = UK.Kelas_K_ID
-          WHERE UK.User_U_ID = ?";
-$stmt = $conn->prepare($query);
-$stmt->bind_param("i", $userID);
-$stmt->execute();
-$result = $stmt->get_result();
-$stmt->close();
-?>
-
-
 <!DOCTYPE html>
 <html lang="id">
 
@@ -266,6 +233,7 @@ $stmt->close();
                 </li>
             </ul>
         </div>
+
         <!-- Profil -->
         <div class="profile-container flex items-center space-x-4 p-6 mt-auto">
             <img src="<?php echo $photo ?>" alt="Foto Profil" class="rounded-xl w-12 h-12">
@@ -279,53 +247,97 @@ $stmt->close();
     </div>
     <!-- UTAMA -->
     <div class="w-full md:w-5/6 load">
-        <div class="p-6 rounded-lg shadow-md flex flex-row justify-between">
+        <div class="p-6 rounded-lg flex flex-col">
             <div class="header mb-4">
-                <h1 class="px-4 text-3xl font-bold text-dark-teal uppercase mb-2">Kelas Saya</h1>
-                <p class="px-4 text-xl text-teal-600 italic">Belajar adalah kunci keberhasilan</p>
+                <h1 class="px-4 text-3xl font-bold text-dark-teal uppercase mb-2">Pengaturan Akun</h1>
             </div>
-            <a href="ambilKelas.php"
-                class="bg-light-teal text-white text-lg px-4 py-2 w-fit h-fit rounded border hover:bg-white hover:border-light-teal hover:text-light-teal">Ambil Kelas
-            </a>
-        </div>
-        <div class="p-6 rounded-lg flex flex-row justify-between">
-            <table class="class-table w-full mt-6 border-collapse">
-                <thead>
-                    <tr class="text-dark-teal">
-                        <th class="border-b p-4 text-left font-medium">Kelas</th>
-                        <th class="border-b p-4 text-left font-medium">Diambil Pada</th>
-                        <th class="border-b p-4 text-left font-medium">Mata Kuliah</th>
-                        <th class="border-b p-4 text-left font-medium">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php while ($row = $result->fetch_assoc()): ?>
-                        <tr>
-                            <td class="px-4 py-2"><?= htmlspecialchars($row['K_NamaKelas']); ?></td>
-                            <td class="px-4 py-2"><?= htmlspecialchars($row['TanggalAmbil']); ?></td>
-                            <td class="px-4 py-2"><?= htmlspecialchars($row['K_MataKuliah']); ?></td>
-                            <td class="p-4">
-                                <a href="tugas.php"
-                                    class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Tugas
-                                    <div class="absolute top-0 right-0 -mr-1 -mt-1 w-4 h-4 bg-red-500 rounded-full animate-ping"></div>
-                                    <div class="absolute top-0 right-0 -mr-1 -mt-1 w-4 h-4 bg-red-500 rounded-full"></div>
-                                </a>
-                            </td>
-                        </tr>
-                    <?php endwhile; ?>
-                </tbody>
-            </table>
+            <div class="flex flex-col items-center md:flex-row">
+                <img src="../../assets/img/anies.jpg" alt="profil" class="px-4 w-64 mt-2" style="border-radius: 15%;">
+                <div class="flex flex-col ml-4 justify-center">
+                    <span class="font-bold text-xl text-black md:text-4xl">Anies Baswedan</span>
+                    <span class="text-gray-600 text-md md:text-xl">Mahasiswa</span>
+                </div>
+            </div>
+            <div class="mt-8 w-full pl-4">
+                <div class="p-4 bg-gray-100 rounded-lg shadow-md">
+                    <h2 class="text-2xl font-bold text-dark-teal">Informasi Pribadi</h2>
+                    <p class="text-gray-600 text-lg mt-1">Data Pribadi yang ada di KelasKu</p>
+                    <div class="mt-4 space-y-4">
+                        <div class="p-4 bg-white rounded-lg shadow-sm hover:bg-gray-200 transition duration-300">
+                            <span class="font-bold text-lg text-gray-800">Nama:</span>
+                            <span class="text-gray-600 text-lg ml-2">Anies Baswedan</span>
+                        </div>
+                        <div class="p-4 bg-white rounded-lg shadow-sm hover:bg-gray-200 transition duration-300">
+                            <span class="font-bold text-lg text-gray-800">Tanggal Lahir:</span>
+                            <span class="text-gray-600 text-lg ml-2">1 Mei 1970</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-8 w-full pl-4">
+                <div class="p-4 bg-gray-100 rounded-lg shadow-md">
+                    <h2 class="text-2xl font-bold text-dark-teal">Kontak</h2>
+                    <p class="text-gray-600 text-lg mt-1">Email dan No Ponsel mahasiswa yang dapat dihubungi kampus</p>
+                    <div class="mt-4 space-y-4">
+                        <div class="p-4 bg-white rounded-lg shadow-sm hover:bg-gray-200 transition duration-300">
+                            <span class="font-bold text-lg text-gray-800">Email:</span>
+                            <span class="text-gray-600 text-lg ml-2">aniesbaswedan@gmail.com</span>
+                        </div>
+                        <div class="p-4 bg-white rounded-lg shadow-sm hover:bg-gray-200 transition duration-300">
+                            <span class="font-bold text-lg text-gray-800">No. Ponsel:</span>
+                            <span class="text-gray-600 text-lg ml-2">08213456789</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-8 w-full pl-4">
+                <div class="p-4 bg-gray-100 rounded-lg shadow-md">
+                    <h2 class="text-2xl font-bold text-dark-teal">Lainnya</h2>
+                    <p class="text-gray-600 text-lg mt-1">Password dan Alamat Rumah</p>
+                    <div class="mt-4 space-y-4">
+                        <div
+                            class="p-4 bg-white rounded-lg shadow-sm hover:bg-gray-200 transition duration-300 flex items-center">
+                            <span class="font-bold text-lg text-gray-800">Password:</span>
+                            <input type="password" id="password"
+                                class="bg-transparent text-gray-600 text-lg ml-2 w-full sm:w-2/3 border-none outline-none"
+                                value="akupintar">
+                            <button id="toggle-password" class="ml-auto text-gray-600">
+                                <span class="material-symbols-outlined">visibility</span>
+                            </button>
+                        </div>
+                        <div class="p-4 bg-white rounded-lg shadow-sm hover:bg-gray-200 transition duration-300">
+                            <span class="font-bold text-lg text-gray-800">Alamat:</span>
+                            <span class="text-gray-600 text-lg ml-2">Jl. Sukolilo No 34</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+
     <script>
+        document.getElementById('toggle-password').addEventListener('click', function() {
+            const passwordField = document.getElementById('password');
+            const icon = this.querySelector('span');
+
+            // Jika password tersembunyi, ubah menjadi teks dan ganti ikon
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                icon.textContent = 'visibility_off'; // Ganti ikon menjadi mata tertutup
+            } else {
+                passwordField.type = 'password';
+                icon.textContent = 'visibility'; // Ganti ikon menjadi mata terbuka
+            }
+        });
+
         function confirmLogout(event) {
             event.preventDefault(); // Mencegah link untuk navigasi
             const confirmation = confirm("Apakah Anda ingin keluar?");
 
             if (confirmation) {
-                window.location.href = '../../auth/logout.php';
+                window.location.href = '../home/login.php';
             } else {
-                return;
+
             }
         }
         const hamburger = document.querySelector('.hamburger');
