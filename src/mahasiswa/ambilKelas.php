@@ -313,7 +313,7 @@ $conn->close();
 
     </div>
     <!-- UTAMA -->
-    <div class="p-6 rounded-lg shadow-md flex flex-row justify-between load">
+    <div id="utama" class="p-6 rounded-lg shadow-md flex flex-row justify-between load">
         <div class="header mb-4">
             <h1 class="px-4 text-3xl font-bold text-dark-teal uppercase mb-2">Ambil Kelas</h1>
             <p class="px-4 text-xl text-teal-600 italic">Masukkan kode kelas yang Anda ingin ambil</p>
@@ -357,9 +357,18 @@ $conn->close();
         const hamburgerMobile = document.getElementById('hamburger-mobile');
         const closeSidebarMobile = document.getElementById('closeSidebar-mobile');
 
-        // Fungsi untuk meng-toggle sidebar pada desktop (collapse)
+        const utama = document.getElementById('utama');
+
         hamburger.addEventListener('click', function() {
             sidebar.classList.toggle('sidebar-collapsed');
+
+            if (sidebar.classList.contains('sidebar-collapsed')) {
+                utama.classList.remove('md:w-5/6');
+                utama.classList.add('w-full');
+            } else {
+                utama.classList.remove('w-full');
+                utama.classList.add('md:w-5/6');
+            }
         });
 
         // Fungsi untuk toggle sidebar pada mobile

@@ -341,7 +341,7 @@ if (isset($_POST['tugasID']) && isset($_POST['action'])) {
         </div>
     </div>
     <!-- UTAMA -->
-    <div class="w-full md:w-5/6 load p-6">
+    <div id="utama" class="w-full md:w-5/6 load p-6">
         <div class="bg-white shadow-md rounded-lg p-6 mb-6 flex flex-row justify-between">
             <div class="header mb-4">
                 <h1 class="text-3xl font-bold text-dark-teal uppercase mb-2">Tugas <?php echo $namaKelas ?></h1>
@@ -408,9 +408,18 @@ if (isset($_POST['tugasID']) && isset($_POST['action'])) {
         const hamburgerMobile = document.getElementById('hamburger-mobile');
         const closeSidebarMobile = document.getElementById('closeSidebar-mobile');
 
-        // Fungsi untuk meng-toggle sidebar pada desktop (collapse)
+        const utama = document.getElementById('utama');
+
         hamburger.addEventListener('click', function() {
             sidebar.classList.toggle('sidebar-collapsed');
+
+            if (sidebar.classList.contains('sidebar-collapsed')) {
+                utama.classList.remove('md:w-5/6');
+                utama.classList.add('w-full');
+            } else {
+                utama.classList.remove('w-full');
+                utama.classList.add('md:w-5/6');
+            }
         });
 
         // Fungsi untuk toggle sidebar pada mobile

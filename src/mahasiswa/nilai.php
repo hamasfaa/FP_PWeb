@@ -268,7 +268,7 @@ $stmt->close();
 
     </div>
     <!-- UTAMA -->
-    <div class="w-full md:w-5/6 load">
+    <div id="utama" class="w-full md:w-5/6 load">
         <div class="p-6 rounded-lg shadow-md flex flex-row justify-between">
             <div class="header mb-4">
                 <h1 class="px-4 text-3xl font-bold text-dark-teal uppercase mb-2">Penilaian</h1>
@@ -360,9 +360,18 @@ $stmt->close();
         const hamburgerMobile = document.getElementById('hamburger-mobile');
         const closeSidebarMobile = document.getElementById('closeSidebar-mobile');
 
-        // Fungsi untuk meng-toggle sidebar pada desktop (collapse)
+        const utama = document.getElementById('utama');
+
         hamburger.addEventListener('click', function() {
             sidebar.classList.toggle('sidebar-collapsed');
+
+            if (sidebar.classList.contains('sidebar-collapsed')) {
+                utama.classList.remove('md:w-5/6');
+                utama.classList.add('w-full');
+            } else {
+                utama.classList.remove('w-full');
+                utama.classList.add('md:w-5/6');
+            }
         });
 
         // Fungsi untuk toggle sidebar pada mobile

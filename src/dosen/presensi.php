@@ -278,7 +278,7 @@ if ($class_stmt->num_rows > 0) {
         </div>
     </div>
     <!-- UTAMA -->
-    <div class="w-full md:w-5/6 load p-4 md:p-6">
+    <div id="utama" class="w-full md:w-5/6 load p-4 md:p-6">
         <div class="bg-white shadow-md rounded-lg p-4 md:p-6 mb-6 flex flex-col sm:flex-row justify-between">
             <div class="header mb-4 sm:mb-0">
                 <h1 class="text-2xl sm:text-3xl font-bold text-dark-teal uppercase mb-2">Presensi</h1>
@@ -319,9 +319,18 @@ if ($class_stmt->num_rows > 0) {
         const hamburgerMobile = document.getElementById('hamburger-mobile');
         const closeSidebarMobile = document.getElementById('closeSidebar-mobile');
 
-        // Fungsi untuk meng-toggle sidebar pada desktop (collapse)
+        const utama = document.getElementById('utama');
+
         hamburger.addEventListener('click', function() {
             sidebar.classList.toggle('sidebar-collapsed');
+
+            if (sidebar.classList.contains('sidebar-collapsed')) {
+                utama.classList.remove('md:w-5/6');
+                utama.classList.add('w-full');
+            } else {
+                utama.classList.remove('w-full');
+                utama.classList.add('md:w-5/6');
+            }
         });
 
         // Fungsi untuk toggle sidebar pada mobile

@@ -241,7 +241,7 @@
         </div>
     </div>
     <!-- UTAMA -->
-    <div class="w-full md:w-5/6 load p-6">
+    <div id="utama" class="w-full md:w-5/6 load p-6">
         <div class="bg-white shadow-md rounded-lg p-6 mb-6 flex flex-row justify-between">
             <div class="header mb-4">
                 <h1 class="text-3xl font-bold text-dark-teal uppercase mb-2">Penilaian Kelas A</h1>
@@ -252,61 +252,63 @@
             <div class="text-dark-teal text-lg px-4 py-2 w-fit h-fit rounded border-dark-teal border mb-6">
                 Buat HTML
             </div>
-            <table class="w-full mt-6 border-collapse">
-                <thead>
-                    <tr class="text-dark-teal">
-                        <th class="border-b p-4 text-left font-medium">No</th>
-                        <th class="border-b p-4 text-left font-medium">Nama</th>
-                        <th class="border-b p-4 text-left font-medium">Pengumpulan</th>
-                        <th class="border-b p-4 text-left font-medium">File</th>
-                        <th class="border-b p-4 text-left font-medium">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr class="transition duration-300 hover:bg-teal-50">
-                        <td class="p-4">1</td>
-                        <td class="p-4">Anies Baswedan</td>
-                        <td class="p-4">15 Agustus 2024</td>
-                        <td class="p-4">AniesHTML.pdf</td>
-                        <td class="p-4">
-                            <form action="#" method="POST">
-                                <input type="number" name="nilai" placeholder="Nilai" min="0" max="100"
-                                    class="relative bg-white text-dark-teal text-lg px-4 py-2 w-20 h-fit rounded-xl border border-dark-teal focus:outline-none focus:ring-2 focus:ring-light-teal">
-                                <button type="submit"
-                                    class="bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Simpan</button>
-                            </form>
-                        </td>
-                    </tr>
-                    <tr class="transition duration-300 hover:bg-teal-50">
-                        <td class="p-4">2</td>
-                        <td class="p-4">Fufufafa</td>
-                        <td class="p-4">17 Agustus 2024</td>
-                        <td class="p-4">HTML.pdf</td>
-                        <td class="p-4">
-                            <form action="#" method="POST">
-                                <input type="number" name="nilai" placeholder="Nilai" min="0" max="100"
-                                    class="relative bg-white text-dark-teal text-lg px-4 py-2 w-20 h-fit rounded-xl border border-dark-teal focus:outline-none focus:ring-2 focus:ring-light-teal">
-                                <button type="submit"
-                                    class="bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Simpan</button>
-                            </form>
-                        </td>
-                    </tr>
-                    <tr class="transition duration-300 hover:bg-teal-50">
-                        <td class="p-4">3</td>
-                        <td class="p-4">El Kecepatan</td>
-                        <td class="p-4">16 Agustus 2024</td>
-                        <td class="p-4">Tugas1HTML.pdf</td>
-                        <td class="p-4">
-                            <form action="#" method="POST">
-                                <input type="number" name="nilai" placeholder="Nilai" min="0" max="100"
-                                    class="relative bg-white text-dark-teal text-lg px-4 py-2 w-20 h-fit rounded-xl border border-dark-teal focus:outline-none focus:ring-2 focus:ring-light-teal">
-                                <button type="submit"
-                                    class="bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Simpan</button>
-                            </form>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="overflow-x-auto">
+                <table class="w-full mt-6 border-collapse">
+                    <thead>
+                        <tr class="text-dark-teal">
+                            <th class="border-b p-4 text-left font-medium">No</th>
+                            <th class="border-b p-4 text-left font-medium">Nama</th>
+                            <th class="border-b p-4 text-left font-medium">Pengumpulan</th>
+                            <th class="border-b p-4 text-left font-medium">File</th>
+                            <th class="border-b p-4 text-left font-medium">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="transition duration-300 hover:bg-teal-50">
+                            <td class="p-4">1</td>
+                            <td class="p-4">Anies Baswedan</td>
+                            <td class="p-4">15 Agustus 2024</td>
+                            <td class="p-4">AniesHTML.pdf</td>
+                            <td class="p-4">
+                                <form action="#" method="POST">
+                                    <input type="number" name="nilai" placeholder="Nilai" min="0" max="100"
+                                        class="relative bg-white text-dark-teal text-lg px-4 py-2 w-20 h-fit rounded-xl border border-dark-teal focus:outline-none focus:ring-2 focus:ring-light-teal">
+                                    <button type="submit"
+                                        class="bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Simpan</button>
+                                </form>
+                            </td>
+                        </tr>
+                        <tr class="transition duration-300 hover:bg-teal-50">
+                            <td class="p-4">2</td>
+                            <td class="p-4">Fufufafa</td>
+                            <td class="p-4">17 Agustus 2024</td>
+                            <td class="p-4">HTML.pdf</td>
+                            <td class="p-4">
+                                <form action="#" method="POST">
+                                    <input type="number" name="nilai" placeholder="Nilai" min="0" max="100"
+                                        class="relative bg-white text-dark-teal text-lg px-4 py-2 w-20 h-fit rounded-xl border border-dark-teal focus:outline-none focus:ring-2 focus:ring-light-teal">
+                                    <button type="submit"
+                                        class="bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Simpan</button>
+                                </form>
+                            </td>
+                        </tr>
+                        <tr class="transition duration-300 hover:bg-teal-50">
+                            <td class="p-4">3</td>
+                            <td class="p-4">El Kecepatan</td>
+                            <td class="p-4">16 Agustus 2024</td>
+                            <td class="p-4">Tugas1HTML.pdf</td>
+                            <td class="p-4">
+                                <form action="#" method="POST">
+                                    <input type="number" name="nilai" placeholder="Nilai" min="0" max="100"
+                                        class="relative bg-white text-dark-teal text-lg px-4 py-2 w-20 h-fit rounded-xl border border-dark-teal focus:outline-none focus:ring-2 focus:ring-light-teal">
+                                    <button type="submit"
+                                        class="bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Simpan</button>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
     <script>
@@ -314,10 +316,18 @@
         const sidebar = document.getElementById('sidebar');
         const hamburgerMobile = document.getElementById('hamburger-mobile');
         const closeSidebarMobile = document.getElementById('closeSidebar-mobile');
+        const utama = document.getElementById('utama');
 
-        // Fungsi untuk meng-toggle sidebar pada desktop (collapse)
         hamburger.addEventListener('click', function() {
             sidebar.classList.toggle('sidebar-collapsed');
+
+            if (sidebar.classList.contains('sidebar-collapsed')) {
+                utama.classList.remove('md:w-5/6');
+                utama.classList.add('w-full');
+            } else {
+                utama.classList.remove('w-full');
+                utama.classList.add('md:w-5/6');
+            }
         });
 
         // Fungsi untuk toggle sidebar pada mobile
