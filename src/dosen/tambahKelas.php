@@ -364,7 +364,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             if (sidebar.classList.contains('sidebar-collapsed')) {
                 utama.classList.remove('md:w-5/6');
-                utama.classList.add('w-full');
+                // utama.classList.add('w-full');
+                utama.classList.add('md:w-11/12');
             } else {
                 utama.classList.remove('w-full');
                 utama.classList.add('md:w-5/6');

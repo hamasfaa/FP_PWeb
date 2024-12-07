@@ -313,33 +313,35 @@ $conn->close();
 
     </div>
     <!-- UTAMA -->
-    <div id="utama" class="p-6 rounded-lg shadow-md flex flex-row justify-between load">
-        <div class="header mb-4">
-            <h1 class="px-4 text-3xl font-bold text-dark-teal uppercase mb-2">Ambil Kelas</h1>
-            <p class="px-4 text-xl text-teal-600 italic">Masukkan kode kelas yang Anda ingin ambil</p>
-        </div>
-    </div>
-
-    <?php if (isset($message)): ?>
-        <div class="px-4 py-2 text-center <?= strpos($message, 'Berhasil') !== false ? 'text-green-500' : 'text-red-500' ?>">
-            <?= htmlspecialchars($message); ?>
-        </div>
-    <?php endif; ?>
-
-    <div class="p-6 rounded-lg load">
-        <form method="POST">
-            <div class="mb-4 px-4">
-                <label for="classCode" class="block text-gray-700 font-bold mb-2 text-xl">Kode Unik Kelas:</label>
-                <input type="text" id="classCode" name="classCode"
-                    class="px-3 shadow appearance-none border rounded w-full md:w-1/3 py-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    placeholder="Masukkan kode kelas" required>
+    <div id="utama" class="w-full md:w-5/6 load">
+        <div class="p-6 rounded-lg shadow-md flex flex-row justify-between">
+            <div class="header mb-4">
+                <h1 class="px-4 text-3xl font-bold text-dark-teal uppercase mb-2">Ambil Kelas</h1>
+                <p class="px-4 text-xl text-teal-600 italic">Masukkan kode kelas yang Anda ingin ambil</p>
             </div>
-            <div class="flex items-center justify-between px-4">
-                <button type="submit"
-                    class="bg-dark-teal hover:bg-teal-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full md:w-auto">Ambil Kelas
-                </button>
+        </div>
+
+        <?php if (isset($message)): ?>
+            <div class="px-4 py-2 text-center <?= strpos($message, 'Berhasil') !== false ? 'text-green-500' : 'text-red-500' ?>">
+                <?= htmlspecialchars($message); ?>
             </div>
-        </form>
+        <?php endif; ?>
+
+        <div class="p-6 rounded-lg load">
+            <form method="POST">
+                <div class="mb-4 px-4">
+                    <label for="classCode" class="block text-gray-700 font-bold mb-2 text-xl">Kode Unik Kelas:</label>
+                    <input type="text" id="classCode" name="classCode"
+                        class="px-3 shadow appearance-none border rounded w-full md:w-1/3 py-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        placeholder="Masukkan kode kelas" required>
+                </div>
+                <div class="flex items-center justify-between px-4">
+                    <button type="submit"
+                        class="bg-dark-teal hover:bg-teal-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full md:w-auto">Ambil Kelas
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
     <script>
         function confirmLogout(event) {
