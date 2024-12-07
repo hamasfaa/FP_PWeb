@@ -259,7 +259,8 @@ if ($class_stmt->num_rows > 0) {
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative" onclick="confirmLogout(event)">
+                    <a href="#" class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative"
+                        onclick="confirmLogout(event)">
                         <span class="material-symbols-outlined text-light-teal text-3xl">logout</span>
                         <span class="link-text ml-3">Keluar</span>
                         <span class="tooltip">Keluar</span>
@@ -271,8 +272,12 @@ if ($class_stmt->num_rows > 0) {
         <div class="profile-container flex items-center space-x-4 p-6 mt-auto">
             <img src="<?php echo $photo ?>" alt="Foto Profil" class="rounded-xl w-12 h-12">
             <div class="flex flex-col profile-text">
-                <span class="font-bold text-xl text-white"><?php echo htmlspecialchars($name); ?></span>
-                <span class="text-white"><?php echo htmlspecialchars(strtoupper($role)); ?></span>
+                <span class="font-bold text-xl text-white">
+                    <?php echo htmlspecialchars($name); ?>
+                </span>
+                <span class="text-white">
+                    <?php echo htmlspecialchars(strtoupper($role)); ?>
+                </span>
             </div>
         </div>
     </div>
@@ -280,7 +285,9 @@ if ($class_stmt->num_rows > 0) {
     <div class="w-full md:w-5/6 load p-4 md:p-6">
         <div class="bg-white shadow-md rounded-lg p-4 md:p-6 mb-6 flex flex-col sm:flex-row justify-between">
             <div class="header mb-4 sm:mb-0">
-                <h1 class="text-2xl sm:text-3xl font-bold text-dark-teal uppercase mb-2">Presensi <?php echo $namaKelas ?></h1>
+                <h1 class="text-2xl sm:text-3xl font-bold text-dark-teal uppercase mb-2">Presensi
+                    <?php echo $namaKelas ?>
+                </h1>
                 <p class="text-lg sm:text-xl text-teal-600 italic">IPA <span class="font-bold">[Pertemuan 1]</span></p>
             </div>
             <div
@@ -311,7 +318,9 @@ if ($class_stmt->num_rows > 0) {
                             <button
                                 class="relative bg-dark-teal text-white text-lg px-4 py-2 w-12 h-12 rounded-full border hover:bg-white hover:border-light-teal hover:text-light-teal">H</button>
                             <button
-                                class="relative bg-yellow-700 text-white text-lg px-4 py-2 w-12 h-12 rounded-full border hover:bg-white hover:border-yellow-500 hover:text-yellow-500">I</button>
+                                class="relative bg-orange-700 text-white text-lg px-4 py-2 w-12 h-12 rounded-full border hover:bg-white hover:border-orange-500 hover:text-orange-500">I</button>
+                            <button
+                                class="relative bg-yellow-700 text-white text-lg px-4 py-2 w-12 h-12 rounded-full border hover:bg-white hover:border-yellow-500 hover:text-yellow-500">S</button>
                             <button
                                 class="relative bg-red-700 text-white text-lg px-4 py-2 w-12 h-12 rounded-full border hover:bg-white hover:border-red-500 hover:text-red-500">A</button>
                         </td>

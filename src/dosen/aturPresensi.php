@@ -55,24 +55,54 @@ function generateKodeAbsen()
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $meetingNumber = $_POST['meetingNumber'];
-    $description = $_POST['description'];
-    $date = $_POST['date'];
+    if ($_POST['action'] == 'tambah') {
+        $pertemuan = $_POST['pertemuan'];
+        $deskripsi = $_POST['deskripsi'];
+        $tanggal = $_POST['tanggal'];
 
-    if (empty($meetingNumber) || empty($description) || empty($date)) {
-        $error = 'Semua kolom harus diisi';
-    } else {
-        $kodeAbsen = generateKodeAbsen();
+        if (empty($pertemuan) || empty($deskripsi) || empty($tanggal)) {
+            $error = 'Semua kolom harus diisi';
+        } else {
+            $check_sql = "SELECT AD_Pertemuan FROM Absen_Dosen WHERE AD_Pertemuan = ? AND Kelas_K_ID = ?";
+            $stmt_check = $conn->prepare($check_sql);
+            $stmt_check->bind_param('ii', $pertemuan, $kelasID);
+            $stmt_check->execute();
+            $stmt_check->store_result();
 
-        $pertemuan_sql = "INSERT INTO Absen_Dosen (AD_Pertemuan, AD_Deskripsi, AD_TanggalDibuat, AD_Kode, Kelas_K_ID, USER_U_ID) VALUES (?, ?, ?, ?, ?, ?)";
-        $stmt_pertemuan = $conn->prepare($pertemuan_sql);
-        $stmt_pertemuan->bind_param('issiii', $meetingNumber, $description, $date, $kodeAbsen, $kelasID, $userID);
-        $stmt_pertemuan->execute();
+            if ($stmt_check->num_rows > 0) {
+                $error = 'Pertemuan sudah ada';
+            } else {
+                $kodeAbsen = generateKodeAbsen();
 
-        header('Location: ./aturPresensi.php?ID=' . $kelasID);
-        exit();
+                $pertemuan_sql = "INSERT INTO Absen_Dosen (AD_Pertemuan, AD_Deskripsi, AD_TanggalDibuat, AD_Kode, Kelas_K_ID, USER_U_ID) VALUES (?, ?, ?, ?, ?, ?)";
+                $stmt_pertemuan = $conn->prepare($pertemuan_sql);
+                $stmt_pertemuan->bind_param('issiii', $pertemuan, $deskripsi, $tanggal, $kodeAbsen, $kelasID, $userID);
+                $stmt_pertemuan->execute();
 
-        $stmt_pertemuan->close();
+                header('Location: ./aturPresensi.php?ID=' . $kelasID);
+                exit();
+
+                $stmt_pertemuan->close();
+            }
+            $stmt_check->close();
+        }
+    } elseif ($_POST['action'] == 'edit') {
+        $absenID = $_POST['absenID'];
+        $deskripsi = $_POST['deskripsi'];
+        $tanggal = $_POST['tanggal'];
+
+        if (empty($deskripsi) || empty($tanggal)) {
+            $error = 'Deskripsi dan tanggal tidak boleh kosong';
+        } else {
+            $update_sql = "UPDATE Absen_Dosen SET AD_Deskripsi = ?, AD_TanggalDibuat = ? WHERE AD_ID = ? AND USER_U_ID = ?";
+            $stmt_update = $conn->prepare($update_sql);
+            $stmt_update->bind_param('ssii', $deskripsi, $tanggal, $absenID, $userID);
+            $stmt_update->execute();
+            $stmt_update->close();
+
+            header('Location: ./aturPresensi.php?ID=' . $kelasID);
+            exit();
+        }
     }
 }
 ?>
@@ -435,15 +465,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             <th class="border-b p-4 text-left font-medium">Deskripsi</th>
                             <th class="border-b p-4 text-left font-medium">Tanggal</th>
                             <th class="border-b p-4 text-left font-medium">Kode</th>
+                            <th class="border-b p-4 text-left font-medium">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php while ($stmt_absen->fetch()): ?>
                             <tr class="transition duration-300 hover:bg-teal-50">
-                                <td class="p-4"><a href="./detailPresensi.php?ID=<?php echo $kelasID; ?>"><?php echo $pertemuan ?></a></td>
+                                <td class="p-4"><a href="./detailPresensi.php?ID=<?php echo $absenID; ?>"><?php echo $pertemuan ?></a></td>
                                 <td class="p-4"><?php echo htmlspecialchars($deskripsi) ?></td>
                                 <td class="p-4"><?php echo htmlspecialchars($tanggalDibuat) ?></td>
                                 <td class="p-4"><?php echo htmlspecialchars($kodeAbsen) ?></td>
+                                <td class="p-4">
+                                    <button onclick="openEditModal('<?php echo $absenID; ?>',<?php echo htmlspecialchars($pertemuan) ?>, '<?php echo htmlspecialchars($deskripsi); ?>', '<?php echo htmlspecialchars($tanggalDibuat); ?>')"
+                                        class="relative bg-yellow-700 text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-yellow-500 hover:text-yellow-500 cursor-pointer">
+                                        Edit
+                                    </button>
+                                </td>
                             </tr>
                         <?php endwhile; ?>
                     </tbody>
@@ -454,18 +491,44 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <!-- <span class="close" onclick="closeModal()"></span> -->
                     <span class="material-symbols-outlined close" onclick="closeModal()">close</span>
                     <div class="mt-5">
-                        <label for="meetingNumber" class="block text-sm font-medium text-gray-700">Pertemuan Ke:</label>
-                        <input type="number" id="meetingNumber" name="meetingNumber" min="1"
+                        <form action="POST">
+                            <label for="pertemuan" class="block text-sm font-medium text-gray-700">Pertemuan Ke:</label>
+                            <input type="number" id="pertemuan" name="pertemuan" min="1"
+                                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500" placeholder="Masukkan nomor pertemuan">
+                            <label for="deskripsi" class="block text-sm font-medium text-gray-700">Deskripsi:</label>
+                            <textarea id="deskripsi" name="deskripsi"
+                                class="border border-teal-300 rounded-lg w-full p-4 focus:outline-none focus:border-teal-500 transition duration-300"
+                                placeholder="Tambahkan Deskripsi Pertemuan" rows="4"></textarea>
+                            <label for="date" class="block text-sm font-medium text-gray-700">Tanggal:</label>
+                            <input type="date" id="tanggal" name="tanggal"
+                                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500">
+                            <input type="hidden" name="action" value="tambah">
+                            <div class="flex justify-center">
+                                <button type="submit"
+                                    class="w-1/2 bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Tambah</button>
+                            </div>
+                        </form>
+                    </div>
+                </form>
+            </div>
+            <div id="editModal" class="modal justify-center">
+                <form class="modal-content" action="" method="POST">
+                    <span class="material-symbols-outlined close" onclick="closeEditModal()">close</span>
+                    <div class="mt-5">
+                        <p class="block text-sm font-medium text-gray-700">Pertemuan Ke:</p>
+                        <p id="editPertemuan" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500"></p>
+                        <label for="editDeskripsi" class="block text-sm font-medium text-gray-700">Deskripsi:</label>
+                        <textarea id="editDeskripsi" name="deskripsi"
+                            class="border border-teal-300 rounded-lg w-full p-4 focus:outline-none focus:border-teal-500 transition duration-300"
+                            placeholder="Edit Deskripsi" rows="4"></textarea>
+                        <label for="editTanggal" class="block text-sm font-medium text-gray-700">Tanggal:</label>
+                        <input type="date" id="editTanggal" name="tanggal"
                             class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500">
-                        <label for="description" class="block text-sm font-medium text-gray-700">Deskripsi:</label>
-                        <input type="text" id="description" name="description"
-                            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500">
-                        <label for="date" class="block text-sm font-medium text-gray-700">Tanggal:</label>
-                        <input type="date" id="date" name="date"
-                            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500">
-                        <div class="flex justify-center">
+                        <input type="hidden" name="action" value="edit">
+                        <input type="hidden" id="editAbsenID" name="absenID">
+                        <div class="flex justify-center mt-4">
                             <button type="submit"
-                                class="w-1/2 bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Tambah</button>
+                                class="w-1/2 bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Simpan</button>
                         </div>
                     </div>
                 </form>
@@ -536,6 +599,31 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 closeModal();
             }
         }
+
+        var editModal = document.getElementById("editModal");
+
+        function openEditModal(absenID, pertemuan, deskripsi, tanggal) {
+            editModal.style.display = "block";
+            document.body.style.overflow = "auto";
+
+            document.getElementById('editPertemuan').innerHTML = pertemuan;
+            document.getElementById('editAbsenID').value = absenID;
+            document.getElementById('editDeskripsi').value = deskripsi;
+            document.getElementById('editTanggal').value = tanggal;
+        }
+
+        function closeEditModal() {
+            const modal = document.getElementById("editModal");
+            modal.style.display = "none";
+            document.body.style.overflow = "auto";
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById("editModal");
+            if (event.target === modal) {
+                closeEditModal();
+            }
+        };
 
         function confirmLogout(event) {
             event.preventDefault(); // Mencegah link untuk navigasi

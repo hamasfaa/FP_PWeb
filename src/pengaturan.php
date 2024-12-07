@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KelasKu</title>
-    <link rel="stylesheet" href="../../assets/output.css">
+    <link rel="stylesheet" href="../assets/output.css">
     <style>
         .load {
             animation: transitionIn 0.75s;
