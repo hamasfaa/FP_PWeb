@@ -2,6 +2,7 @@
 session_start();
 include('../../assets/db/config.php');
 include('../../auth/aksesDosen.php');
+require_once '../../vendor/autoload.php';
 
 $userID = $_SESSION['U_ID'];
 $sql = "SELECT U_Nama, U_Role, U_Foto FROM User WHERE U_ID = ?";
@@ -23,7 +24,40 @@ $stmt->close();
 date_default_timezone_set("Asia/Jakarta");
 $date = new DateTime();
 $hari = $date->format('l');
-$tanggal = $date->format('d F Y')
+$tanggal = $date->format('d F Y');
+$bulan = $date->format('m');
+
+$key = '210b802c-ef69-4346-8174-53b17a97bcb0';
+$holiday_api = new \HolidayAPI\Client(['key' => $key]);
+
+try {
+    // // Fetch supported countries and subdivisions
+    // $countries = $holiday_api->countries();
+
+    // // Fetch supported languages
+    // $languages = $holiday_api->languages();
+
+    // Fetch holidays with minimum parameters
+    $data = $holiday_api->holidays([
+        'country' => 'ID',
+        'year' => 2023,
+        'language' => 'id',
+    ]);
+
+    $filter = array_filter($data['holidays'], function ($holiday) use ($bulan) {
+        $holidayMonth = (new DateTime($holiday['date']))->format('m');
+        return $holidayMonth == $bulan;
+    });
+
+    $data_json = json_encode(array_values($filter));
+
+    // foreach ($data['holidays'] as $holiday) {
+    //     echo $holiday['weekday']['date']['name'] . "\n";
+    // }
+} catch (Exception $e) {
+    $data_json = json_encode([]);
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -366,7 +400,6 @@ $tanggal = $date->format('d F Y')
             <div class="bg-white shadow-lg rounded-lg p-8 mb-6">
                 <h2 class="text-2xl font-semibold text-dark-teal mb-4">Daftar Tugas</h2>
                 <div class="task-card space-y-4">
-                    <!-- Static task items -->
                     <div class="flex justify-between border-b py-2">
                         <a href="#" class="text-dark-teal">Tugas 1: Implementasi CRUD</a>
                         <span class="text-gray-500">Batas: 15 Desember 2024</span>
@@ -381,9 +414,9 @@ $tanggal = $date->format('d F Y')
                     </div>
                 </div>
             </div>
-            <div class="bg-white shadow-lg rounded-lg p-6">
-                <h2 class="text-2xl font-bold text-dark-teal mb-4">Kalender</h2>
-                <div id="calendar" class="w-full"></div>
+            <div class="bg-white shadow-lg rounded-lg p-8 mb-6">
+                <h2 class="text-2xl font-semibold text-dark-teal mb-4">Hari Libur Nasional</h2>
+                <div id="kalender" class="task-card space-y-4"></div>
             </div>
         </div>
     </div>
@@ -442,7 +475,6 @@ $tanggal = $date->format('d F Y')
             }
         }
 
-        // Jam Real Time
         function updateClock() {
             const now = new Date();
             const hours = String(now.getHours()).padStart(2, '0');
@@ -453,19 +485,24 @@ $tanggal = $date->format('d F Y')
         setInterval(updateClock, 1000);
         updateClock();
 
-        // Kalender
-        const calendarEl = document.getElementById('calendar');
-        const calendar = new FullCalendar.Calendar(calendarEl, {
-            initialView: 'dayGridMonth',
-            locale: 'id'
-        });
-        calendar.render();
+        // console.log(<?php echo $data_json; ?>);
+        dataLibur = <?php echo $data_json; ?>;
+        const kalender = document.getElementById('kalender');
+        if (dataLibur.length) {
+            dataLibur.forEach(holiday => {
+                const divLibur = document.createElement('div');
+                divLibur.classList.add('flex', 'justify-between', 'border-b', 'py-2');
+                divLibur.innerHTML = `
+                    <a href="#" class="text-dark-teal">${holiday.name}</a>
+                    <span class="text-gray-500">${holiday.date}</span>
+                `;
+                kalender.appendChild(divLibur);
+            });
+        } else {
+            kalender.innerHTML = '<p class="text-gray-500">Tidak ada hari libur</p>';
+        }
     </script>
     <script src="../../node_modules/flowbite/dist/flowbite.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/core@5.10.1/main.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@5.10.1/main.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fullcalendar/core@5.10.1/main.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@5.10.1/main.min.css">
 </body>
 
 </html>
