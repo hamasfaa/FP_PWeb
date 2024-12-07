@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KelasKu</title>
-    <link rel="stylesheet" href="../assets/output.css">
+    <link rel="stylesheet" href="../../assets/output.css">
     <style>
         .load {
             animation: transitionIn 0.75s;
@@ -217,7 +217,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="../mahasiswa/pengaturan.php"
+                    <a href="../dosen/pengaturan.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">settings</span>
                         <span class="link-text ml-3">Pengaturan</span>
@@ -281,7 +281,7 @@
             <div class="mt-8 w-full pl-4">
                 <div class="p-4 bg-gray-100 rounded-lg shadow-md">
                     <h2 class="text-2xl font-bold text-dark-teal">Kontak</h2>
-                    <p class="text-gray-600 text-lg mt-1">Email dan No Ponsel mahasiswa yang dapat dihubungi kampus</p>
+                    <p class="text-gray-600 text-lg mt-1">Email dan No Ponsel dosen yang dapat dihubungi kampus</p>
                     <div class="mt-4 space-y-4">
                         <div class="p-4 bg-white rounded-lg shadow-sm hover:bg-gray-200 transition duration-300">
                             <span class="font-bold text-lg text-gray-800">Email:</span>
