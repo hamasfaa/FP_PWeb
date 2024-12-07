@@ -37,6 +37,8 @@ $stmtKelas = $conn->prepare($sqlKelas);
 $stmtKelas->bind_param('i', $userID);
 $stmtKelas->execute();
 $resultKelas = $stmtKelas->get_result();
+$stmtKelas->close();
+$conn->close();
 ?>
 
 <!DOCTYPE html>
@@ -242,11 +244,11 @@ $resultKelas = $stmtKelas->get_result();
                     </a>
                 </li>
                 <li>
-                    <a href="../mahasiswa/nilai.php"
+                    <a href="../mahasiswa/tugas.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
-                        <span class="material-symbols-outlined text-light-teal text-3xl">monitoring</span>
-                        <span class="link-text ml-3">Penilaian</span>
-                        <span class="tooltip">Penilaian</span>
+                        <span class="material-symbols-outlined text-light-teal text-3xl">task</span>
+                        <span class="link-text ml-3">Tugas</span>
+                        <span class="tooltip">Tugas</span>
                     </a>
                 </li>
                 <li>
@@ -304,28 +306,23 @@ $resultKelas = $stmtKelas->get_result();
                     </tr>
                 </thead>
                 <tbody>
-                    <?php
-                    if ($resultKelas->num_rows > 0) {
-                        while ($row = $resultKelas->fetch_assoc()) {
-                            echo '<tr class="transition">';
-                            echo '<td class="p-4"><a href="./detailKelas.php?kelas_id=' . htmlspecialchars($row['K_ID']) . '">' . htmlspecialchars($row['K_NamaKelas']) . '</a></td>';
-                            echo '<td class="p-4">' . htmlspecialchars($row['TanggalAmbil']) . '</td>';
-                            echo '<td class="p-4">' . htmlspecialchars($row['K_MataKuliah']) . '</td>';
-                            echo '<td class="p-4">
-                                    <a href="absen.php?kelas_id=' . htmlspecialchars($row['K_ID']) . '" 
-                                    class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">
+                    <?php while ($row = $resultKelas->fetch_assoc()): ?>
+                        <tr class="transition">
+                            <td class="p-4">
+                                <a href="./detailKelas.php?kelas_id=<?= htmlspecialchars($row['K_ID']) ?>">
+                                    <?= htmlspecialchars($row['K_NamaKelas']) ?>
+                                </a>
+                            </td>
+                            <td class="p-4"><?= htmlspecialchars($row['TanggalAmbil']) ?></td>
+                            <td class="p-4"><?= htmlspecialchars($row['K_MataKuliah']) ?></td>
+                            <td class="p-4">
+                                <a href="absen.php?kelas_id=<?= htmlspecialchars($row['K_ID']) ?>"
+                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">
                                     Absen
-                                    </a>
-                                </td>';
-                            echo '</tr>';
-                        }
-                    } else {
-                        echo '<tr><td colspan="4" class="p-4 text-center">Anda belum mengambil kelas apapun.</td></tr>';
-                    }
-
-                    $stmtKelas->close();
-                    $conn->close();
-                    ?>
+                                </a>
+                            </td>
+                        </tr>
+                    <?php endwhile; ?>
                 </tbody>
             </table>
         </div>

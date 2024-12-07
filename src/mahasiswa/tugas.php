@@ -4,6 +4,7 @@ include('../../assets/db/config.php');
 include('../../auth/aksesMahasiswa.php');
 
 $userID = $_SESSION['U_ID'];
+
 $sql = "SELECT U_Nama, U_Role, U_Foto FROM User WHERE U_ID = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param('i', $userID);
@@ -18,8 +19,17 @@ if ($stmt->num_rows > 0) {
     exit();
 }
 
+$query = "SELECT K.K_NamaKelas, K.K_MataKuliah, UK.TanggalAmbil
+          FROM Kelas K
+          JOIN User_Kelas UK ON K.K_ID = UK.Kelas_K_ID
+          WHERE UK.User_U_ID = ?";
+$stmt = $conn->prepare($query);
+$stmt->bind_param("i", $userID);
+$stmt->execute();
+$result = $stmt->get_result();
 $stmt->close();
 ?>
+
 
 <!DOCTYPE html>
 <html lang="id">
@@ -166,42 +176,6 @@ $stmt->close();
                 /* Sidebar terlihat */
             }
         }
-
-        /* Style untuk modal (overlay) */
-        .modal {
-            display: none;
-            /* Tersembunyi secara default */
-            position: fixed;
-            /* Tetap di tempat */
-            z-index: 1;
-            /* Berada di atas */
-            left: 0;
-            top: 0;
-            width: 100%;
-            /* Lebar penuh */
-            height: 100%;
-            /* Tinggi penuh */
-            overflow: auto;
-            /* Aktifkan scroll jika diperlukan */
-            background-color: rgba(0, 0, 0, 0.4);
-            /* Hitam dengan opasitas */
-        }
-
-        /* Tombol Tutup */
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .close:hover,
-        .close:focus {
-            color: red;
-            text-decoration: none;
-            cursor: pointer;
-        }
     </style>
 </head>
 
@@ -260,11 +234,11 @@ $stmt->close();
                     </a>
                 </li>
                 <li>
-                    <a href="../mahasiswa/nilai.php"
+                    <a href="../mahasiswa/tugas.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
-                        <span class="material-symbols-outlined text-light-teal text-3xl">monitoring</span>
-                        <span class="link-text ml-3">Penilaian</span>
-                        <span class="tooltip">Penilaian</span>
+                        <span class="material-symbols-outlined text-light-teal text-3xl">task</span>
+                        <span class="link-text ml-3">Tugas</span>
+                        <span class="tooltip">Tugas</span>
                     </a>
                 </li>
                 <li>
@@ -307,86 +281,39 @@ $stmt->close();
     <div id="utama" class="w-full md:w-5/6 load">
         <div class="p-6 rounded-lg shadow-md flex flex-row justify-between">
             <div class="header mb-4">
-                <h1 class="px-4 text-3xl font-bold text-dark-teal uppercase mb-1">Pemrograman Web</h1>
-                <h2 class="px-4 text-2xl text-teal-600 font-bold mb-2">Dosen:</h2>
-                <p class="px-4 text-xl text-teal-600 italic mb-1">Bintang Nuralamsyah, S.Kom., M.Kom.</p>
-                <p class="px-4 text-xl text-teal-600 italic mb-1">Dr. Agus Budi Raharjo, S.Kom., M.Kom.</p>
+                <h1 class="px-4 text-3xl font-bold text-dark-teal uppercase mb-2">Tugas</h1>
+                <p class="px-4 text-xl text-teal-600 italic">Jangan Menunda nunda pekerjaan</p>
             </div>
         </div>
         <div class="p-6 rounded-lg flex flex-row justify-between">
             <table class="class-table w-full mt-6 border-collapse">
                 <thead>
                     <tr class="text-dark-teal">
-                        <th class="border-b p-4 text-left font-medium">Tugas</th>
-                        <th class="border-b p-4 text-left font-medium">Deadline</th>
-                        <th class="border-b p-4 text-left font-medium">Nama Tugas</th>
-                        <th class="border-b p-4 text-left font-medium">Status</th>
+                        <th class="border-b p-4 text-left font-medium">Kelas</th>
+                        <th class="border-b p-4 text-left font-medium">Diambil Pada</th>
+                        <th class="border-b p-4 text-left font-medium">Mata Kuliah</th>
                         <th class="border-b p-4 text-left font-medium">Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr class="transition">
-                        <td class="p-4"><a href="./detailKelas.php">1</a></td>
-                        <td class="p-4">12 Agustus 2024, 23:59</td>
-                        <td class="p-4">Membuat todolist</td>
-                        <td class="p-4 text-green-600 font-bold">SUDAH MENGUMPULKAN</td>
-                        <td class="p-4">
-                            <a href="detailtugas.php"
-                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Detail Tugas
-                            </a>
-                        </td>
-                    </tr>
-                    <tr class="transition">
-                        <td class="p-4"><a href="./detailKelas.php">2</a></td>
-                        <td class="p-4">19 Agustus 2024, 23:59</td>
-                        <td class="p-4">Membuat CV dengan HTML</td>
-                        <td class="p-4 text-green-600 font-bold">SUDAH MENGUMPULKAN</td>
-                        <td class="p-4">
-                            <a href="detailtugas.php"
-                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Detail Tugas
-                            </a>
-                        </td>
-                    </tr>
-                    <tr class="transition">
-                        <td class="p-4"><a href="./detailKelas.php">3</a></td>
-                        <td class="p-4">20 Agustus 2024, 23:59</td>
-                        <td class="p-4">Membuat login page</td>
-                        <td class="p-4 text-green-600 font-bold">SUDAH MENGUMPULKAN</td>
-                        <td class="p-4">
-                            <a href="detailtugas.php"
-                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Detail Tugas
-                            </a>
-                        </td>
-                    </tr>
-                    <tr class="transition">
-                        <td class="p-4"><a href="./detailKelas.php">4</a></td>
-                        <td class="p-4">27 Agustus 2024, 23:59</td>
-                        <td class="p-4">Final Project 1</td>
-                        <td class="p-4 text-green-600 font-bold">SUDAH MENGUMPULKAN</td>
-                        <td class="p-4">
-                            <a href="detailtugas.php"
-                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Detail Tugas
-                            </a>
-                        </td>
-                    </tr>
-                    <tr class="transition">
-                        <td class="p-4"><a href="./detailKelas.php">5</a></td>
-                        <td class="p-4">30 Agustus 2024, 23:59</td>
-                        <td class="p-4">Final Project 2</td>
-                        <td class="p-4 text-red-600 font-bold">BELUM MENGUMPULKAN</td>
-                        <td class="p-4">
-                            <a href="detailtugas.php"
-                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Detail Tugas
-                            </a>
-                        </td>
-                    </tr>
+                    <?php while ($row = $result->fetch_assoc()): ?>
+                        <tr>
+                            <td class="px-4 py-2"><?= htmlspecialchars($row['K_NamaKelas']); ?></td>
+                            <td class="px-4 py-2"><?= htmlspecialchars($row['TanggalAmbil']); ?></td>
+                            <td class="px-4 py-2"><?= htmlspecialchars($row['K_MataKuliah']); ?></td>
+                            <td class="p-4">
+                                <a href="tugas.php"
+                                    class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Tugas
+                                    <div class="absolute top-0 right-0 -mr-1 -mt-1 w-4 h-4 bg-red-500 rounded-full animate-ping"></div>
+                                    <div class="absolute top-0 right-0 -mr-1 -mt-1 w-4 h-4 bg-red-500 rounded-full"></div>
+                                </a>
+                            </td>
+                        </tr>
+                    <?php endwhile; ?>
                 </tbody>
             </table>
         </div>
     </div>
-
-
-
     <script>
         function confirmLogout(event) {
             event.preventDefault(); // Mencegah link untuk navigasi
@@ -440,22 +367,6 @@ $stmt->close();
         sidebar.addEventListener('click', function(e) {
             e.stopPropagation();
         });
-
-        // Mendapatkan modal
-        var modal = document.getElementById("myModal");
-
-        // Mendapatkan tombol yang membuka modal
-        var btn = document.querySelector(".open-modal-btn");
-
-        // Fungsi untuk membuka modal
-        function openModal() {
-            modal.style.display = "block";
-        }
-
-        // Fungsi untuk menutup modal
-        function closeModal() {
-            modal.style.display = "none";
-        }
     </script>
 </body>
 
