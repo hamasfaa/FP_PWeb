@@ -103,7 +103,7 @@ $stmt_absen->close();
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $code = $_POST['code'];
     $attendance = $_POST['attendance'];
-    
+
     $sql_check_code = "SELECT AD_ID FROM Absen_Dosen WHERE AD_Kode = ? AND Kelas_K_ID = ?";
     $stmt_check_code = $conn->prepare($sql_check_code);
     $stmt_check_code->bind_param('si', $code, $kelasID);
@@ -496,7 +496,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 <td class="p-4">
                                     <?php
                                     $stmt_status = $conn->prepare("SELECT AM_Status FROM Absen_Mahasiswa WHERE Absen_Dosen_AD_ID = ? AND User_U_ID = ?");
-                                    $stmt_status->bind_param('ii', $row['AD_ID'], $userID); 
+                                    $stmt_status->bind_param('ii', $row['AD_ID'], $userID);
                                     $stmt_status->execute();
                                     $stmt_status->store_result();
 
