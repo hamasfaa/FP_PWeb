@@ -31,7 +31,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($result->num_rows > 0) {
         $kelas = $result->fetch_assoc();
         $kelasId = $kelas['K_ID'];
-        
+
         // Periksa apakah mahasiswa sudah terdaftar di kelas ini (ubah tabel KelasMahasiswa menjadi User_Kelas)
         $checkQuery = "SELECT * FROM User_Kelas WHERE Kelas_K_ID = ? AND User_U_ID = ?";
         $checkStmt = $conn->prepare($checkQuery);
@@ -149,15 +149,18 @@ $conn->close();
             white-space: nowrap;
             z-index: 1000;
         }
+
         .sidebar-collapsed .menu-item:hover .tooltip {
             opacity: 1;
         }
-        
+
         /* Sidebar tersembunyi pada mobile */
         @media (max-width: 768px) {
             #sidebar {
-                transform: translateX(100%); /* Sembunyikan sidebar di luar layar kanan */
-                width: 50%; /* Lebar sidebar pada mobile, sesuaikan jika diperlukan */
+                transform: translateX(100%);
+                /* Sembunyikan sidebar di luar layar kanan */
+                width: 50%;
+                /* Lebar sidebar pada mobile, sesuaikan jika diperlukan */
             }
 
             /* Sidebar terlihat saat memiliki kelas 'active' */
@@ -185,24 +188,27 @@ $conn->close();
 
         /* Sidebar terlihat pada desktop */
         @media (min-width: 769px) {
+
             #hamburger-mobile,
             #closeSidebar-mobile {
                 display: none;
             }
         }
+
         /* Tambahkan animasi buka tutup untuk sidebar di mode mobile */
         @media (max-width: 768px) {
             #sidebar {
                 transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
-                opacity: 0; /* Sidebar tersembunyi secara default */
+                opacity: 0;
+                /* Sidebar tersembunyi secara default */
             }
 
             /* Sidebar terlihat saat memiliki kelas 'active' */
             #sidebar.active {
-                opacity: 1; /* Sidebar terlihat */
+                opacity: 1;
+                /* Sidebar terlihat */
             }
         }
-        
     </style>
 </head>
 
@@ -229,7 +235,7 @@ $conn->close();
     </nav>
     <!-- SIDEBAR -->
     <div id="sidebar"
-    class="fixed top-0 right-0 h-full md:w-1/6 bg-dark-teal transform translate-x-full md:translate-x-0 transition-transform duration-300 z-50 bg-opacity-90 shadow-lg flex flex-col">
+        class="fixed top-0 right-0 h-full md:w-1/6 bg-dark-teal transform translate-x-full md:translate-x-0 transition-transform duration-300 z-50 bg-opacity-90 shadow-lg flex flex-col">
 
         <!-- Ikon Hamburger untuk Mobile (Berfungsi Sebagai Tombol Close) -->
         <div class="text-white px-6 py-2 cursor-pointer flex md:hidden">
@@ -302,37 +308,35 @@ $conn->close();
             </div>
         </div>
     </div>
-
-    </div>
     <!-- UTAMA -->
-    <div class="p-6 rounded-lg shadow-md flex flex-row justify-between load">
-        <div class="header mb-4">
-            <h1 class="px-4 text-3xl font-bold text-dark-teal uppercase mb-2">Ambil Kelas</h1>
-            <p class="px-4 text-xl text-teal-600 italic">Masukkan kode kelas yang Anda ingin ambil</p>
+    <div id="utama" class="w-full md:w-5/6 load p-6 rounded-lg">
+        <div class="bg-white shadow-md rounded-lg p-6 mb-6 flex flex-row justify-between">
+            <div class="header mb-4">
+                <h1 class="text-3xl font-bold text-dark-teal uppercase mb-2">Ambil Kelas</h1>
+                <p class="text-xl text-teal-600 italic">Masukkan kode kelas yang Anda ingin ambil</p>
+            </div>
+        </div>
+        <div class="bg-white shadow-lg rounded-lg p-8">
+            <form method="POST">
+                <div class="mb-4">
+                    <label for="classCode" class="block text-gray-700 font-bold mb-2 text-xl">Kode Unik Kelas:</label>
+                    <input type="text" id="classCode" name="classCode"
+                        class="px-3 shadow appearance-none border rounded w-full md:w-1/3 py-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        placeholder="Masukkan kode kelas" required>
+                </div>
+                <div class="flex items-center justify-between px-4">
+                    <button type="submit"
+                        class="bg-dark-teal hover:bg-teal-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full md:w-auto">Ambil Kelas
+                    </button>
+                </div>
+            </form>
+            <?php if (isset($message)): ?>
+                <div class="mt-4 px-4 <?= strpos($message, 'Berhasil') !== false ? 'text-green-500' : 'text-red-500 font-bold' ?>">
+                    <?= htmlspecialchars($message); ?>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
-
-    <div class="p-6 rounded-lg load">
-        <form method="POST">
-            <div class="mb-4 px-4">
-                <label for="classCode" class="block text-gray-700 font-bold mb-2 text-xl">Kode Unik Kelas:</label>
-                <input type="text" id="classCode" name="classCode"
-                    class="px-3 shadow appearance-none border rounded w-full md:w-1/3 py-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    placeholder="Masukkan kode kelas" required>
-            </div>
-            <div class="flex items-center justify-between px-4">
-                <button type="submit"
-                        class="bg-dark-teal hover:bg-teal-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full md:w-auto">Ambil Kelas
-                </button>
-            </div>
-        </form>
-        <?php if (isset($message)): ?>
-            <div class="mt-4 px-4 <?= strpos($message, 'Berhasil') !== false ? 'text-green-500' : 'text-red-500 font-bold' ?>">
-                <?= htmlspecialchars($message); ?>
-            </div>
-        <?php endif; ?>
-    </div>
-
     <script>
         function confirmLogout(event) {
             event.preventDefault(); // Mencegah link untuk navigasi
@@ -349,9 +353,34 @@ $conn->close();
         const hamburgerMobile = document.getElementById('hamburger-mobile');
         const closeSidebarMobile = document.getElementById('closeSidebar-mobile');
 
-        // Fungsi untuk meng-toggle sidebar pada desktop (collapse)
-        hamburger.addEventListener('click', function () {
+        const utama = document.getElementById('utama');
+
+        let isMobile = window.innerWidth <= 768;
+
+        window.addEventListener('resize', function() {
+            const currentIsMobile = window.innerWidth <= 768;
+
+            if (currentIsMobile !== isMobile) {
+                isMobile = currentIsMobile;
+                location.reload();
+            }
+        });
+
+
+        hamburger.addEventListener('click', function() {
             sidebar.classList.toggle('sidebar-collapsed');
+
+            if (sidebar.classList.contains('sidebar-collapsed')) {
+                // console.log('tutup');
+                utama.classList.remove('md:w-5/6');
+                utama.classList.add('mr-[70px]');
+                utama.classList.remove('w-full');
+            } else {
+                // console.log('buka');
+                utama.classList.add('md:w-5/6');
+                utama.classList.remove('mr-[70px]');
+                utama.classList.add('w-full');
+            }
         });
 
         // Fungsi untuk toggle sidebar pada mobile
@@ -365,7 +394,7 @@ $conn->close();
         closeSidebarMobile.addEventListener('click', toggleSidebar);
 
         // Menutup sidebar saat mengklik di luar sidebar pada mobile
-        document.addEventListener('click', function (event) {
+        document.addEventListener('click', function(event) {
             if (window.innerWidth <= 768) { // Hanya berlaku pada mobile
                 if (!sidebar.contains(event.target) && !hamburgerMobile.contains(event.target) && !closeSidebarMobile.contains(event.target)) {
                     sidebar.classList.remove('active');
@@ -374,7 +403,7 @@ $conn->close();
         });
 
         // Mencegah penutupan sidebar saat mengklik di dalam sidebar
-        sidebar.addEventListener('click', function (e) {
+        sidebar.addEventListener('click', function(e) {
             e.stopPropagation();
         });
     </script>

@@ -405,15 +405,31 @@ $stmt->close();
 
         const utama = document.getElementById('utama');
 
+        let isMobile = window.innerWidth <= 768;
+
+        window.addEventListener('resize', function() {
+            const currentIsMobile = window.innerWidth <= 768;
+
+            if (currentIsMobile !== isMobile) {
+                isMobile = currentIsMobile;
+                location.reload();
+            }
+        });
+
+
         hamburger.addEventListener('click', function() {
             sidebar.classList.toggle('sidebar-collapsed');
 
             if (sidebar.classList.contains('sidebar-collapsed')) {
+                // console.log('tutup');
                 utama.classList.remove('md:w-5/6');
-                utama.classList.add('w-full');
-            } else {
+                utama.classList.add('mr-[70px]');
                 utama.classList.remove('w-full');
+            } else {
+                // console.log('buka');
                 utama.classList.add('md:w-5/6');
+                utama.classList.remove('mr-[70px]');
+                utama.classList.add('w-full');
             }
         });
 
