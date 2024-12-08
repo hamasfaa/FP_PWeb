@@ -299,7 +299,7 @@ $stmt->close();
                     <?php while ($row = $result->fetch_assoc()): ?>
                         <tr>
                             <td class="px-4 py-2"><?= htmlspecialchars($row['K_NamaKelas']); ?></td>
-                            <td class="px-4 py-2"><?= htmlspecialchars($row['TanggalAmbil']); ?></td>
+                            <td class="px-4 py-2"><?= date('d F Y', strtotime($row['TanggalAmbil'])); ?></td>
                             <td class="px-4 py-2"><?= htmlspecialchars($row['K_MataKuliah']); ?></td>
                             <td class="p-4">
                                 <a href="tugaskelas.php?kelas_id=<?= htmlspecialchars($row['K_ID']) ?>" class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">

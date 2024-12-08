@@ -319,7 +319,7 @@ $stmt->close();
                     <?php while ($row = $result->fetch_assoc()): ?>
                         <tr>
                             <td class="px-4 py-2"><?= htmlspecialchars($row['K_NamaKelas']); ?></td>
-                            <td class="px-4 py-2"><?= htmlspecialchars($row['TanggalAmbil']); ?></td>
+                            <td class="px-4 py-2"><?= date('d F Y', strtotime($row['TanggalAmbil'])); ?></td>
                             <td class="px-4 py-2"><?= htmlspecialchars($row['K_MataKuliah']); ?></td>
                             <td class="p-4">
                                 <form method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus kelas ini?');">

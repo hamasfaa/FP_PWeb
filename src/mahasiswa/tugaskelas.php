@@ -59,18 +59,24 @@ while ($row = $result_dosen->fetch_assoc()) {
 }
 $stmt_dosen->close();
 
-$sql_tugas = "SELECT td.TD_ID, td.TD_Judul, td.TD_Deadline, 
-                     IFNULL(tm.TM_Status, 0) AS status_pengumpulan, 
-                     td.TD_Status AS tugas_status
-              FROM Tugas_Dosen td
-              LEFT JOIN Tugas_Mahasiswa tm ON td.TD_ID = tm.Tugas_Dosen_TD_ID 
-              AND tm.User_U_ID = ? 
-              WHERE td.Kelas_K_ID = ? AND td.TD_Status = 1";  // Menyaring tugas yang aktif
+$sql_tugas = "
+    SELECT 
+        td.TD_ID, 
+        td.TD_Judul, 
+        td.TD_Deadline, 
+        IFNULL(tm.TM_Status, 0) AS status_pengumpulan, 
+        td.TD_Status AS tugas_status,
+        tm.TM_NilaiTugas
+    FROM Tugas_Dosen td
+    LEFT JOIN Tugas_Mahasiswa tm ON td.TD_ID = tm.Tugas_Dosen_TD_ID 
+    AND tm.User_U_ID = ? 
+    WHERE td.Kelas_K_ID = ? 
+    AND td.TD_Status = 1";
+
 $stmt_tugas = $conn->prepare($sql_tugas);
 $stmt_tugas->bind_param('ii', $userID, $kelasID);
 $stmt_tugas->execute();
 $result_tugas = $stmt_tugas->get_result();
-
 
 ?>
 
@@ -385,6 +391,7 @@ $result_tugas = $stmt_tugas->get_result();
                         <th class="border-b p-4 text-left font-medium">Deadline</th>
                         <th class="border-b p-4 text-left font-medium">Nama Tugas</th>
                         <th class="border-b p-4 text-left font-medium">Status</th>
+                        <th class="border-b p-4 text-left font-medium">Nilai</th>
                         <th class="border-b p-4 text-left font-medium">Action</th>
                     </tr>
                 </thead>
@@ -396,6 +403,9 @@ $result_tugas = $stmt_tugas->get_result();
                             <td class="p-4"><?= htmlspecialchars($row['TD_Judul']) ?></td>
                             <td class="p-4 <?= $row['status_pengumpulan'] == 1 ? 'text-green-600 font-bold' : 'text-red-600 font-bold' ?>">
                                 <?= $row['status_pengumpulan'] == 1 ? 'SUDAH MENGUMPULKAN' : 'BELUM MENGUMPULKAN' ?>
+                            </td>
+                            <td class="p-4">
+                                <span class="text-blue-600 font-semibold"><?= $row['TM_NilaiTugas'] ? htmlspecialchars($row['TM_Nilai']) : 'Belum Dinilai' ?></span>
                             </td>
                             <td class="p-4">
                                 <a href="detailtugas.php?tugas_id=<?= htmlspecialchars($row['TD_ID']) ?>"

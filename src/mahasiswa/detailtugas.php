@@ -4,21 +4,57 @@ include('../../assets/db/config.php');
 include('../../auth/aksesMahasiswa.php');
 
 $userID = $_SESSION['U_ID'];
-$sql = "SELECT U_Nama, U_Role, U_Foto FROM User WHERE U_ID = ?";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param('i', $userID);
-$stmt->execute();
-$stmt->store_result();
 
-if ($stmt->num_rows > 0) {
-    $stmt->bind_result($name, $role, $photo);
-    $stmt->fetch();
+$sql_user = "SELECT U_Nama, U_Role, U_Foto FROM User WHERE U_ID = ?";
+$stmt_user = $conn->prepare($sql_user);
+$stmt_user->bind_param('i', $userID);
+$stmt_user->execute();
+$stmt_user->store_result();
+
+if ($stmt_user->num_rows > 0) {
+    $stmt_user->bind_result($name, $role, $photo);
+    $stmt_user->fetch();
 } else {
     header('Location: ../home/login.php');
     exit();
 }
 
-$stmt->close();
+$stmt_user->close();
+
+if (isset($_GET['tugas_id'])) {
+    $tugas_id = $_GET['tugas_id'];
+    
+    $sql_tugas = "SELECT td.TD_Judul, td.TD_Deskripsi, td.TD_Deadline, td.TD_Status, td.TD_FileSoal
+                  FROM Tugas_Dosen td
+                  WHERE td.TD_ID = ?";
+    $stmt_tugas = $conn->prepare($sql_tugas);
+    $stmt_tugas->bind_param('i', $tugas_id);
+    $stmt_tugas->execute();
+    $result_tugas = $stmt_tugas->get_result();
+    
+    if ($result_tugas->num_rows > 0) {
+        $tugas = $result_tugas->fetch_assoc();
+    } else {
+        echo "Tugas tidak ditemukan.";
+        exit;
+    }
+
+    $sql_tugas_mahasiswa = "SELECT TM_Status, TM_NilaiTugas FROM Tugas_Mahasiswa 
+                            WHERE Tugas_Dosen_TD_ID = ? AND User_U_ID = ?";
+    $stmt_tugas_mahasiswa = $conn->prepare($sql_tugas_mahasiswa);
+    $stmt_tugas_mahasiswa->bind_param('ii', $tugas_id, $userID);
+    $stmt_tugas_mahasiswa->execute();
+    $result_tugas_mahasiswa = $stmt_tugas_mahasiswa->get_result();
+    
+    if ($result_tugas_mahasiswa->num_rows > 0) {
+        $tugas_mahasiswa = $result_tugas_mahasiswa->fetch_assoc();
+    } else {
+        $tugas_mahasiswa = null;
+    }
+} else {
+    echo "Tugas ID tidak ditemukan.";
+    exit;
+}
 ?>
 
 <!DOCTYPE html>
@@ -311,19 +347,32 @@ $stmt->close();
             </div>
             <div class="mt-8 w-full pl-4">
                 <div class="p-4 bg-gray-100 rounded-lg">
-                    <h2 class="text-4xl text-dark-teal">Final Project 2</h2>
-                    <p class="text-gray-600 text-lg mt-2 mb-2">Buatlah sebuah todolist menggunakan HTML, CSS, dan JavaScript. Silahkan mancari referensi dari google atau lihat materi yang saya upload</p>
+                    <h2 class="text-4xl text-dark-teal"><?= strtoupper(htmlspecialchars($tugas['TD_Judul'])); ?></h2>
+                    <p class="text-gray-600 text-lg mt-2 mb-2"><?= htmlspecialchars($tugas['TD_Deskripsi']); ?></p>
                     <div class="mt-8 mb-8">
-                        <a href="https://drive.google.com/uc?export=download&id=1ooUGlOMmOgWF_ehz23dhXO-boBKxA_Po"
-                            class="relative bg-light-teal text-white text-base px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Download File
+                        <a href="/FP/storage/task/<?= htmlspecialchars($tugas['TD_FileSoal']); ?>" target="_blank"
+                            class="relative bg-light-teal text-white text-xl px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">File Tugas
                         </a>
                     </div>
                     <div class="mb-6" style="margin-top: 100px;">
-                        <label for="deadline" class="block text-dark-teal font-semibold mb-6 text-2xl">Status:
-                            <span class="text-red-600 font-bold ml-2">BELUM MENGUMPULKAN</span>
+                        <label for="status" class="block text-dark-teal font-semibold mb-6 text-2xl">Status:
+                            <?php if ($tugas_mahasiswa) { ?>
+                                <span class="text-green-600 font-bold ml-2">SUDAH MENGUMPULKAN</span>
+                            <?php } else { ?>
+                                <span class="text-red-600 font-bold ml-2">BELUM MENGUMPULKAN</span>
+                            <?php } ?>
                         </label>
-                        <label for="deadline" class="block text-dark-teal font-semibold mb-2 text-2xl">Deadline:
-                            <span class="text-gray-600 ml-2">30 Agustus 2024, 23:59</span>
+
+                        <label for="deadline" class="block text-dark-teal font-semibold mb-6 text-2xl">Deadline:
+                            <span class="text-gray-600 ml-2"><?= date('d F Y, H:i', strtotime($tugas['TD_Deadline'])); ?></span>
+                        </label>
+
+                        <label for="nilai" class="block text-dark-teal font-semibold mb-2 text-2xl">Nilai:
+                            <?php if ($tugas_mahasiswa && isset($tugas_mahasiswa['TM_NilaiTugas'])) { ?>
+                                <span class="text-blue-600 ml-2"><?= htmlspecialchars($tugas_mahasiswa['TM_NilaiTugas']); ?></span>
+                            <?php } else { ?>
+                                <span class="text-gray-600 ml-2">Belum Dinilai</span>
+                            <?php } ?>
                         </label>
                     </div>
                     <div class="mb-6">

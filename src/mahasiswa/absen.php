@@ -489,7 +489,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <?php while ($row = $result_absen->fetch_assoc()) : ?>
                             <tr class="transition">
                                 <td class="p-4"><?= htmlspecialchars($row['AD_Pertemuan']) ?></td>
-                                <td class="p-4"><?= htmlspecialchars($row['AD_TanggalDibuat']) ?></td>
+                                <td class="p-4"><?= date('d F Y', strtotime($row['AD_TanggalDibuat'])); ?></td>
                                 <td class="p-4"><?= htmlspecialchars($row['AD_Deskripsi']) ?></td>
                                 <td class="p-4">
                                     <?php
@@ -503,28 +503,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                         $stmt_status->fetch();
                                         switch ($status) {
                                             case 1:
-                                                $statusClass = 'text-blue-700 py-2';
+                                                $statusClass = 'text-blue-700 py-2 font-bold';
                                                 $statusText = 'HADIR';
                                                 break;
                                             case 2:
-                                                $statusClass = 'text-purple-700 py-2';
+                                                $statusClass = 'text-purple-700 py-2 font-bold';
                                                 $statusText = 'IZIN';
                                                 break;
                                             case 3:
-                                                $statusClass = 'text-yellow-600 py-2';
+                                                $statusClass = 'text-yellow-600 py-2 font-bold';
                                                 $statusText = 'SAKIT';
                                                 break;
                                             case 4:
-                                                $statusClass = 'text-red-600 py-2';
+                                                $statusClass = 'text-red-600 py-2 font-bold';
                                                 $statusText = 'ALPA';
                                                 break;
                                             default:
-                                                $statusClass = 'text-red-600 py-2';
+                                                $statusClass = 'text-red-600 py-2 font-bold';
                                                 $statusText = 'ALPA';
                                                 break;
                                         }
                                     } else {
-                                        $statusClass = 'text-red-600 py-2';
+                                        $statusClass = 'text-red-600 py-2 font-bold';
                                         $statusText = 'ALPA';
                                     }
                                     ?>
