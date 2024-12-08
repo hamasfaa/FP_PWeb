@@ -202,7 +202,7 @@ $stmt->close();
         </div>
 
         <!-- Ikon Hamburger Default di Sidebar untuk Desktop (Collapse) -->
-        <div class="hamburger text-white px-6 py-2 cursor-pointer flex md:flex hidden">
+        <div class="hamburger text-white px-6 py-2 cursor-pointer flex md:flex">
             <span class="material-symbols-outlined text-3xl">menu</span>
         </div>
         <div>
