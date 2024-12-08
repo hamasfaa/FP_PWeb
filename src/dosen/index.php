@@ -227,11 +227,15 @@ try {
             </div>
         </div>
         <div class="w-full mt-4 md:mt-0 md:flex md:justify-center">
-            <div class="flex items-center border rounded p-2 md:p-4 w-full md:w-2/5 lg:w-1/4">
-                <span class="material-symbols-outlined mr-2 text-light-teal">
-                    search
-                </span>
-                <input type="text" name="search" placeholder="CARI BLABLABLA" class="flex-1 outline-none">
+            <div class="relative w-full md:w-2/5 lg:w-1/4">
+                <div class="flex items-center border rounded p-2 md:p-4">
+                    <span class="material-symbols-outlined mr-2 text-light-teal">
+                        search
+                    </span>
+                    <input type="text" name="search" id="pencarian" placeholder="Cari kelas, tugas, atau absen..." class="flex-1 outline-none">
+                </div>
+                <div id="hasilPencarian" class="absolute w-full mt-2 bg-white border rounded shadow-lg z-50 hidden">
+                </div>
             </div>
         </div>
     </nav>
@@ -374,29 +378,8 @@ try {
                         <a href="#" class="text-dark-teal">Kelas 1: Pemrograman Web</a>
                         <span class="text-gray-500">Matakuliah</span>
                     </div>
-                    <div class="flex justify-between border-b py-2">
-                        <a href="#" class="text-dark-teal">Kelas 2: Sistem Informasi</a>
-                        <span class="text-gray-500">Matakuliah</span>
-                    </div>
-                    <div class="flex justify-between border-b py-2">
-                        <a href="#" class="text-dark-teal">Kelas 3: Basis Data</a>
-                        <span class="text-gray-500">Matakuliah</span>
-                    </div>
-                    <div class="flex justify-between border-b py-2">
-                        <a href="#" class="text-dark-teal">Kelas 4: Algoritma</a>
-                        <span class="text-gray-500">Matakuliah</span>
-                    </div>
-                    <div class="flex justify-between border-b py-2">
-                        <a href="#" class="text-dark-teal">Kelas 5: Keamanan Jaringan</a>
-                        <span class="text-gray-500">Matakuliah</span>
-                    </div>
-                    <div class="flex justify-between border-b py-2">
-                        <a href="#" class="text-dark-teal">Kelas 6: Teknologi Cloud</a>
-                        <span class="text-gray-500">Matakuliah</span>
-                    </div>
                 </div>
             </div>
-
             <div class="bg-white shadow-lg rounded-lg p-8 mb-6">
                 <h2 class="text-2xl font-semibold text-dark-teal mb-4">Daftar Tugas</h2>
                 <div class="task-card space-y-4">
@@ -404,13 +387,14 @@ try {
                         <a href="#" class="text-dark-teal">Tugas 1: Implementasi CRUD</a>
                         <span class="text-gray-500">Batas: 15 Desember 2024</span>
                     </div>
+                </div>
+            </div>
+            <div class="bg-white shadow-lg rounded-lg p-8 mb-6">
+                <h2 class="text-2xl font-semibold text-dark-teal mb-4">Daftar Pertemuan</h2>
+                <div class="class-card space-y-4">
                     <div class="flex justify-between border-b py-2">
-                        <a href="#" class="text-dark-teal">Tugas 2: Ujian Tengah Semester</a>
-                        <span class="text-gray-500">Batas: 20 Desember 2024</span>
-                    </div>
-                    <div class="flex justify-between border-b py-2">
-                        <a href="#" class="text-dark-teal">Tugas 3: Proyek Akhir</a>
-                        <span class="text-gray-500">Batas: 25 Desember 2024</span>
+                        <a href="#" class="text-dark-teal">Kelas 1: Pemrograman Web</a>
+                        <span class="text-gray-500">Matakuliah</span>
                     </div>
                 </div>
             </div>
@@ -500,6 +484,67 @@ try {
             });
         } else {
             kalender.innerHTML = '<p class="text-gray-500">Tidak ada hari libur</p>';
+        }
+
+        document.getElementById('pencarian').addEventListener('input', function() {
+            const searchTerm = this.value;
+            // console.log(searchTerm);
+            if (searchTerm.length > 2) {
+                // console.log(searchTerm);
+                document.getElementById('hasilPencarian').classList.remove('hidden');
+                fetchHasil(searchTerm);
+            } else {
+                document.getElementById('hasilPencarian').classList.add('hidden');
+            }
+        });
+
+        function fetchHasil(searchTerm) {
+            fetch('../../assets/be/search_results.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    redirect: 'manual',
+                    body: JSON.stringify({
+                        userID: <?php echo $userID; ?>,
+                        search: searchTerm,
+                    })
+                })
+                .then(response => {
+                    // console.log(response.status);
+                    // console.log(response.headers.get('Location'));
+                    // console.log(response);
+                    return response.json();
+                })
+                .then(data => {
+                    // console.log('Data JSON:', data);
+                    displayHasil(data);
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function displayHasil(data) {
+            // console.log(data.length);
+            let hasilPencarian = '';
+            if (data.length > 0) {
+                hasilPencarian = '<ul>';
+                data.forEach(item => {
+                    if (item.K_MataKuliah && item.K_NamaKelas) {
+                        hasilPencarian += `
+                    <li>${item.K_MataKuliah} - ${item.K_NamaKelas}</li>`;
+                    } else if (item.TD_Judul && item.TD_Deadline) {
+                        hasilPencarian += `
+                    <li>${item.TD_Judul} Deadline: ${item.TD_Deadline}</li>`;
+                    } else if (item.AD_Deskripsi && item.AD_TanggalDibuat) {
+                        hasilPencarian += `
+                    <li>${item.AD_Deskripsi} Tanggal: ${item.AD_TanggalDibuat}</li>`;
+                    }
+                });
+                hasilPencarian += '</ul>';
+            } else {
+                hasilPencarian = 'Tidak ada hasil yang ditemukan.';
+            }
+            document.getElementById('hasilPencarian').innerHTML = hasilPencarian;
         }
     </script>
     <script src="../../node_modules/flowbite/dist/flowbite.min.js"></script>
