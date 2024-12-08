@@ -317,7 +317,7 @@ $conn->close();
                             <td class="p-4"><?= htmlspecialchars($row['K_MataKuliah']) ?></td>
                             <td class="p-4">
                                 <a href="absen.php?kelas_id=<?= htmlspecialchars($row['K_ID']) ?>"
-                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">
+                                    class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">
                                     Absen
                                 </a>
                             </td>
@@ -345,15 +345,31 @@ $conn->close();
 
         const utama = document.getElementById('utama');
 
+        let isMobile = window.innerWidth <= 768;
+
+        window.addEventListener('resize', function() {
+            const currentIsMobile = window.innerWidth <= 768;
+
+            if (currentIsMobile !== isMobile) {
+                isMobile = currentIsMobile;
+                location.reload();
+            }
+        });
+
+
         hamburger.addEventListener('click', function() {
             sidebar.classList.toggle('sidebar-collapsed');
 
             if (sidebar.classList.contains('sidebar-collapsed')) {
+                // console.log('tutup');
                 utama.classList.remove('md:w-5/6');
-                utama.classList.add('w-full');
-            } else {
+                utama.classList.add('mr-[70px]');
                 utama.classList.remove('w-full');
+            } else {
+                // console.log('buka');
                 utama.classList.add('md:w-5/6');
+                utama.classList.remove('mr-[70px]');
+                utama.classList.add('w-full');
             }
         });
 
