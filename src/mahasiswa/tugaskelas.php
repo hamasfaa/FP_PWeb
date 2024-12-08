@@ -4,132 +4,21 @@ include('../../assets/db/config.php');
 include('../../auth/aksesMahasiswa.php');
 
 $userID = $_SESSION['U_ID'];
+$sql = "SELECT U_Nama, U_Role, U_Foto FROM User WHERE U_ID = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param('i', $userID);
+$stmt->execute();
+$stmt->store_result();
 
-$sql_profile = "SELECT U_Nama, U_Role, U_Foto FROM User WHERE U_ID = ?";
-$stmt_profile = $conn->prepare($sql_profile);
-$stmt_profile->bind_param('i', $userID);
-$stmt_profile->execute();
-$stmt_profile->store_result();
-
-if ($stmt_profile->num_rows > 0) {
-    $stmt_profile->bind_result($name, $role, $photo);
-    $stmt_profile->fetch();
+if ($stmt->num_rows > 0) {
+    $stmt->bind_result($name, $role, $photo);
+    $stmt->fetch();
 } else {
     header('Location: ../home/login.php');
     exit();
 }
-$stmt_profile->close();
 
-if (isset($_GET['kelas_id'])) {
-    $kelasID = intval($_GET['kelas_id']);
-} else {
-    echo "Kelas tidak ditentukan.";
-    exit();
-}
-
-$sql_kelas = "SELECT K_NamaKelas, K_MataKuliah FROM Kelas WHERE K_ID = ?";
-$stmt_kelas = $conn->prepare($sql_kelas);
-$stmt_kelas->bind_param('i', $kelasID);
-$stmt_kelas->execute();
-$result_kelas = $stmt_kelas->get_result();
-
-if ($result_kelas->num_rows > 0) {
-    $kelas = $result_kelas->fetch_assoc();
-    $namaKelas = $kelas['K_NamaKelas'];
-    $mataKuliah = $kelas['K_MataKuliah'];
-} else {
-    echo "Kelas tidak ditemukan.";
-    exit();
-}
-$stmt_kelas->close();
-
-$sql_pertemuan_count = "SELECT COUNT(*) AS total_pertemuan
-                        FROM Absen_Dosen
-                        WHERE Kelas_K_ID = ?";
-$stmt_pertemuan_count = $conn->prepare($sql_pertemuan_count);
-$stmt_pertemuan_count->bind_param('i', $kelasID);
-$stmt_pertemuan_count->execute();
-$stmt_pertemuan_count->store_result();
-$stmt_pertemuan_count->bind_result($total_pertemuan);
-$stmt_pertemuan_count->fetch();
-$stmt_pertemuan_count->close();
-
-$sql_status_count = "SELECT 
-                        COALESCE(SUM(CASE WHEN AM_Status = 1 THEN 1 ELSE 0 END), 0) AS hadir,
-                        COALESCE(SUM(CASE WHEN AM_Status = 2 THEN 1 ELSE 0 END), 0) AS izin,
-                        COALESCE(SUM(CASE WHEN AM_Status = 3 THEN 1 ELSE 0 END), 0) AS sakit,
-                        COALESCE(SUM(CASE WHEN AM_Status = 4 THEN 1 ELSE 0 END), 0) AS alpa
-                    FROM Absen_Mahasiswa
-                    WHERE Kelas_K_ID = ?";
-$stmt_status_count = $conn->prepare($sql_status_count);
-$stmt_status_count->bind_param('i', $kelasID);
-$stmt_status_count->execute();
-$stmt_status_count->store_result();
-$stmt_status_count->bind_result($hadir, $izin, $sakit, $alpa);
-$stmt_status_count->fetch();
-$stmt_status_count->close();
-
-$total_status = ($hadir + $izin + $sakit + $alpa);
-
-if ($total_status < $total_pertemuan) {
-    $remaining_alpa = $total_pertemuan - $total_status;
-    $alpa += $remaining_alpa;
-}
-
-$sql_dosen = "SELECT U.U_Nama 
-              FROM User U
-              INNER JOIN User_Kelas UK ON U.U_ID = UK.User_U_ID
-              WHERE UK.Kelas_K_ID = ? AND U.U_Role = 'dosen'";
-$stmt_dosen = $conn->prepare($sql_dosen);
-$stmt_dosen->bind_param('i', $kelasID);
-$stmt_dosen->execute();
-$result_dosen = $stmt_dosen->get_result();
-
-$dosen_names = [];
-while ($row = $result_dosen->fetch_assoc()) {
-    $dosen_names[] = $row['U_Nama'];
-}
-$stmt_dosen->close();
-
-$sql_absen = "SELECT AD_ID, AD_TanggalDibuat, AD_Deskripsi, AD_Pertemuan, AD_Kode 
-              FROM Absen_Dosen 
-              WHERE Kelas_K_ID = ?";
-$stmt_absen = $conn->prepare($sql_absen);
-$stmt_absen->bind_param('i', $kelasID);
-$stmt_absen->execute();
-$result_absen = $stmt_absen->get_result();
-$stmt_absen->close();
-
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $code = $_POST['code'];
-    $attendance = $_POST['attendance'];
-    
-    $sql_check_code = "SELECT AD_ID FROM Absen_Dosen WHERE AD_Kode = ? AND Kelas_K_ID = ?";
-    $stmt_check_code = $conn->prepare($sql_check_code);
-    $stmt_check_code->bind_param('si', $code, $kelasID);
-    $stmt_check_code->execute();
-    $stmt_check_code->store_result();
-
-    if ($stmt_check_code->num_rows > 0) {
-        $stmt_check_code->bind_result($absenDosenID);
-        $stmt_check_code->fetch();
-
-        $insert_sql = "INSERT INTO Absen_Mahasiswa (AM_Status, Absen_Dosen_AD_ID, Kelas_K_ID, User_U_ID, AM_Deskripsi) VALUES (1, ?, ?, ?, ?)";
-        $stmt_insert = $conn->prepare($insert_sql);
-        $statusAlpa = 1;
-        $stmt_insert->bind_param('iiis', $absenDosenID, $kelasID, $userID, $attendance);
-        $stmt_insert->execute();
-        $stmt_insert->close();
-
-        header('Location: absen.php?kelas_id=' . $kelasID);
-        exit();
-    } else {
-        echo "<script>alert('Kode presensi tidak valid.'); window.location.href='absen.php?kelas_id=" . $kelasID . "';</script>";
-        exit();
-    }
-
-    $stmt_check_code->close();
-}
+$stmt->close();
 ?>
 
 <!DOCTYPE html>
@@ -403,7 +292,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 </li>
             </ul>
         </div>
-
         <!-- Profil -->
         <div class="profile-container flex items-center space-x-4 p-6 mt-auto">
             <img src="<?php echo $photo ?>" alt="Foto Profil" class="rounded-xl w-12 h-12">
@@ -419,156 +307,81 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <div id="utama" class="w-full md:w-5/6 load">
         <div class="p-6 rounded-lg shadow-md flex flex-row justify-between">
             <div class="header mb-4">
-                <!-- Menampilkan Nama Kelas dari Database -->
-                <h1 class="px-4 text-3xl font-bold text-dark-teal uppercase mb-1">
-                    <?php echo htmlspecialchars($mataKuliah); ?>
-                </h1>
-
+                <h1 class="px-4 text-3xl font-bold text-dark-teal uppercase mb-1">Pemrograman Web</h1>
                 <h2 class="px-4 text-2xl text-teal-600 font-bold mb-2">Dosen:</h2>
-
-                <!-- Menampilkan Daftar Dosen dari Database -->
-                <?php
-                if (!empty($dosen_names)) {
-                    foreach ($dosen_names as $dosen) {
-                        echo '<p class="px-4 text-xl text-teal-600 italic mb-1">' . htmlspecialchars($dosen) . '</p>';
-                    }
-                } else {
-                    echo '<p class="px-4 text-xl text-teal-600 italic mb-1">Tidak ada dosen yang terdaftar.</p>';
-                }
-                ?>
+                <p class="px-4 text-xl text-teal-600 italic mb-1">Bintang Nuralamsyah, S.Kom., M.Kom.</p>
+                <p class="px-4 text-xl text-teal-600 italic mb-1">Dr. Agus Budi Raharjo, S.Kom., M.Kom.</p>
             </div>
         </div>
-        <div class="p-6 rounded-lg flex flex-col md:flex-row items-center justify-center w-1/2 mx-auto h-auto bg-green-100 mt-8">
-            <div class="w-full md:w-1/2">
-                <table class="w-full text-center border-collapse text-lg lg:text-xl">
-                    <thead class="font-bold">
-                        <tr>
-                            <th class="border-r border-gray-300 w-1/4 text-blue-700 py-2">HADIR</th>
-                            <th class="border-r border-gray-300 w-1/4 text-purple-700">IZIN</th>
-                            <th class="border-r border-gray-300 w-1/4 text-yellow-600">SAKIT</th>
-                            <th class="w-1/4 text-red-600">ALPA</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="border-r border-gray-300 py-2"><?= $hadir ?></td>
-                            <td class="border-r border-gray-300"><?= $izin ?></td>
-                            <td class="border-r border-gray-300"><?= $sakit ?></td>
-                            <td><?= $alpa ?></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="w-full md:w-1/2 mt-4 md:mt-0">
-                <table class="w-full text-center md:text-right border-collapse text-lg lg:text-xl">
-                    <thead class="font-bold">
-                        <tr>
-                            <th class="py-2">TOTAL TATAP MUKA TERLAKSANA</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="py-2"><?= $total_pertemuan ?></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="p-6 rounded-lg flex flex-col md:flex-row items-center justify-center w-5/6 mx-auto h-auto bg-gray-100 mt-8">
-            <table class="class-table w-full border-collapse">
+        <div class="p-6 rounded-lg flex flex-row justify-between">
+            <table class="class-table w-full mt-6 border-collapse">
                 <thead>
-                    <tr class="text-dark-teal w-1/5">
-                        <th class="border-b p-4 text-left font-medium">Tatap muka</th>
-                        <th class="border-b p-4 text-left font-medium">Jadwal</th>
-                        <th class="border-b p-4 text-left font-medium">Topik</th>
+                    <tr class="text-dark-teal">
+                        <th class="border-b p-4 text-left font-medium">Tugas</th>
+                        <th class="border-b p-4 text-left font-medium">Deadline</th>
+                        <th class="border-b p-4 text-left font-medium">Nama Tugas</th>
                         <th class="border-b p-4 text-left font-medium">Status</th>
-                        <th class="border-b p-4 text-left font-medium">Keterangan</th>
+                        <th class="border-b p-4 text-left font-medium">Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php if ($result_absen->num_rows > 0) : ?>
-                        <?php while ($row = $result_absen->fetch_assoc()) : ?>
-                            <tr class="transition">
-                                <td class="p-4"><?= htmlspecialchars($row['AD_Pertemuan']) ?></td>
-                                <td class="p-4"><?= htmlspecialchars($row['AD_TanggalDibuat']) ?></td>
-                                <td class="p-4"><?= htmlspecialchars($row['AD_Deskripsi']) ?></td>
-                                <td class="p-4">
-                                    <?php
-                                    $stmt_status = $conn->prepare("SELECT AM_Status FROM Absen_Mahasiswa WHERE Absen_Dosen_AD_ID = ? AND User_U_ID = ?");
-                                    $stmt_status->bind_param('ii', $row['AD_ID'], $userID); 
-                                    $stmt_status->execute();
-                                    $stmt_status->store_result();
-
-                                    if ($stmt_status->num_rows > 0) {
-                                        $stmt_status->bind_result($status);
-                                        $stmt_status->fetch();
-                                        switch ($status) {
-                                            case 1:
-                                                $statusClass = 'text-blue-700 py-2';
-                                                $statusText = 'HADIR';
-                                                break;
-                                            case 2:
-                                                $statusClass = 'text-purple-700 py-2';
-                                                $statusText = 'IZIN';
-                                                break;
-                                            case 3:
-                                                $statusClass = 'text-yellow-600 py-2';
-                                                $statusText = 'SAKIT';
-                                                break;
-                                            case 4:
-                                                $statusClass = 'text-red-600 py-2';
-                                                $statusText = 'ALPA';
-                                                break;
-                                            default:
-                                                $statusClass = 'text-red-600 py-2';
-                                                $statusText = 'ALPA';
-                                                break;
-                                        }
-                                    } else {
-                                        $statusClass = 'text-red-600 py-2';
-                                        $statusText = 'ALPA';
-                                    }
-                                    ?>
-                                    <span class="<?= $statusClass ?>"><?= $statusText ?></span>
-                                </td>
-                                <td class="p-4">
-                                    <button
-                                        class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal"
-                                        onclick="openModal('<?= htmlspecialchars($row['AD_Kode']) ?>')">Kode
-                                    </button>
-                                </td>
-                            </tr>
-                        <?php endwhile; ?>
-                    <?php else : ?>
-                        <tr>
-                            <td colspan="5" class="text-center">Tidak ada data.</td>
-                        </tr>
-                    <?php endif; ?>
+                    <tr class="transition">
+                        <td class="p-4"><a href="./detailKelas.php">1</a></td>
+                        <td class="p-4">12 Agustus 2024, 23:59</td>
+                        <td class="p-4">Membuat todolist</td>
+                        <td class="p-4 text-green-600 font-bold">SUDAH MENGUMPULKAN</td>
+                        <td class="p-4">
+                            <a href="detailtugas.php"
+                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Detail Tugas
+                            </a>
+                        </td>
+                    </tr>
+                    <tr class="transition">
+                        <td class="p-4"><a href="./detailKelas.php">2</a></td>
+                        <td class="p-4">19 Agustus 2024, 23:59</td>
+                        <td class="p-4">Membuat CV dengan HTML</td>
+                        <td class="p-4 text-green-600 font-bold">SUDAH MENGUMPULKAN</td>
+                        <td class="p-4">
+                            <a href="detailtugas.php"
+                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Detail Tugas
+                            </a>
+                        </td>
+                    </tr>
+                    <tr class="transition">
+                        <td class="p-4"><a href="./detailKelas.php">3</a></td>
+                        <td class="p-4">20 Agustus 2024, 23:59</td>
+                        <td class="p-4">Membuat login page</td>
+                        <td class="p-4 text-green-600 font-bold">SUDAH MENGUMPULKAN</td>
+                        <td class="p-4">
+                            <a href="detailtugas.php"
+                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Detail Tugas
+                            </a>
+                        </td>
+                    </tr>
+                    <tr class="transition">
+                        <td class="p-4"><a href="./detailKelas.php">4</a></td>
+                        <td class="p-4">27 Agustus 2024, 23:59</td>
+                        <td class="p-4">Final Project 1</td>
+                        <td class="p-4 text-green-600 font-bold">SUDAH MENGUMPULKAN</td>
+                        <td class="p-4">
+                            <a href="detailtugas.php"
+                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Detail Tugas
+                            </a>
+                        </td>
+                    </tr>
+                    <tr class="transition">
+                        <td class="p-4"><a href="./detailKelas.php">5</a></td>
+                        <td class="p-4">30 Agustus 2024, 23:59</td>
+                        <td class="p-4">Final Project 2</td>
+                        <td class="p-4 text-red-600 font-bold">BELUM MENGUMPULKAN</td>
+                        <td class="p-4">
+                            <a href="detailtugas.php"
+                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Detail Tugas
+                            </a>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
-        </div>
-        <div id="myModal" class="modal">
-            <form class="modal-content bg-white p-5 border border-gray-300 rounded-lg shadow-lg mx-auto mt-20 w-1/3" action="absen.php?kelas_id=<?php echo $kelasID; ?>" method="POST">
-                <span class="close text-2xl font-bold text-gray-500 cursor-pointer float-right" onclick="closeModal()">&times;</span>
-                <div class="mt-5">
-                    <label for="code" class="block text-sm font-medium text-gray-700">Masukkan 6 Digit Kode Presensi: <span class="text-red-500">*</span></label>
-                    <input type="text" id="code" name="code" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
-                    <p class="mt-4 mb-2 text-sm font-medium text-gray-700">Kehadiran Kuliah <span class="text-red-500">*</span></p>
-                    <div class="flex items-center mb-4">
-                        <input type="radio" id="class" name="attendance" value="Kehadiran di kelas" required class="text-indigo-600 border-gray-300 focus:ring-indigo-500">
-                        <label for="class" class="ml-2 text-sm text-gray-700">Saya hadir kuliah di kelas</label>
-                    </div>
-                    <div class="flex items-center mb-4">
-                        <input type="radio" id="online" name="attendance" value="Kehadiran secara online" required class="text-indigo-600 border-gray-300 focus:ring-indigo-500">
-                        <label for="online" class="ml-2 text-sm text-gray-700">Saya hadir kuliah secara online</label>
-                    </div>
-                    <div class="flex items-center mb-4 italic">
-                        <p>*Untuk Perizinan, harap menghubungi Dosen</p>
-                    </div>
-                    <button type="submit" class="w-full bg-dark-teal hover:bg-light-teal text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Simpan</button>
-                </div>
-            </form>
         </div>
     </div>
 

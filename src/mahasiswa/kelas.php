@@ -5,6 +5,22 @@ include('../../auth/aksesMahasiswa.php');
 
 $userID = $_SESSION['U_ID'];
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['kelasDEL'])) {
+    $kelasID = $_POST['kelasDEL']; 
+    $userID = $_SESSION['U_ID']; 
+
+    $sql = "DELETE FROM User_Kelas WHERE Kelas_K_ID = ? AND User_U_ID = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param('ii', $kelasID, $userID); 
+
+    if ($stmt->execute()) {
+        header('Location: kelas.php');
+        exit();
+    } else {
+        echo "<script>alert('Terjadi kesalahan saat menghapus kelas.'); window.location.href = 'kelas.php';</script>";
+    }
+}
+
 $sql = "SELECT U_Nama, U_Role, U_Foto FROM User WHERE U_ID = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param('i', $userID);
@@ -19,7 +35,7 @@ if ($stmt->num_rows > 0) {
     exit();
 }
 
-$query = "SELECT K.K_NamaKelas, K.K_MataKuliah, UK.TanggalAmbil
+$query = "SELECT K.K_NamaKelas, K.K_MataKuliah, UK.Kelas_K_ID, UK.TanggalAmbil
           FROM Kelas K
           JOIN User_Kelas UK ON K.K_ID = UK.Kelas_K_ID
           WHERE UK.User_U_ID = ?";
@@ -29,6 +45,7 @@ $stmt->execute();
 $result = $stmt->get_result();
 $stmt->close();
 ?>
+
 
 
 <!DOCTYPE html>
@@ -212,7 +229,7 @@ $stmt->close();
         </div>
 
         <!-- Ikon Hamburger Default di Sidebar untuk Desktop (Collapse) -->
-        <div class="hamburger text-white px-6 py-2 cursor-pointer flex md:flex hidden">
+        <div class="hamburger text-white px-6 py-2 cursor-pointer flex md:flex">
             <span class="material-symbols-outlined text-3xl">menu</span>
         </div>
         <div>
@@ -234,11 +251,11 @@ $stmt->close();
                     </a>
                 </li>
                 <li>
-                    <a href="../mahasiswa/nilai.php"
+                    <a href="../mahasiswa/tugas.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
-                        <span class="material-symbols-outlined text-light-teal text-3xl">monitoring</span>
-                        <span class="link-text ml-3">Penilaian</span>
-                        <span class="tooltip">Penilaian</span>
+                        <span class="material-symbols-outlined text-light-teal text-3xl">task</span>
+                        <span class="link-text ml-3">Tugas</span>
+                        <span class="tooltip">Tugas</span>
                     </a>
                 </li>
                 <li>
@@ -305,11 +322,12 @@ $stmt->close();
                             <td class="px-4 py-2"><?= htmlspecialchars($row['TanggalAmbil']); ?></td>
                             <td class="px-4 py-2"><?= htmlspecialchars($row['K_MataKuliah']); ?></td>
                             <td class="p-4">
-                                <a href="tugas.php"
-                                    class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Tugas
-                                    <div class="absolute top-0 right-0 -mr-1 -mt-1 w-4 h-4 bg-red-500 rounded-full animate-ping"></div>
-                                    <div class="absolute top-0 right-0 -mr-1 -mt-1 w-4 h-4 bg-red-500 rounded-full"></div>
-                                </a>
+                                <form method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus kelas ini?');">
+                                    <input type="hidden" name="kelasDEL" value="<?php echo htmlspecialchars($row['Kelas_K_ID']); ?>">
+                                    <button type="submit" class="relative bg-red-700 text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-red-500 hover:text-red-500 cursor-pointer">
+                                        Hapus
+                                    </button>
+                                </form>
                             </td>
                         </tr>
                     <?php endwhile; ?>

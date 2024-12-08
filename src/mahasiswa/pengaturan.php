@@ -179,7 +179,7 @@
         </div>
 
         <!-- Ikon Hamburger Default di Sidebar untuk Desktop (Collapse) -->
-        <div class="hamburger text-white px-6 py-2 cursor-pointer flex md:flex hidden">
+        <div class="hamburger text-white px-6 py-2 cursor-pointer flex md:flex">
             <span class="material-symbols-outlined text-3xl">menu</span>
         </div>
         <div>
@@ -201,11 +201,11 @@
                     </a>
                 </li>
                 <li>
-                    <a href="../mahasiswa/nilai.php"
+                    <a href="../mahasiswa/tugas.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
-                        <span class="material-symbols-outlined text-light-teal text-3xl">monitoring</span>
-                        <span class="link-text ml-3">Penilaian</span>
-                        <span class="tooltip">Penilaian</span>
+                        <span class="material-symbols-outlined text-light-teal text-3xl">task</span>
+                        <span class="link-text ml-3">Tugas</span>
+                        <span class="tooltip">Tugas</span>
                     </a>
                 </li>
                 <li>
