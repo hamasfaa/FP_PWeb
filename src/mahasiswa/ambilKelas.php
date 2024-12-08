@@ -245,7 +245,7 @@ $conn->close();
         <div>
             <ul class="flex flex-col space-y-6 px-6 pt-2 pb-6 text-white">
                 <li>
-                    <a href="../mahasiswa/beranda.php"
+                    <a href="../mahasiswa/index.php"
                         class="flex items-center hover:-translate-y-1 transition menu-item text-xl relative">
                         <span class="material-symbols-outlined text-light-teal text-3xl">home</span>
                         <span class="link-text ml-3">Beranda</span>

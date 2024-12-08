@@ -1176,11 +1176,6 @@ input:checked + .toggle-bg{
   margin-right: auto;
 }
 
-.mx-\[70px\]{
-  margin-left: 70px;
-  margin-right: 70px;
-}
-
 .-mr-1{
   margin-right: -0.25rem;
 }
@@ -1227,10 +1222,6 @@ input:checked + .toggle-bg{
 
 .mr-2{
   margin-right: 0.5rem;
-}
-
-.mr-20{
-  margin-right: 5rem;
 }
 
 .mt-1{
@@ -1405,10 +1396,6 @@ input:checked + .toggle-bg{
 
 .w-full{
   width: 100%;
-}
-
-.w-\[70px\]{
-  width: 70px;
 }
 
 .flex-1{
@@ -1795,6 +1782,11 @@ input:checked + .toggle-bg{
 .bg-yellow-700{
   --tw-bg-opacity: 1;
   background-color: rgb(142 75 16 / var(--tw-bg-opacity, 1));
+}
+
+.bg-red-600{
+  --tw-bg-opacity: 1;
+  background-color: rgb(224 36 36 / var(--tw-bg-opacity, 1));
 }
 
 .bg-opacity-75{
@@ -2222,6 +2214,11 @@ input:checked + .toggle-bg{
   border-color: rgb(194 120 3 / var(--tw-border-opacity, 1));
 }
 
+.hover\:border-red-600:hover{
+  --tw-border-opacity: 1;
+  border-color: rgb(224 36 36 / var(--tw-border-opacity, 1));
+}
+
 .hover\:bg-blue-800:hover{
   --tw-bg-opacity: 1;
   background-color: rgb(30 66 159 / var(--tw-bg-opacity, 1));
@@ -2290,6 +2287,11 @@ input:checked + .toggle-bg{
 .hover\:text-yellow-500:hover{
   --tw-text-opacity: 1;
   color: rgb(194 120 3 / var(--tw-text-opacity, 1));
+}
+
+.hover\:text-red-600:hover{
+  --tw-text-opacity: 1;
+  color: rgb(224 36 36 / var(--tw-text-opacity, 1));
 }
 
 .hover\:underline:hover{

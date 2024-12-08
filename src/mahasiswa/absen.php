@@ -419,14 +419,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <div id="utama" class="w-full md:w-5/6 load">
         <div class="p-6 rounded-lg shadow-md flex flex-row justify-between">
             <div class="header mb-4">
-                <!-- Menampilkan Nama Kelas dari Database -->
                 <h1 class="px-4 text-3xl font-bold text-dark-teal uppercase mb-1">
                     <?php echo htmlspecialchars($mataKuliah); ?>
                 </h1>
 
                 <h2 class="px-4 text-2xl text-teal-600 font-bold mb-2">Dosen:</h2>
 
-                <!-- Menampilkan Daftar Dosen dari Database -->
                 <?php
                 if (!empty($dosen_names)) {
                     foreach ($dosen_names as $dosen) {

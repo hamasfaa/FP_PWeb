@@ -19,6 +19,59 @@ if ($stmt->num_rows > 0) {
 }
 
 $stmt->close();
+
+if (isset($_GET['kelas_id'])) {
+    $kelasID = $_GET['kelas_id'];
+    // Lakukan proses yang diperlukan dengan $kelasID
+} else {
+    echo "Kelas ID tidak ditemukan.";
+    exit();
+}
+
+$sql_kelas = "SELECT K_NamaKelas, K_MataKuliah FROM Kelas WHERE K_ID = ?";
+$stmt_kelas = $conn->prepare($sql_kelas);
+$stmt_kelas->bind_param('i', $kelasID);
+$stmt_kelas->execute();
+$result_kelas = $stmt_kelas->get_result();
+
+if ($result_kelas->num_rows > 0) {
+    $kelas = $result_kelas->fetch_assoc();
+    $namaKelas = $kelas['K_NamaKelas'];
+    $mataKuliah = $kelas['K_MataKuliah'];
+} else {
+    echo "Kelas tidak ditemukan.";
+    exit();
+}
+$stmt_kelas->close();
+
+$sql_dosen = "SELECT U.U_Nama 
+              FROM User U
+              INNER JOIN User_Kelas UK ON U.U_ID = UK.User_U_ID
+              WHERE UK.Kelas_K_ID = ? AND U.U_Role = 'dosen'";
+$stmt_dosen = $conn->prepare($sql_dosen);
+$stmt_dosen->bind_param('i', $kelasID);
+$stmt_dosen->execute();
+$result_dosen = $stmt_dosen->get_result();
+
+$dosen_names = [];
+while ($row = $result_dosen->fetch_assoc()) {
+    $dosen_names[] = $row['U_Nama'];
+}
+$stmt_dosen->close();
+
+$sql_tugas = "SELECT td.TD_ID, td.TD_Judul, td.TD_Deadline, 
+                     IFNULL(tm.TM_Status, 0) AS status_pengumpulan, 
+                     td.TD_Status AS tugas_status
+              FROM Tugas_Dosen td
+              LEFT JOIN Tugas_Mahasiswa tm ON td.TD_ID = tm.Tugas_Dosen_TD_ID 
+              AND tm.User_U_ID = ? 
+              WHERE td.Kelas_K_ID = ? AND td.TD_Status = 1";  // Menyaring tugas yang aktif
+$stmt_tugas = $conn->prepare($sql_tugas);
+$stmt_tugas->bind_param('ii', $userID, $kelasID);
+$stmt_tugas->execute();
+$result_tugas = $stmt_tugas->get_result();
+
+
 ?>
 
 <!DOCTYPE html>
@@ -306,11 +359,22 @@ $stmt->close();
     <!-- UTAMA -->
     <div id="utama" class="w-full md:w-5/6 load">
         <div class="p-6 rounded-lg shadow-md flex flex-row justify-between">
-            <div class="header mb-4">
-                <h1 class="px-4 text-3xl font-bold text-dark-teal uppercase mb-1">Pemrograman Web</h1>
+        <div class="header mb-4">
+                <h1 class="px-4 text-3xl font-bold text-dark-teal uppercase mb-1">
+                    <?php echo htmlspecialchars($mataKuliah); ?>
+                </h1>
+
                 <h2 class="px-4 text-2xl text-teal-600 font-bold mb-2">Dosen:</h2>
-                <p class="px-4 text-xl text-teal-600 italic mb-1">Bintang Nuralamsyah, S.Kom., M.Kom.</p>
-                <p class="px-4 text-xl text-teal-600 italic mb-1">Dr. Agus Budi Raharjo, S.Kom., M.Kom.</p>
+
+                <?php
+                if (!empty($dosen_names)) {
+                    foreach ($dosen_names as $dosen) {
+                        echo '<p class="px-4 text-xl text-teal-600 italic mb-1">' . htmlspecialchars($dosen) . '</p>';
+                    }
+                } else {
+                    echo '<p class="px-4 text-xl text-teal-600 italic mb-1">Tidak ada dosen yang terdaftar.</p>';
+                }
+                ?>
             </div>
         </div>
         <div class="p-6 rounded-lg flex flex-row justify-between">
@@ -325,61 +389,22 @@ $stmt->close();
                     </tr>
                 </thead>
                 <tbody>
-                    <tr class="transition">
-                        <td class="p-4"><a href="./detailKelas.php">1</a></td>
-                        <td class="p-4">12 Agustus 2024, 23:59</td>
-                        <td class="p-4">Membuat todolist</td>
-                        <td class="p-4 text-green-600 font-bold">SUDAH MENGUMPULKAN</td>
-                        <td class="p-4">
-                            <a href="detailtugas.php"
-                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Detail Tugas
-                            </a>
-                        </td>
-                    </tr>
-                    <tr class="transition">
-                        <td class="p-4"><a href="./detailKelas.php">2</a></td>
-                        <td class="p-4">19 Agustus 2024, 23:59</td>
-                        <td class="p-4">Membuat CV dengan HTML</td>
-                        <td class="p-4 text-green-600 font-bold">SUDAH MENGUMPULKAN</td>
-                        <td class="p-4">
-                            <a href="detailtugas.php"
-                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Detail Tugas
-                            </a>
-                        </td>
-                    </tr>
-                    <tr class="transition">
-                        <td class="p-4"><a href="./detailKelas.php">3</a></td>
-                        <td class="p-4">20 Agustus 2024, 23:59</td>
-                        <td class="p-4">Membuat login page</td>
-                        <td class="p-4 text-green-600 font-bold">SUDAH MENGUMPULKAN</td>
-                        <td class="p-4">
-                            <a href="detailtugas.php"
-                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Detail Tugas
-                            </a>
-                        </td>
-                    </tr>
-                    <tr class="transition">
-                        <td class="p-4"><a href="./detailKelas.php">4</a></td>
-                        <td class="p-4">27 Agustus 2024, 23:59</td>
-                        <td class="p-4">Final Project 1</td>
-                        <td class="p-4 text-green-600 font-bold">SUDAH MENGUMPULKAN</td>
-                        <td class="p-4">
-                            <a href="detailtugas.php"
-                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Detail Tugas
-                            </a>
-                        </td>
-                    </tr>
-                    <tr class="transition">
-                        <td class="p-4"><a href="./detailKelas.php">5</a></td>
-                        <td class="p-4">30 Agustus 2024, 23:59</td>
-                        <td class="p-4">Final Project 2</td>
-                        <td class="p-4 text-red-600 font-bold">BELUM MENGUMPULKAN</td>
-                        <td class="p-4">
-                            <a href="detailtugas.php"
-                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Detail Tugas
-                            </a>
-                        </td>
-                    </tr>
+                    <?php while ($row = $result_tugas->fetch_assoc()): ?>
+                        <tr class="transition">
+                            <td class="p-4"><a href="detailtugas.php?tugas_id=<?= htmlspecialchars($row['TD_ID']) ?>"><?= htmlspecialchars($row['TD_ID']) ?></a></td>
+                            <td class="p-4"><?= date('d F Y, H:i', strtotime($row['TD_Deadline'])) ?></td>
+                            <td class="p-4"><?= htmlspecialchars($row['TD_Judul']) ?></td>
+                            <td class="p-4 <?= $row['status_pengumpulan'] == 1 ? 'text-green-600 font-bold' : 'text-red-600 font-bold' ?>">
+                                <?= $row['status_pengumpulan'] == 1 ? 'SUDAH MENGUMPULKAN' : 'BELUM MENGUMPULKAN' ?>
+                            </td>
+                            <td class="p-4">
+                                <a href="detailtugas.php?tugas_id=<?= htmlspecialchars($row['TD_ID']) ?>"
+                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">
+                                    Detail Tugas
+                                </a>
+                            </td>
+                        </tr>
+                    <?php endwhile; ?>
                 </tbody>
             </table>
         </div>

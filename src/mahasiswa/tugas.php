@@ -19,7 +19,7 @@ if ($stmt->num_rows > 0) {
     exit();
 }
 
-$query = "SELECT K.K_NamaKelas, K.K_MataKuliah, UK.TanggalAmbil
+$query = "SELECT K.K_NamaKelas, K.K_MataKuliah, UK.TanggalAmbil, K.K_ID
           FROM Kelas K
           JOIN User_Kelas UK ON K.K_ID = UK.Kelas_K_ID
           WHERE UK.User_U_ID = ?";
@@ -302,8 +302,8 @@ $stmt->close();
                             <td class="px-4 py-2"><?= htmlspecialchars($row['TanggalAmbil']); ?></td>
                             <td class="px-4 py-2"><?= htmlspecialchars($row['K_MataKuliah']); ?></td>
                             <td class="p-4">
-                                <a href="tugas.php"
-                                    class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Tugas
+                                <a href="tugaskelas.php?kelas_id=<?= htmlspecialchars($row['K_ID']) ?>" class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">
+                                    Tugas
                                     <div class="absolute top-0 right-0 -mr-1 -mt-1 w-4 h-4 bg-red-500 rounded-full animate-ping"></div>
                                     <div class="absolute top-0 right-0 -mr-1 -mt-1 w-4 h-4 bg-red-500 rounded-full"></div>
                                 </a>

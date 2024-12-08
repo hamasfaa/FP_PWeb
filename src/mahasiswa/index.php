@@ -2,6 +2,7 @@
 session_start();
 include('../../assets/db/config.php');
 include('../../auth/aksesMahasiswa.php');
+require_once '../../vendor/autoload.php';
 
 $userID = $_SESSION['U_ID'];
 $sql = "SELECT U_Nama, U_Role, U_Foto FROM User WHERE U_ID = ?";
@@ -19,6 +20,44 @@ if ($stmt->num_rows > 0) {
 }
 
 $stmt->close();
+
+date_default_timezone_set("Asia/Jakarta");
+$date = new DateTime();
+$hari = $date->format('l');
+$tanggal = $date->format('d F Y');
+$bulan = $date->format('m');
+
+$key = '210b802c-ef69-4346-8174-53b17a97bcb0';
+$holiday_api = new \HolidayAPI\Client(['key' => $key]);
+
+try {
+    // // Fetch supported countries and subdivisions
+    // $countries = $holiday_api->countries();
+
+    // // Fetch supported languages
+    // $languages = $holiday_api->languages();
+
+    // Fetch holidays with minimum parameters
+    $data = $holiday_api->holidays([
+        'country' => 'ID',
+        'year' => 2023,
+        'language' => 'id',
+    ]);
+
+    $filter = array_filter($data['holidays'], function ($holiday) use ($bulan) {
+        $holidayMonth = (new DateTime($holiday['date']))->format('m');
+        return $holidayMonth == $bulan;
+    });
+
+    $data_json = json_encode(array_values($filter));
+
+    // foreach ($data['holidays'] as $holiday) {
+    //     echo $holiday['weekday']['date']['name'] . "\n";
+    // }
+} catch (Exception $e) {
+    $data_json = json_encode([]);
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -166,6 +205,12 @@ $stmt->close();
                 /* Sidebar terlihat */
             }
         }
+
+        .class-card,
+        .task-card {
+            max-height: 200px;
+            overflow-y: auto;
+        }
     </style>
 </head>
 
@@ -182,18 +227,21 @@ $stmt->close();
             </div>
         </div>
         <div class="w-full mt-4 md:mt-0 md:flex md:justify-center">
-            <div class="flex items-center border rounded p-2 md:p-4 w-full md:w-2/5 lg:w-1/4">
-                <span class="material-symbols-outlined mr-2 text-light-teal">
-                    search
-                </span>
-                <input type="text" name="search" placeholder="CARI BLABLABLA" class="flex-1 outline-none">
+            <div class="relative w-full md:w-2/5 lg:w-1/4">
+                <div class="flex items-center border rounded p-2 md:p-4">
+                    <span class="material-symbols-outlined mr-2 text-light-teal">
+                        search
+                    </span>
+                    <input type="text" name="search" id="pencarian" placeholder="Cari kelas, tugas, atau absen..." class="flex-1 outline-none">
+                </div>
+                <div id="hasilPencarian" class="absolute w-full mt-2 bg-white border rounded shadow-lg z-50 hidden">
+                </div>
             </div>
         </div>
     </nav>
     <!-- SIDEBAR -->
     <div id="sidebar"
         class="fixed top-0 right-0 h-full md:w-1/6 bg-dark-teal transform translate-x-full md:translate-x-0 transition-transform duration-300 z-50 bg-opacity-90 shadow-lg flex flex-col">
-
         <!-- Ikon Hamburger untuk Mobile (Berfungsi Sebagai Tombol Close) -->
         <div class="text-white px-6 py-2 cursor-pointer flex md:hidden">
             <span id="closeSidebar-mobile" class="material-symbols-outlined text-3xl">
@@ -202,7 +250,7 @@ $stmt->close();
         </div>
 
         <!-- Ikon Hamburger Default di Sidebar untuk Desktop (Collapse) -->
-        <div class="hamburger text-white px-6 py-2 cursor-pointer flex md:flex">
+        <div class="hamburger text-white px-6 py-2 cursor-pointer md:flex hidden">
             <span class="material-symbols-outlined text-3xl">menu</span>
         </div>
         <div>
@@ -265,22 +313,98 @@ $stmt->close();
             </div>
         </div>
     </div>
-
-    </div>
     <!-- UTAMA -->
     <div id="utama" class="w-full md:w-5/6 load">
+        <div id="default-carousel" class="relative w-full" data-carousel="slide">
+            <!-- Carousel wrapper -->
+            <div class="relative h-56 overflow-hidden rounded-lg md:h-96">
+                <!-- Item 1 -->
+                <div class="hidden duration-700 ease-in-out" data-carousel-item>
+                    <img src="../../assets/img/carousel.png" class="absolute block w-full h-full object-contain -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
+                </div>
+                <!-- Item 2 -->
+                <div class="hidden duration-700 ease-in-out" data-carousel-item>
+                    <img src="../../assets/img/carousel.png" class="absolute block w-full h-full object-contain -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
+                </div>
+                <!-- Item 3 -->
+                <div class="hidden duration-700 ease-in-out" data-carousel-item>
+                    <img src="../../assets/img/carousel.png" class="absolute block w-full h-full object-contain -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
+                </div>
+                <!-- Item 4 -->
+                <div class="hidden duration-700 ease-in-out" data-carousel-item>
+                    <img src="../../assets/img/carousel.png" class="absolute block w-full h-full object-contain -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
+                </div>
+                <!-- Item 5 -->
+                <div class="hidden duration-700 ease-in-out" data-carousel-item>
+                    <img src="../../assets/img/carousel.png" class="absolute block w-full h-full object-contain -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
+                </div>
+            </div>
+            <!-- Slider indicators -->
+            <div class="absolute z-30 flex -translate-x-1/2 bottom-5 left-1/2 space-x-3 rtl:space-x-reverse">
+                <button type="button" class="w-3 h-3 rounded-full" aria-current="true" aria-label="Slide 1" data-carousel-slide-to="0"></button>
+                <button type="button" class="w-3 h-3 rounded-full" aria-current="false" aria-label="Slide 2" data-carousel-slide-to="1"></button>
+                <button type="button" class="w-3 h-3 rounded-full" aria-current="false" aria-label="Slide 3" data-carousel-slide-to="2"></button>
+                <button type="button" class="w-3 h-3 rounded-full" aria-current="false" aria-label="Slide 4" data-carousel-slide-to="3"></button>
+                <button type="button" class="w-3 h-3 rounded-full" aria-current="false" aria-label="Slide 5" data-carousel-slide-to="4"></button>
+            </div>
+            <!-- Slider controls -->
+            <button type="button" class="absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" data-carousel-prev>
+                <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-800/30 group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-gray-800/70 group-focus:outline-none">
+                    <svg class="w-4 h-4 text-gray-800 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4" />
+                    </svg>
+                    <span class="sr-only">Previous</span>
+                </span>
+            </button>
+            <button type="button" class="absolute top-0 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" data-carousel-next>
+                <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-800/30 group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-gray-800/70 group-focus:outline-none">
+                    <svg class="w-4 h-4 text-gray-800 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4" />
+                    </svg>
+                    <span class="sr-only">Next</span>
+                </span>
+            </button>
+        </div>
+        <div class="bg-white rounded-lg p-8 flex flex-col items-center text-center mb-6">
+            <h1 class="text-4xl font-bold text-dark-teal uppercase mb-4">Selamat Datang, <?php echo htmlspecialchars($name); ?></h1>
+            <p class="text-xl text-gray-700 italic mb-6"><?php echo $hari . ', ' . $tanggal; ?></p>
+            <div id="clock" class="text-2xl text-gray-700"></div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="bg-white shadow-lg rounded-lg p-8 mb-6">
+                <h2 class="text-2xl font-semibold text-dark-teal mb-4">Daftar Kelas</h2>
+                <div class="class-card space-y-4">
+                    <div class="flex justify-between border-b py-2">
+                        <a href="#" class="text-dark-teal">Kelas 1: Pemrograman Web</a>
+                        <span class="text-gray-500">Matakuliah</span>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white shadow-lg rounded-lg p-8 mb-6">
+                <h2 class="text-2xl font-semibold text-dark-teal mb-4">Daftar Tugas</h2>
+                <div class="task-card space-y-4">
+                    <div class="flex justify-between border-b py-2">
+                        <a href="#" class="text-dark-teal">Tugas 1: Implementasi CRUD</a>
+                        <span class="text-gray-500">Batas: 15 Desember 2024</span>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white shadow-lg rounded-lg p-8 mb-6">
+                <h2 class="text-2xl font-semibold text-dark-teal mb-4">Daftar Pertemuan</h2>
+                <div class="class-card space-y-4">
+                    <div class="flex justify-between border-b py-2">
+                        <a href="#" class="text-dark-teal">Kelas 1: Pemrograman Web</a>
+                        <span class="text-gray-500">Matakuliah</span>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white shadow-lg rounded-lg p-8 mb-6">
+                <h2 class="text-2xl font-semibold text-dark-teal mb-4">Hari Libur Nasional</h2>
+                <div id="kalender" class="task-card space-y-4"></div>
+            </div>
+        </div>
     </div>
     <script>
-        function confirmLogout(event) {
-            event.preventDefault(); // Mencegah link untuk navigasi
-            const confirmation = confirm("Apakah Anda ingin keluar?");
-
-            if (confirmation) {
-                window.location.href = '../../auth/logout.php';
-            } else {
-                return;
-            }
-        }
         const hamburger = document.querySelector('.hamburger');
         const sidebar = document.getElementById('sidebar');
         const hamburgerMobile = document.getElementById('hamburger-mobile');
@@ -288,15 +412,31 @@ $stmt->close();
 
         const utama = document.getElementById('utama');
 
+        let isMobile = window.innerWidth <= 768;
+
+        window.addEventListener('resize', function() {
+            const currentIsMobile = window.innerWidth <= 768;
+
+            if (currentIsMobile !== isMobile) {
+                isMobile = currentIsMobile;
+                location.reload();
+            }
+        });
+
+
         hamburger.addEventListener('click', function() {
             sidebar.classList.toggle('sidebar-collapsed');
 
             if (sidebar.classList.contains('sidebar-collapsed')) {
+                // console.log('tutup');
                 utama.classList.remove('md:w-5/6');
-                utama.classList.add('w-full');
-            } else {
+                utama.classList.add('mr-[70px]');
                 utama.classList.remove('w-full');
+            } else {
+                // console.log('buka');
                 utama.classList.add('md:w-5/6');
+                utama.classList.remove('mr-[70px]');
+                utama.classList.add('w-full');
             }
         });
 
@@ -323,7 +463,107 @@ $stmt->close();
         sidebar.addEventListener('click', function(e) {
             e.stopPropagation();
         });
+
+        function confirmLogout(event) {
+            event.preventDefault(); // Mencegah link untuk navigasi
+            const confirmation = confirm("Apakah Anda ingin keluar?");
+
+            if (confirmation) {
+                window.location.href = '../../auth/logout.php';
+            } else {
+                return;
+            }
+        }
+
+        function updateClock() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('clock').textContent = `${hours}:${minutes}:${seconds}`;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // console.log(<?php echo $data_json; ?>);
+        dataLibur = <?php echo $data_json; ?>;
+        const kalender = document.getElementById('kalender');
+        if (dataLibur.length) {
+            dataLibur.forEach(holiday => {
+                const divLibur = document.createElement('div');
+                divLibur.classList.add('flex', 'justify-between', 'border-b', 'py-2');
+                divLibur.innerHTML = `
+                    <a href="#" class="text-dark-teal">${holiday.name}</a>
+                    <span class="text-gray-500">${holiday.date}</span>
+                `;
+                kalender.appendChild(divLibur);
+            });
+        } else {
+            kalender.innerHTML = '<p class="text-gray-500">Tidak ada hari libur</p>';
+        }
+
+        document.getElementById('pencarian').addEventListener('input', function() {
+            const searchTerm = this.value;
+            // console.log(searchTerm);
+            if (searchTerm.length > 2) {
+                // console.log(searchTerm);
+                document.getElementById('hasilPencarian').classList.remove('hidden');
+                fetchHasil(searchTerm);
+            } else {
+                document.getElementById('hasilPencarian').classList.add('hidden');
+            }
+        });
+
+        function fetchHasil(searchTerm) {
+            fetch('../../assets/be/search_results.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    redirect: 'manual',
+                    body: JSON.stringify({
+                        userID: <?php echo $userID; ?>,
+                        search: searchTerm,
+                    })
+                })
+                .then(response => {
+                    // console.log(response.status);
+                    // console.log(response.headers.get('Location'));
+                    // console.log(response);
+                    return response.json();
+                })
+                .then(data => {
+                    // console.log('Data JSON:', data);
+                    displayHasil(data);
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function displayHasil(data) {
+            // console.log(data.length);
+            let hasilPencarian = '';
+            if (data.length > 0) {
+                hasilPencarian = '<ul>';
+                data.forEach(item => {
+                    if (item.K_MataKuliah && item.K_NamaKelas) {
+                        hasilPencarian += `
+                    <li>${item.K_MataKuliah} - ${item.K_NamaKelas}</li>`;
+                    } else if (item.TD_Judul && item.TD_Deadline) {
+                        hasilPencarian += `
+                    <li>${item.TD_Judul} Deadline: ${item.TD_Deadline}</li>`;
+                    } else if (item.AD_Deskripsi && item.AD_TanggalDibuat) {
+                        hasilPencarian += `
+                    <li>${item.AD_Deskripsi} Tanggal: ${item.AD_TanggalDibuat}</li>`;
+                    }
+                });
+                hasilPencarian += '</ul>';
+            } else {
+                hasilPencarian = 'Tidak ada hasil yang ditemukan.';
+            }
+            document.getElementById('hasilPencarian').innerHTML = hasilPencarian;
+        }
     </script>
+    <script src="../../node_modules/flowbite/dist/flowbite.min.js"></script>
 </body>
 
 </html>
