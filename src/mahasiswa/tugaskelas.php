@@ -405,7 +405,9 @@ $result_tugas = $stmt_tugas->get_result();
                                 <?= $row['status_pengumpulan'] == 1 ? 'SUDAH MENGUMPULKAN' : 'BELUM MENGUMPULKAN' ?>
                             </td>
                             <td class="p-4">
-                                <span class="text-blue-600 font-semibold"><?= $row['TM_NilaiTugas'] ? htmlspecialchars($row['TM_Nilai']) : 'Belum Dinilai' ?></span>
+                                <span class="text-blue-600 font-semibold">
+                                    <?= ($row['TM_NilaiTugas'] !== null && $row['TM_NilaiTugas'] !== '' && $row['TM_NilaiTugas'] !== 0) ? htmlspecialchars($row['TM_NilaiTugas']) : 'Belum Dinilai' ?>
+                                </span>
                             </td>
                             <td class="p-4">
                                 <a href="detailtugas.php?tugas_id=<?= htmlspecialchars($row['TD_ID']) ?>"

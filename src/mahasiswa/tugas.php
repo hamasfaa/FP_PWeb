@@ -5,31 +5,62 @@ include('../../auth/aksesMahasiswa.php');
 
 $userID = $_SESSION['U_ID'];
 
-$sql = "SELECT U_Nama, U_Role, U_Foto FROM User WHERE U_ID = ?";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param('i', $userID);
-$stmt->execute();
-$stmt->store_result();
+$sql_user = "SELECT U_Nama, U_Role, U_Foto FROM User WHERE U_ID = ?";
+$stmt_user = $conn->prepare($sql_user);
+$stmt_user->bind_param('i', $userID);
+$stmt_user->execute();
+$stmt_user->store_result();
 
-if ($stmt->num_rows > 0) {
-    $stmt->bind_result($name, $role, $photo);
-    $stmt->fetch();
+if ($stmt_user->num_rows > 0) {
+    $stmt_user->bind_result($name, $role, $photo);
+    $stmt_user->fetch();
 } else {
     header('Location: ../home/login.php');
     exit();
 }
 
-$query = "SELECT K.K_NamaKelas, K.K_MataKuliah, UK.TanggalAmbil, K.K_ID
-          FROM Kelas K
-          JOIN User_Kelas UK ON K.K_ID = UK.Kelas_K_ID
-          WHERE UK.User_U_ID = ?";
-$stmt = $conn->prepare($query);
-$stmt->bind_param("i", $userID);
-$stmt->execute();
-$result = $stmt->get_result();
-$stmt->close();
-?>
+$sql_kelas = "SELECT K.K_NamaKelas, K.K_MataKuliah, UK.TanggalAmbil, K.K_ID
+              FROM Kelas K
+              JOIN User_Kelas UK ON K.K_ID = UK.Kelas_K_ID
+              WHERE UK.User_U_ID = ?";
+$stmt_kelas = $conn->prepare($sql_kelas);
+$stmt_kelas->bind_param("i", $userID);
+$stmt_kelas->execute();
+$result_kelas = $stmt_kelas->get_result();
+$stmt_kelas->close();
 
+$kelas_data = [];
+
+while ($row = $result_kelas->fetch_assoc()) {
+    $kelas_id = $row['K_ID'];
+
+    $sql_tugas_count = "SELECT COUNT(*) AS total_tugas_dosen FROM Tugas_Dosen WHERE Kelas_K_ID = ?";
+    $stmt_tugas_count = $conn->prepare($sql_tugas_count);
+    $stmt_tugas_count->bind_param("i", $kelas_id);
+    $stmt_tugas_count->execute();
+    $stmt_tugas_count->bind_result($total_tugas_dosen);
+    $stmt_tugas_count->fetch();
+    $stmt_tugas_count->close();
+
+    $sql_tugas_mahasiswa_count = "SELECT COUNT(*) AS total_tugas_mahasiswa FROM Tugas_Mahasiswa WHERE Kelas_K_ID = ? AND User_U_ID = ?";
+    $stmt_tugas_mahasiswa_count = $conn->prepare($sql_tugas_mahasiswa_count);
+    $stmt_tugas_mahasiswa_count->bind_param("ii", $kelas_id, $userID);
+    $stmt_tugas_mahasiswa_count->execute();
+    $stmt_tugas_mahasiswa_count->bind_result($total_tugas_mahasiswa);
+    $stmt_tugas_mahasiswa_count->fetch();
+    $stmt_tugas_mahasiswa_count->close();
+
+    $ping = $total_tugas_dosen > $total_tugas_mahasiswa;
+
+    $kelas_data[] = [
+        'K_NamaKelas' => $row['K_NamaKelas'],
+        'K_MataKuliah' => $row['K_MataKuliah'],
+        'TanggalAmbil' => $row['TanggalAmbil'],
+        'K_ID' => $row['K_ID'],
+        'ping' => $ping
+    ];
+}
+?>
 
 <!DOCTYPE html>
 <html lang="id">
@@ -296,20 +327,22 @@ $stmt->close();
                     </tr>
                 </thead>
                 <tbody>
-                    <?php while ($row = $result->fetch_assoc()): ?>
+                    <?php foreach ($kelas_data as $kelas): ?>
                         <tr>
-                            <td class="px-4 py-2"><?= htmlspecialchars($row['K_NamaKelas']); ?></td>
-                            <td class="px-4 py-2"><?= date('d F Y', strtotime($row['TanggalAmbil'])); ?></td>
-                            <td class="px-4 py-2"><?= htmlspecialchars($row['K_MataKuliah']); ?></td>
+                            <td class="px-4 py-2"><?= htmlspecialchars($kelas['K_NamaKelas']); ?></td>
+                            <td class="px-4 py-2"><?= date('d F Y', strtotime($kelas['TanggalAmbil'])); ?></td>
+                            <td class="px-4 py-2"><?= htmlspecialchars($kelas['K_MataKuliah']); ?></td>
                             <td class="p-4">
-                                <a href="tugaskelas.php?kelas_id=<?= htmlspecialchars($row['K_ID']) ?>" class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">
+                                <a href="tugaskelas.php?kelas_id=<?= htmlspecialchars($kelas['K_ID']) ?>" class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">
                                     Tugas
-                                    <div class="absolute top-0 right-0 -mr-1 -mt-1 w-4 h-4 bg-red-500 rounded-full animate-ping"></div>
-                                    <div class="absolute top-0 right-0 -mr-1 -mt-1 w-4 h-4 bg-red-500 rounded-full"></div>
+                                    <?php if ($kelas['ping']): ?>
+                                        <div class="absolute top-0 right-0 -mr-1 -mt-1 w-4 h-4 bg-red-500 rounded-full animate-ping"></div>
+                                        <div class="absolute top-0 right-0 -mr-1 -mt-1 w-4 h-4 bg-red-500 rounded-full"></div>
+                                    <?php endif; ?>
                                 </a>
                             </td>
                         </tr>
-                    <?php endwhile; ?>
+                    <?php endforeach; ?>
                 </tbody>
             </table>
         </div>

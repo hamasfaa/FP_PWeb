@@ -23,8 +23,8 @@ $stmt_user->close();
 
 if (isset($_GET['tugas_id'])) {
     $tugas_id = $_GET['tugas_id'];
-    
-    $sql_tugas = "SELECT td.TD_Judul, td.TD_Deskripsi, td.TD_Deadline, td.TD_Status, td.TD_FileSoal
+
+    $sql_tugas = "SELECT td.TD_Judul, td.TD_Deskripsi, td.TD_Deadline, td.TD_Status, td.TD_FileSoal, td.Kelas_K_ID
                   FROM Tugas_Dosen td
                   WHERE td.TD_ID = ?";
     $stmt_tugas = $conn->prepare($sql_tugas);
@@ -34,12 +34,13 @@ if (isset($_GET['tugas_id'])) {
     
     if ($result_tugas->num_rows > 0) {
         $tugas = $result_tugas->fetch_assoc();
+        $kelas_id = $tugas['Kelas_K_ID'];
     } else {
         echo "Tugas tidak ditemukan.";
         exit;
     }
 
-    $sql_tugas_mahasiswa = "SELECT TM_Status, TM_NilaiTugas FROM Tugas_Mahasiswa 
+    $sql_tugas_mahasiswa = "SELECT TM_Status, TM_NilaiTugas, TM_WaktuPengumpulan FROM Tugas_Mahasiswa 
                             WHERE Tugas_Dosen_TD_ID = ? AND User_U_ID = ?";
     $stmt_tugas_mahasiswa = $conn->prepare($sql_tugas_mahasiswa);
     $stmt_tugas_mahasiswa->bind_param('ii', $tugas_id, $userID);
@@ -51,11 +52,63 @@ if (isset($_GET['tugas_id'])) {
     } else {
         $tugas_mahasiswa = null;
     }
+
+    if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['fileUpload'])) {
+        $file = $_FILES['fileUpload'];
+        
+        $fileName = basename($file['name']);
+        $targetDir = "../../storage/submission/";
+        $targetFile = $targetDir . $fileName;
+
+        $allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+        if (!in_array($file['type'], $allowedTypes)) {
+            echo "File type not allowed.";
+            exit();
+        }
+
+        if (move_uploaded_file($file['tmp_name'], $targetFile)) {
+            $waktuPengumpulan = date('Y-m-d H:i:s');
+            $status = 1;
+
+            // Jika sudah ada data sebelumnya, lakukan UPDATE, jika tidak insert baru
+            if ($tugas_mahasiswa) {
+                // Update data jika sudah ada
+                $sql_update = "UPDATE Tugas_Mahasiswa 
+                               SET TM_WaktuPengumpulan = ?, TM_Status = ?, TM_FileTugas = ? 
+                               WHERE Tugas_Dosen_TD_ID = ? AND User_U_ID = ?";
+                $stmt_update = $conn->prepare($sql_update);
+                $stmt_update->bind_param("ssi", $waktuPengumpulan, $status, $fileName, $tugas_id, $userID);
+                if ($stmt_update->execute()) {
+                    header("Location: detailtugas.php?tugas_id=$tugas_id");
+                    exit();
+                } else {
+                    echo "Failed to update data.";
+                    exit();
+                }
+            } else {
+                // Insert data baru
+                $sql_insert = "INSERT INTO Tugas_Mahasiswa (TM_WaktuPengumpulan, TM_Status, TM_FileTugas, Tugas_Dosen_TD_ID, Kelas_K_ID, User_U_ID) 
+                               VALUES (?, ?, ?, ?, ?, ?)";
+                $stmt_insert = $conn->prepare($sql_insert);
+                $stmt_insert->bind_param("ssssii", $waktuPengumpulan, $status, $fileName, $tugas_id, $kelas_id, $userID);
+                if ($stmt_insert->execute()) {
+                    header("Location: detailtugas.php?tugas_id=$tugas_id");
+                    exit();
+                } else {
+                    echo "Failed to insert data into database.";
+                }
+            }
+        } else {
+            echo "File upload failed.";
+        }
+    }
 } else {
     echo "Tugas ID tidak ditemukan.";
     exit;
 }
 ?>
+
+
 
 <!DOCTYPE html>
 <html lang="id">
@@ -362,43 +415,45 @@ if (isset($_GET['tugas_id'])) {
                                 <span class="text-red-600 font-bold ml-2">BELUM MENGUMPULKAN</span>
                             <?php } ?>
                         </label>
+                        <?php if ($tugas_mahasiswa): ?>
+                            <label for="deadline" class="block text-dark-teal font-semibold mb-6 text-2xl">Dikumpulkan pada:
+                                <span class="text-gray-600 ml-2"><?= date('d F Y, H:i', strtotime($tugas_mahasiswa['TM_WaktuPengumpulan'])); ?></span>
+                            </label>
+                        <?php endif; ?>
 
                         <label for="deadline" class="block text-dark-teal font-semibold mb-6 text-2xl">Deadline:
                             <span class="text-gray-600 ml-2"><?= date('d F Y, H:i', strtotime($tugas['TD_Deadline'])); ?></span>
                         </label>
 
                         <label for="nilai" class="block text-dark-teal font-semibold mb-2 text-2xl">Nilai:
-                            <?php if ($tugas_mahasiswa && isset($tugas_mahasiswa['TM_NilaiTugas'])) { ?>
-                                <span class="text-blue-600 ml-2"><?= htmlspecialchars($tugas_mahasiswa['TM_NilaiTugas']); ?></span>
-                            <?php } else { ?>
-                                <span class="text-gray-600 ml-2">Belum Dinilai</span>
-                            <?php } ?>
+                            <span class="text-blue-600 ml-2">
+                                <?= ($tugas_mahasiswa && isset($tugas_mahasiswa['TM_NilaiTugas']) && $tugas_mahasiswa['TM_NilaiTugas'] !== 0) ? htmlspecialchars($tugas_mahasiswa['TM_NilaiTugas']) : 'Belum Dinilai'; ?>
+                            </span>
                         </label>
                     </div>
-                    <div class="mb-6">
-                        <label for="fileUpload" class="block text-dark-teal font-semibold mb-2 text-2xl">Upload File:</label>
-                        <div id="drop-area"
-                            class="bg-white border-dashed border-2 border-teal-400 rounded-lg p-6 text-center w-full flex flex-col items-center justify-center transition duration-300 hover:border-teal-600">
-                            <span class="material-symbols-outlined text-teal-500 mb-2">
-                                file_upload
-                            </span>
-                            <p class="text-teal-600 mb-4">Drag & Drop your files here or click to upload</p>
-                            <input type="file" id="fileUpload" name="fileUpload" class="hidden">
+                    <form action="detailtugas.php?tugas_id=<?= $tugas_id ?>" method="POST" enctype="multipart/form-data">
+                        <div class="mb-6">
+                            <label for="fileUpload" class="block text-dark-teal font-semibold mb-2 text-2xl">Upload File:</label>
+                            <div id="drop-area" class="bg-white border-dashed border-2 border-teal-400 rounded-lg p-6 text-center w-full flex flex-col items-center justify-center transition duration-300 hover:border-teal-600">
+                                <span id="uploadIcon" class="material-symbols-outlined text-teal-500 mb-2">file_upload</span>
+                                <p id="uploadText" class="text-teal-600 mb-4">Drag & Drop your files here or click to upload</p>
+                                <input type="file" id="fileElem" name="fileUpload" multiple accept="*/*" class="hidden" onchange="handleFiles(this.files)">
+                                <div id="fileName" class="flex items-center mt-4 text-teal-600" style="display: none;">
+                                    <!-- Hanya menampilkan nama file -->
+                                    <span id="fileText" style="display:none;">No file chosen</span>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="mt-8 mb-8">
-                        <a href="tugas.php"
-                            class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Kumpulkan
-                        </a>
-                    </div>
+                        <div class="mt-8 mb-8">
+                            <button type="submit" id="submitButton" class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal" style="display:none;">
+                                Kumpulkan
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
-
         </div>
     </div>
-
-
-
     <script>
         function confirmLogout(event) {
             event.preventDefault(); // Mencegah link untuk navigasi
@@ -484,6 +539,61 @@ if (isset($_GET['tugas_id'])) {
         function closeModal() {
             modal.style.display = "none";
         }
+        
+        let dropArea = document.getElementById('drop-area');
+        let fileInput = document.getElementById('fileElem');
+        let submitButton = document.getElementById('submitButton');
+        let uploadIcon = document.getElementById('uploadIcon');
+        let uploadText = document.getElementById('uploadText');
+        let fileNameDisplay = document.getElementById('fileName');
+        let fileText = document.getElementById('fileText');
+
+        dropArea.addEventListener('dragover', (event) => {
+            event.preventDefault();
+            dropArea.classList.add('border-teal-600');
+        });
+
+        dropArea.addEventListener('dragleave', () => {
+            dropArea.classList.remove('border-teal-600');
+        });
+
+        dropArea.addEventListener('drop', (event) => {
+            event.preventDefault();
+            dropArea.classList.remove('border-teal-600');
+            let files = event.dataTransfer.files;
+            handleFiles(files);
+        });
+
+        dropArea.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        function handleFiles(files) {
+            const file = files[0];
+
+            if (file) {
+                // Menyembunyikan ikon upload dan teks default
+                uploadIcon.style.display = 'none';
+                uploadText.style.display = 'none';
+
+                // Menampilkan nama file yang dipilih
+                fileNameDisplay.style.display = 'flex';
+                fileText.style.display = 'inline';
+                fileText.textContent = file.name;
+
+                // Menampilkan tombol submit setelah file dipilih
+                submitButton.style.display = 'inline-block';
+            } else {
+                // Jika tidak ada file yang dipilih
+                fileNameDisplay.style.display = 'none';
+                submitButton.style.display = 'none';
+
+                // Menampilkan kembali ikon upload dan teks default
+                uploadIcon.style.display = 'inline';
+                uploadText.style.display = 'inline';
+            }
+        }
+
     </script>
 </body>
 
