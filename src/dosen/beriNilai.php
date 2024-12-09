@@ -1,3 +1,82 @@
+<?php
+session_start();
+include('../../assets/db/config.php');
+include('../../auth/aksesDosen.php');
+
+$userID = $_SESSION['U_ID'];
+
+$sql_profile = "SELECT U_Nama, U_Role, U_Foto FROM User WHERE U_ID = ?";
+$stmt_profile = $conn->prepare($sql_profile);
+$stmt_profile->bind_param('i', $userID);
+$stmt_profile->execute();
+$stmt_profile->store_result();
+
+$error = '';
+
+if ($stmt_profile->num_rows > 0) {
+    $stmt_profile->bind_result($name, $role, $photo);
+    $stmt_profile->fetch();
+} else {
+    header('Location: ../home/login.php');
+    exit();
+}
+
+$header_sql = "SELECT K_MataKuliah, K_NamaKelas FROM Kelas WHERE K_ID = ?";
+$stmt_header = $conn->prepare($header_sql);
+$stmt_header->bind_param('i', $kelasID);
+$stmt_header->execute();
+$stmt_header->store_result();
+$stmt_header->bind_result($mataKuliah, $namaKelas);
+$stmt_header->fetch();
+$stmt_header->close();
+
+if (isset($_GET['IDK']) && isset($_GET['IDT'])) {
+    $tugasID = $_GET['IDT'];
+    $kelasID = $_GET['IDK'];
+} else {
+    $error = 'Tugas tidak ditemukan';
+}
+
+$header_sql = "SELECT K_MataKuliah, K_NamaKelas FROM Kelas WHERE K_ID = ?";
+$stmt_header = $conn->prepare($header_sql);
+$stmt_header->bind_param('i', $kelasID);
+$stmt_header->execute();
+$stmt_header->store_result();
+$stmt_header->bind_result($mataKuliah, $namaKelas);
+$stmt_header->fetch();
+$stmt_header->close();
+
+$nama_sql = "SELECT TD_Judul FROM Tugas_Dosen WHERE TD_ID = ?";
+$stmt_nama = $conn->prepare($nama_sql);
+$stmt_nama->bind_param('i', $tugasID);
+$stmt_nama->execute();
+$stmt_nama->store_result();
+$stmt_nama->bind_result($judulTugas);
+$stmt_nama->fetch();
+$stmt_nama->close();
+
+$jawaban_sql = "SELECT TM_ID, TM_FileTugas, TM_WaktuPengumpulan, TM_Status, User_U_ID, TM_NilaiTugas, U.U_Nama FROM Tugas_Mahasiswa TM INNER JOIN User U ON TM.User_U_ID = U.U_ID WHERE TM.Tugas_Dosen_TD_ID = ? AND TM.Kelas_K_ID = ?";
+$stmt_jawaban = $conn->prepare($jawaban_sql);
+$stmt_jawaban->bind_param('ii', $tugasID, $kelasID);
+$stmt_jawaban->execute();
+$stmt_jawaban->store_result();
+
+$stmt_jawaban->bind_result($tugasMahasiswaID, $fileTugas, $waktuPengumpulan, $status, $mahasiswaID, $nilaiTugas, $namaMahasiswa);
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $nilai = $_POST['nilai'];
+    $tugasMahasiswaID = $_POST['tugasMahasiswaID'];
+
+    $update_sql = "UPDATE Tugas_Mahasiswa SET TM_NilaiTugas = ? WHERE TM_ID = ?";
+    $stmt_update = $conn->prepare($update_sql);
+    $stmt_update->bind_param('ii', $nilai, $tugasMahasiswaID);
+    $stmt_update->execute();
+    $stmt_update->close();
+    header('Location: beriNilai.php?IDK=' . $kelasID . '&IDT=' . $tugasID);
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="id">
 
@@ -244,13 +323,13 @@
     <div id="utama" class="w-full md:w-5/6 load p-6">
         <div class="bg-white shadow-md rounded-lg p-6 mb-6 flex flex-row justify-between">
             <div class="header mb-4">
-                <h1 class="text-3xl font-bold text-dark-teal uppercase mb-2">Penilaian Kelas A</h1>
-                <p class="text-xl text-teal-600 italic">IPA</p>
+                <h1 class="text-3xl font-bold text-dark-teal uppercase mb-2">Penilaian <?php echo htmlspecialchars($namaKelas) ?></h1>
+                <p class="text-xl text-teal-600 italic"><?php echo htmlspecialchars($mataKuliah) ?></p>
             </div>
         </div>
         <div class="bg-white shadow-lg rounded-lg p-8">
             <div class="text-dark-teal text-lg px-4 py-2 w-fit h-fit rounded border-dark-teal border mb-6">
-                Buat HTML
+                <?php echo htmlspecialchars($judulTugas) ?>
             </div>
             <div class="overflow-x-auto">
                 <table class="w-full mt-6 border-collapse">
@@ -264,48 +343,23 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="transition duration-300 hover:bg-teal-50">
-                            <td class="p-4">1</td>
-                            <td class="p-4">Anies Baswedan</td>
-                            <td class="p-4">15 Agustus 2024</td>
-                            <td class="p-4">AniesHTML.pdf</td>
-                            <td class="p-4">
-                                <form action="#" method="POST">
-                                    <input type="number" name="nilai" placeholder="Nilai" min="0" max="100"
-                                        class="relative bg-white text-dark-teal text-lg px-4 py-2 w-20 h-fit rounded-xl border border-dark-teal focus:outline-none focus:ring-2 focus:ring-light-teal">
-                                    <button type="submit"
-                                        class="bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Simpan</button>
-                                </form>
-                            </td>
-                        </tr>
-                        <tr class="transition duration-300 hover:bg-teal-50">
-                            <td class="p-4">2</td>
-                            <td class="p-4">Fufufafa</td>
-                            <td class="p-4">17 Agustus 2024</td>
-                            <td class="p-4">HTML.pdf</td>
-                            <td class="p-4">
-                                <form action="#" method="POST">
-                                    <input type="number" name="nilai" placeholder="Nilai" min="0" max="100"
-                                        class="relative bg-white text-dark-teal text-lg px-4 py-2 w-20 h-fit rounded-xl border border-dark-teal focus:outline-none focus:ring-2 focus:ring-light-teal">
-                                    <button type="submit"
-                                        class="bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Simpan</button>
-                                </form>
-                            </td>
-                        </tr>
-                        <tr class="transition duration-300 hover:bg-teal-50">
-                            <td class="p-4">3</td>
-                            <td class="p-4">El Kecepatan</td>
-                            <td class="p-4">16 Agustus 2024</td>
-                            <td class="p-4">Tugas1HTML.pdf</td>
-                            <td class="p-4">
-                                <form action="#" method="POST">
-                                    <input type="number" name="nilai" placeholder="Nilai" min="0" max="100"
-                                        class="relative bg-white text-dark-teal text-lg px-4 py-2 w-20 h-fit rounded-xl border border-dark-teal focus:outline-none focus:ring-2 focus:ring-light-teal">
-                                    <button type="submit"
-                                        class="bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Simpan</button>
-                                </form>
-                            </td>
-                        </tr>
+                        <?php while ($stmt_jawaban->fetch()): ?>
+                            <tr class="transition duration-300 hover:bg-teal-50">
+                                <td class="p-4"><?php echo htmlspecialchars($mahasiswaID) ?></td>
+                                <td class="p-4"><?php echo htmlspecialchars($namaMahasiswa) ?></td>
+                                <td class="p-4"><?php echo htmlspecialchars($waktuPengumpulan) ?></td>
+                                <td class="p-4"><a href="/FP/storage/task/<?php echo htmlspecialchars($fileTugas) ?>" target="_blank"><?php echo htmlspecialchars($fileTugas) ?></a></td>
+                                <td class="p-4">
+                                    <form action="#" method="POST">
+                                        <input type="number" name="nilai" placeholder="Nilai" min="0" max="100"
+                                            class="relative bg-white text-dark-teal text-lg px-4 py-2 w-20 h-fit rounded-xl border border-dark-teal focus:outline-none focus:ring-2 focus:ring-light-teal" value="<?php echo htmlspecialchars($nilaiTugas) ?>">
+                                        <input type="hidden" name="tugasMahasiswaID" value="<?php echo htmlspecialchars($tugasMahasiswaID) ?>">
+                                        <button type="submit"
+                                            class="bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Simpan</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <?php endwhile; ?>
                     </tbody>
                 </table>
             </div>

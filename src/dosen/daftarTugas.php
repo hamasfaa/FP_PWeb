@@ -378,7 +378,7 @@ if (isset($_POST['tugasID']) && isset($_POST['action'])) {
                                     <?php endif; ?>
                                 </td>
                                 <td class="p-4 flex">
-                                    <a href="./beriNilai.php"
+                                    <a href="./beriNilai.php?IDK=<?php echo $kelasID ?>&IDT=<?php echo $tugasID ?>"
                                         class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal">Beri
                                         Nilai</a>
                                     <form action="" method="POST">
