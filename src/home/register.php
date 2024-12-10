@@ -19,36 +19,49 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($password != $confirmPassword) {
             $error = 'Password tidak sama!';
         } else {
-            $prefixID = $role == 'dosen' ? '10' : '50';
+            $check_sql = "SELECT U_ID FROM User WHERE U_Email = ?";
+            $stmt_check = $conn->prepare($check_sql);
+            $stmt_check->bind_param("s", $email);
+            $stmt_check->execute();
+            $stmt_check->store_result();
 
-            $sql = "SELECT MAX(U_ID) AS max_id FROM User WHERE U_Role = ?";
-            $stmt = $conn->prepare($sql);
-            $stmt->bind_param("s", $role);
-            $stmt->execute();
-            $stmt->bind_result($max_id);
-            $stmt->fetch();
-            $stmt->close();
-
-            if ($max_id) {
-                $new_id = $prefixID . str_pad((intval(substr($max_id, 2)) + 1), 7, '0', STR_PAD_LEFT);
+            if ($stmt_check->num_rows > 0) {
+                $error = 'Email sudah terdaftar!';
+                $stmt_check->close();
             } else {
-                $new_id = $prefixID . '0000001';
-            }
+                $stmt_check->close();
 
-            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+                $prefixID = $role == 'dosen' ? '10' : '50';
 
-            $sql = "INSERT INTO User (U_ID, U_Nama, U_TanggalLahir, U_Role, U_Email, U_Password, U_Foto) 
+                $sql = "SELECT MAX(U_ID) AS max_id FROM User WHERE U_Role = ?";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("s", $role);
+                $stmt->execute();
+                $stmt->bind_result($max_id);
+                $stmt->fetch();
+                $stmt->close();
+
+                if ($max_id) {
+                    $new_id = $prefixID . str_pad((intval(substr($max_id, 2)) + 1), 7, '0', STR_PAD_LEFT);
+                } else {
+                    $new_id = $prefixID . '0000001';
+                }
+
+                $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+
+                $sql = "INSERT INTO User (U_ID, U_Nama, U_TanggalLahir, U_Role, U_Email, U_Password, U_Foto) 
                     VALUES (?, ?, ?, ?, ?, ?, '../../assets/img/default.png')";
-            $stmt = $conn->prepare($sql);
-            $stmt->bind_param("ssssss", $new_id, $name, $dob, $role, $email, $hashedPassword);
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("ssssss", $new_id, $name, $dob, $role, $email, $hashedPassword);
 
-            if ($stmt->execute()) {
-                header('Location: login.php');
-                exit();
-            } else {
-                $error = 'Gagal mendaftar. Coba lagi nanti.';
+                if ($stmt->execute()) {
+                    header('Location: login.php');
+                    exit();
+                } else {
+                    $error = 'Gagal mendaftar. Coba lagi nanti.';
+                }
+                $stmt->close();
             }
-            $stmt->close();
         }
     }
 }
