@@ -26,6 +26,7 @@ $date = new DateTime();
 $hari = $date->format('l');
 $tanggal = $date->format('d F Y');
 $bulan = $date->format('m');
+$tahun = $date->format('Y');
 
 $key = '210b802c-ef69-4346-8174-53b17a97bcb0';
 $holiday_api = new \HolidayAPI\Client(['key' => $key]);
@@ -81,7 +82,7 @@ $listTugas_sql = "SELECT TD.TD_Judul, TD.TD_Deadline
       AND YEAR(TD.TD_Deadline) = ?
     GROUP BY TD.TD_ID";
 $stmt_listTugas = $conn->prepare($listTugas_sql);
-$stmt_listTugas->bind_param('iii', $userID, $bulan, date('Y'));
+$stmt_listTugas->bind_param('iii', $userID, $bulan, $tahun);
 $stmt_listTugas->execute();
 $hasilListTugas = $stmt_listTugas->get_result();
 while ($row = $hasilListTugas->fetch_assoc()) {
@@ -98,7 +99,7 @@ $listPertemuan_sql = "SELECT AD.AD_Pertemuan, AD.AD_TanggalDibuat
       AND YEAR(AD.AD_TanggalDibuat) = ?
     GROUP BY AD.AD_ID";
 $stmt_listPertemuan = $conn->prepare($listPertemuan_sql);
-$stmt_listPertemuan->bind_param('iii', $userID, $bulan, date('Y'));
+$stmt_listPertemuan->bind_param('iii', $userID, $bulan, $tahun);
 $stmt_listPertemuan->execute();
 $hasilListPertemuan = $stmt_listPertemuan->get_result();
 while ($row = $hasilListPertemuan->fetch_assoc()) {
