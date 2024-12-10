@@ -3,15 +3,21 @@ session_start();
 include('../../assets/db/config.php');
 include('../../auth/aksesMahasiswa.php');
 
+if (!isset($_SESSION['U_ID'])) {
+    header('Location: ../home/login.php');
+    exit();
+}
+
 $userID = $_SESSION['U_ID'];
-$sql = "SELECT U_Nama, U_Role, U_Foto FROM User WHERE U_ID = ?";
+
+$sql = "SELECT U_Nama, U_Role, U_Foto, U_Email, U_NoPonsel, U_Alamat, U_TanggalLahir, U_Password FROM User WHERE U_ID = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param('i', $userID);
 $stmt->execute();
 $stmt->store_result();
 
 if ($stmt->num_rows > 0) {
-    $stmt->bind_result($name, $role, $photo);
+    $stmt->bind_result($name, $role, $photo, $email, $phone, $address, $birthdate, $password);
     $stmt->fetch();
 } else {
     header('Location: ../home/login.php');
@@ -19,6 +25,65 @@ if ($stmt->num_rows > 0) {
 }
 
 $stmt->close();
+
+$formatted_birthdate = date("d F Y", strtotime($birthdate));
+
+if (isset($_POST['save_name'])) {
+    $new_name = $_POST['new_name'];
+    $update_sql = "UPDATE User SET U_Nama = ? WHERE U_ID = ?";
+    $update_stmt = $conn->prepare($update_sql);
+    $update_stmt->bind_param('si', $new_name, $userID);
+    if ($update_stmt->execute()) {
+        $name = $new_name;
+    }
+    $update_stmt->close();
+}
+
+if (isset($_POST['save_birthdate'])) {
+    $new_birthdate = $_POST['new_birthdate'];
+    $update_sql = "UPDATE User SET U_TanggalLahir = ? WHERE U_ID = ?";
+    $update_stmt = $conn->prepare($update_sql);
+    $update_stmt->bind_param('si', $new_birthdate, $userID);
+    $update_stmt->execute();
+    $update_stmt->close();
+}
+
+if (isset($_POST['save_email'])) {
+    $new_email = $_POST['new_email'];
+    $update_sql = "UPDATE User SET U_Email = ? WHERE U_ID = ?";
+    $update_stmt = $conn->prepare($update_sql);
+    $update_stmt->bind_param('si', $new_email, $userID);
+    $update_stmt->execute();
+    $update_stmt->close();
+}
+
+if (isset($_POST['save_phone'])) {
+    $new_phone = $_POST['new_phone'];
+    $update_sql = "UPDATE User SET U_NoPonsel = ? WHERE U_ID = ?";
+    $update_stmt = $conn->prepare($update_sql);
+    $update_stmt->bind_param('si', $new_phone, $userID);
+    $update_stmt->execute();
+    $update_stmt->close();
+}
+
+if (isset($_POST['save_address'])) {
+    $new_address = $_POST['new_address'];
+    $update_sql = "UPDATE User SET U_Alamat = ? WHERE U_ID = ?";
+    $update_stmt = $conn->prepare($update_sql);
+    $update_stmt->bind_param('si', $new_address, $userID);
+    $update_stmt->execute();
+    $update_stmt->close();
+}
+
+if (isset($_POST['save_password'])) {
+    $new_password = password_hash($_POST['new_password'], PASSWORD_DEFAULT);
+    $update_sql = "UPDATE User SET U_Password = ? WHERE U_ID = ?";
+    $update_stmt = $conn->prepare($update_sql);
+    $update_stmt->bind_param('si', $new_password, $userID);
+    $update_stmt->execute();
+    $update_stmt->close();
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -279,10 +344,15 @@ $stmt->close();
                 <h1 class="px-4 text-3xl font-bold text-dark-teal uppercase mb-2">Pengaturan Akun</h1>
             </div>
             <div class="flex flex-col items-center md:flex-row">
-                <img src="../../assets/img/anies.jpg" alt="profil" class="px-4 w-64 mt-2" style="border-radius: 15%;">
+                <div class="relative group">
+                    <img src="../../assets/img/<?= $photo ?>" alt="profil" class="px-4 w-64 mt-2 rounded-lg transition-all duration-300 group-hover:blur-sm" style="border-radius: 15%">
+                    <button class="absolute inset-0 flex items-center justify-center w-12 h-12 bg-black rounded-full text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <span class="material-symbols-outlined">edit</span>
+                    </button>
+                </div>
                 <div class="flex flex-col ml-4 justify-center">
-                    <span class="font-bold text-xl text-black md:text-4xl">Anies Baswedan</span>
-                    <span class="text-gray-600 text-md md:text-xl">Mahasiswa</span>
+                    <span class="font-bold text-xl text-black md:text-4xl"><?= $name ?></span>
+                    <span class="text-gray-600 text-md md:text-xl"><?= $role ?></span>
                 </div>
             </div>
             <div class="mt-8 w-full pl-4">
@@ -290,52 +360,110 @@ $stmt->close();
                     <h2 class="text-2xl font-bold text-dark-teal">Informasi Pribadi</h2>
                     <p class="text-gray-600 text-lg mt-1">Data Pribadi yang ada di KelasKu</p>
                     <div class="mt-4 space-y-4">
-                        <div class="p-4 bg-white rounded-lg shadow-sm hover:bg-gray-200 transition duration-300">
-                            <span class="font-bold text-lg text-gray-800">Nama:</span>
-                            <span class="text-gray-600 text-lg ml-2">Anies Baswedan</span>
-                        </div>
-                        <div class="p-4 bg-white rounded-lg shadow-sm hover:bg-gray-200 transition duration-300">
-                            <span class="font-bold text-lg text-gray-800">Tanggal Lahir:</span>
-                            <span class="text-gray-600 text-lg ml-2">1 Mei 1970</span>
-                        </div>
+                        <form method="POST" action="">
+                            <div class="p-4 bg-white rounded-lg shadow-sm hover:bg-gray-200 transition duration-300 flex justify-between items-center">
+                                <div class="flex items-center">
+                                    <span class="font-bold text-lg text-gray-800">Nama:</span>
+                                    <span class="text-gray-600 text-lg ml-2"><?= $name ?></span>
+                                </div>
+                                <button type="submit" name="edit_name" class="text-gray-600">
+                                    <span class="material-symbols-outlined">edit</span>
+                                </button>
+                            </div>
+                            <?php if (isset($_POST['edit_name'])): ?>
+                                <input type="text" name="new_name" class="mt-2 p-2 border rounded" value="<?= $name ?>" required>
+                                <button type="submit" name="save_name" class="bg-green-500 text-white rounded px-4 py-2 mt-2">Simpan</button>
+                            <?php endif; ?>
+                        </form>
+
+                        <form method="POST" action="">
+                            <div class="p-4 bg-white rounded-lg shadow-sm hover:bg-gray-200 transition duration-300 flex justify-between items-center">
+                                <div class="flex items-center">
+                                    <span class="font-bold text-lg text-gray-800">Tanggal Lahir:</span>
+                                    <span class="text-gray-600 text-lg ml-2"><?= $formatted_birthdate ?></span>
+                                </div>
+                                <button type="submit" name="edit_birthdate" class="text-gray-600">
+                                    <span class="material-symbols-outlined">edit</span>
+                                </button>
+                            </div>
+                            <?php if (isset($_POST['edit_birthdate'])): ?>
+                                <input type="date" name="new_birthdate" class="mt-2 p-2 border rounded" value="<?= $birthdate ?>" required>
+                                <button type="submit" name="save_birthdate" class="bg-green-500 text-white rounded px-4 py-2 mt-2">Simpan</button>
+                            <?php endif; ?>
+                        </form>
                     </div>
                 </div>
             </div>
+
             <div class="mt-8 w-full pl-4">
                 <div class="p-4 bg-gray-100 rounded-lg shadow-md">
                     <h2 class="text-2xl font-bold text-dark-teal">Kontak</h2>
-                    <p class="text-gray-600 text-lg mt-1">Email dan No Ponsel mahasiswa yang dapat dihubungi kampus</p>
+                    <p class="text-gray-600 text-lg mt-1">Email dan No Ponsel yang dapat dihubungi kampus</p>
                     <div class="mt-4 space-y-4">
-                        <div class="p-4 bg-white rounded-lg shadow-sm hover:bg-gray-200 transition duration-300">
-                            <span class="font-bold text-lg text-gray-800">Email:</span>
-                            <span class="text-gray-600 text-lg ml-2">aniesbaswedan@gmail.com</span>
-                        </div>
-                        <div class="p-4 bg-white rounded-lg shadow-sm hover:bg-gray-200 transition duration-300">
-                            <span class="font-bold text-lg text-gray-800">No. Ponsel:</span>
-                            <span class="text-gray-600 text-lg ml-2">08213456789</span>
-                        </div>
+                        <form method="POST" action="">
+                            <div class="p-4 bg-white rounded-lg shadow-sm hover:bg-gray-200 transition duration-300 flex justify-between items-center">
+                                <div class="flex items-center">
+                                    <span class="font-bold text-lg text-gray-800">Email:</span>
+                                    <span class="text-gray-600 text-lg ml-2"><?= $email ?></span>
+                                </div>
+                                <button type="submit" name="edit_email" class="text-gray-600">
+                                    <span class="material-symbols-outlined">edit</span>
+                                </button>
+                            </div>
+                            <?php if (isset($_POST['edit_email'])): ?>
+                                <input type="email" name="new_email" class="mt-2 p-2 border rounded" value="<?= $email ?>" required>
+                                <button type="submit" name="save_email" class="bg-green-500 text-white rounded px-4 py-2 mt-2">Simpan</button>
+                            <?php endif; ?>
+                        </form>
+
+                        <form method="POST" action="">
+                            <div class="p-4 bg-white rounded-lg shadow-sm hover:bg-gray-200 transition duration-300 flex justify-between items-center">
+                                <div class="flex items-center">
+                                    <span class="font-bold text-lg text-gray-800">No. Ponsel:</span>
+                                    <span class="text-gray-600 text-lg ml-2"><?= $phone ?></span>
+                                </div>
+                                <button type="submit" name="edit_phone" class="text-gray-600">
+                                    <span class="material-symbols-outlined">edit</span>
+                                </button>
+                            </div>
+                            <?php if (isset($_POST['edit_phone'])): ?>
+                                <input type="text" name="new_phone" class="mt-2 p-2 border rounded" value="<?= $phone ?>" required>
+                                <button type="submit" name="save_phone" class="bg-green-500 text-white rounded px-4 py-2 mt-2">Simpan</button>
+                            <?php endif; ?>
+                        </form>
                     </div>
                 </div>
             </div>
+
             <div class="mt-8 w-full pl-4">
                 <div class="p-4 bg-gray-100 rounded-lg shadow-md">
                     <h2 class="text-2xl font-bold text-dark-teal">Lainnya</h2>
                     <p class="text-gray-600 text-lg mt-1">Password dan Alamat Rumah</p>
                     <div class="mt-4 space-y-4">
-                        <div
-                            class="p-4 bg-white rounded-lg shadow-sm hover:bg-gray-200 transition duration-300 flex items-center">
-                            <span class="font-bold text-lg text-gray-800">Password:</span>
-                            <input type="password" id="password"
-                                class="bg-transparent text-gray-600 text-lg ml-2 w-full sm:w-2/3 border-none outline-none"
-                                value="akupintar">
-                            <button id="toggle-password" class="ml-auto text-gray-600">
-                                <span class="material-symbols-outlined">visibility</span>
+                        <div class="p-4 bg-white rounded-lg shadow-sm hover:bg-gray-200 transition duration-300 flex justify-between items-center">
+                            <div class="flex items-center">
+                                <span class="font-bold text-lg text-gray-800">Password:</span>
+                                <input type="password" class="bg-transparent text-gray-600 text-lg ml-2 w-full sm:w-2/3 border-none outline-none" value="**********" disabled>
+                            </div>
+                            <button class="text-gray-600">
+                                <span class="material-symbols-outlined">edit</span>
                             </button>
                         </div>
-                        <div class="p-4 bg-white rounded-lg shadow-sm hover:bg-gray-200 transition duration-300">
-                            <span class="font-bold text-lg text-gray-800">Alamat:</span>
-                            <span class="text-gray-600 text-lg ml-2">Jl. Sukolilo No 34</span>
-                        </div>
+                        <form method="POST" action="">
+                            <div class="p-4 bg-white rounded-lg shadow-sm hover:bg-gray-200 transition duration-300 flex justify-between items-center">
+                                <div class="flex items-center">
+                                    <span class="font-bold text-lg text-gray-800">Alamat:</span>
+                                    <span class="text-gray-600 text-lg ml-2"><?= $address ?></span>
+                                </div>
+                                <button type="submit" name="edit_address" class="text-gray-600">
+                                    <span class="material-symbols-outlined">edit</span>
+                                </button>
+                            </div>
+                            <?php if (isset($_POST['edit_address'])): ?>
+                                <input type="text" name="new_address" class="mt-2 p-2 border rounded" value="<?= $address ?>" required>
+                                <button type="submit" name="save_address" class="bg-green-500 text-white rounded px-4 py-2 mt-2">Simpan</button>
+                            <?php endif; ?>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -343,20 +471,6 @@ $stmt->close();
     </div>
 
     <script>
-        document.getElementById('toggle-password').addEventListener('click', function() {
-            const passwordField = document.getElementById('password');
-            const icon = this.querySelector('span');
-
-            // Jika password tersembunyi, ubah menjadi teks dan ganti ikon
-            if (passwordField.type === 'password') {
-                passwordField.type = 'text';
-                icon.textContent = 'visibility_off'; // Ganti ikon menjadi mata tertutup
-            } else {
-                passwordField.type = 'password';
-                icon.textContent = 'visibility'; // Ganti ikon menjadi mata terbuka
-            }
-        });
-
         function confirmLogout(event) {
             event.preventDefault(); // Mencegah link untuk navigasi
             const confirmation = confirm("Apakah Anda ingin keluar?");

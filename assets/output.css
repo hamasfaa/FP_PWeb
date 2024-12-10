@@ -1171,6 +1171,10 @@ input:checked + .toggle-bg{
   float: right;
 }
 
+.m-auto{
+  margin: auto;
+}
+
 .mx-auto{
   margin-left: auto;
   margin-right: auto;
@@ -1341,6 +1345,14 @@ input:checked + .toggle-bg{
   height: 100vh;
 }
 
+.h-64{
+  height: 16rem;
+}
+
+.h-16{
+  height: 4rem;
+}
+
 .w-1\/2{
   width: 50%;
 }
@@ -1398,8 +1410,13 @@ input:checked + .toggle-bg{
   width: 100%;
 }
 
+<<<<<<< HEAD
 .max-w-3xl{
   max-width: 48rem;
+=======
+.w-16{
+  width: 4rem;
+>>>>>>> ffc78c251f394053c5818e339b2ba2c151a778b1
 }
 
 .flex-1{
@@ -1805,6 +1822,16 @@ input:checked + .toggle-bg{
   background-color: rgb(142 75 16 / var(--tw-bg-opacity, 1));
 }
 
+.bg-green-500{
+  --tw-bg-opacity: 1;
+  background-color: rgb(14 159 110 / var(--tw-bg-opacity, 1));
+}
+
+.bg-gray-600{
+  --tw-bg-opacity: 1;
+  background-color: rgb(75 85 99 / var(--tw-bg-opacity, 1));
+}
+
 .bg-opacity-75{
   --tw-bg-opacity: 0.75;
 }
@@ -1820,6 +1847,11 @@ input:checked + .toggle-bg{
 .object-contain{
   -o-object-fit: contain;
      object-fit: contain;
+}
+
+.object-cover{
+  -o-object-fit: cover;
+     object-fit: cover;
 }
 
 .p-1{
@@ -2172,6 +2204,12 @@ input:checked + .toggle-bg{
   transition-duration: 150ms;
 }
 
+.transition-all{
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
 .duration-300{
   transition-duration: 300ms;
 }
@@ -2327,6 +2365,19 @@ input:checked + .toggle-bg{
   text-decoration-line: underline;
 }
 
+.hover\:opacity-100:hover{
+  opacity: 1;
+}
+
+.hover\:opacity-50:hover{
+  opacity: 0.5;
+}
+
+.hover\:blur-sm:hover{
+  --tw-blur: blur(4px);
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
+}
+
 .focus\:border-indigo-500:focus{
   --tw-border-opacity: 1;
   border-color: rgb(104 117 245 / var(--tw-border-opacity, 1));
@@ -2371,6 +2422,19 @@ input:checked + .toggle-bg{
 
 .group:hover .group-hover\:bg-gray-800\/60{
   background-color: rgb(31 41 55 / 0.6);
+}
+
+.group:hover .group-hover\:opacity-100{
+  opacity: 1;
+}
+
+.group:hover .group-hover\:opacity-50{
+  opacity: 0.5;
+}
+
+.group:hover .group-hover\:blur-sm{
+  --tw-blur: blur(4px);
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
 
 .group:focus .group-focus\:outline-none{
