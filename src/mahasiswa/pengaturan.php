@@ -84,6 +84,39 @@ if (isset($_POST['save_password'])) {
     $update_stmt->close();
 }
 
+if (isset($_FILES['profile_photo']) && $_FILES['profile_photo']['error'] === UPLOAD_ERR_OK) {
+    $upload_dir = '../../assets/img/';
+    $file_tmp = $_FILES['profile_photo']['tmp_name'];
+    $file_name = basename($_FILES['profile_photo']['name']);
+    $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+    
+    $allowed_extensions = ['jpg', 'jpeg', 'png', 'gif'];
+    if (in_array($file_ext, $allowed_extensions)) {
+        $file_name_safe = preg_replace('/[^a-zA-Z0-9-_\.]/', '_', $file_name);
+        $file_path = $upload_dir . $file_name_safe;
+        
+        if (move_uploaded_file($file_tmp, $file_path)) {
+            $update_sql = "UPDATE User SET U_Foto = ? WHERE U_ID = ?";
+            $update_stmt = $conn->prepare($update_sql);
+            $update_stmt->bind_param('si', $file_name_safe, $userID);
+            
+            if ($update_stmt->execute()) {
+                if ($photo && file_exists($upload_dir . $photo)) {
+                    unlink($upload_dir . $photo);
+                }
+                header("Location: pengaturan.php?success=1");
+                exit();
+            } else {
+                echo "Failed to update the database with the new image.";
+            }
+            $update_stmt->close();
+        } else {
+            echo "Failed to move the uploaded file.";
+        }
+    } else {
+        echo "Invalid file type. Please upload an image file (jpg, jpeg, png, gif).";
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -328,7 +361,7 @@ if (isset($_POST['save_password'])) {
 
         <!-- Profil -->
         <div class="profile-container flex items-center space-x-4 p-6 mt-auto">
-            <img src="<?php echo $photo ?>" alt="Foto Profil" class="rounded-xl w-12 h-12">
+            <img src="../../assets/img/<?php echo $photo ?>" alt="Foto Profil" class="rounded-xl w-12 h-12">
             <div class="flex flex-col profile-text">
                 <span class="font-bold text-xl text-white"><?php echo htmlspecialchars($name); ?></span>
                 <span class="text-white"><?php echo htmlspecialchars(strtoupper($role)); ?></span>
@@ -343,25 +376,35 @@ if (isset($_POST['save_password'])) {
             <div class="header mb-4">
                 <h1 class="px-4 text-3xl font-bold text-dark-teal uppercase mb-2">Pengaturan Akun</h1>
             </div>
-            <div class="flex flex-col items-center md:flex-row">
-                <div class="relative group">
-                    <img src="../../assets/img/<?= $photo ?>" alt="profil" class="px-4 w-64 mt-2 rounded-lg transition-all duration-300 group-hover:blur-sm" style="border-radius: 15%">
-                    <button class="absolute inset-0 flex items-center justify-center w-12 h-12 bg-black rounded-full text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <span class="material-symbols-outlined">edit</span>
-                    </button>
+            <form id="image-upload-form" action="pengaturan.php" method="POST" enctype="multipart/form-data">
+                <div class="flex flex-col items-center md:flex-row">
+                    <div class="relative group">
+                        <img id="profile-img" src="../../assets/img/<?= htmlspecialchars($photo) ?>" alt="profil" class="px-4 w-64 mt-2 rounded-lg transition-all duration-300 group-hover:blur-sm" style="border-radius: 15%">
+                        
+                        <button id="edit-btn" type="button" class="absolute top-0 right-0 transform translate-x-1 -translate-y-1 w-12 h-12 bg-black rounded-lg text-white opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-300">
+                            <span class="material-symbols-outlined">edit</span>
+                        </button>
+
+                        <!-- Use the same input name as in PHP -->
+                        <input type="file" id="file-input" name="profile_photo" class="absolute inset-0 opacity-0 cursor-pointer" onchange="submitImageForm(event)">
+                    </div>
+                    <div class="flex flex-col ml-4 justify-center">
+                        <span class="font-bold text-xl text-black md:text-4xl"><?= htmlspecialchars($name) ?></span>
+                        <span class="text-gray-600 text-md md:text-xl"><?= htmlspecialchars($role) ?></span>
+                    </div>
                 </div>
-                <div class="flex flex-col ml-4 justify-center">
-                    <span class="font-bold text-xl text-black md:text-4xl"><?= $name ?></span>
-                    <span class="text-gray-600 text-md md:text-xl"><?= $role ?></span>
-                </div>
-            </div>
+                <!-- Hidden submit button if needed -->
+                <button type="submit" id="upload-btn" style="display: none;">Upload</button>
+            </form>
+
+
             <div class="mt-8 w-full pl-4">
                 <div class="p-4 bg-gray-100 rounded-lg shadow-md">
                     <h2 class="text-2xl font-bold text-dark-teal">Informasi Pribadi</h2>
                     <p class="text-gray-600 text-lg mt-1">Data Pribadi yang ada di KelasKu</p>
                     <div class="mt-4 space-y-4">
                         <form method="POST" action="">
-                            <div class="p-4 bg-white rounded-lg shadow-sm hover:bg-gray-200 transition duration-300 flex justify-between items-center">
+                            <div class="p-4 bg-white rounded-lg shadow-sm hover:bg-gray-200 transition duration-300 flex justify-between items-center overflow-x-auto">
                                 <div class="flex items-center">
                                     <span class="font-bold text-lg text-gray-800">Nama:</span>
                                     <span class="text-gray-600 text-lg ml-2"><?= $name ?></span>
@@ -377,7 +420,7 @@ if (isset($_POST['save_password'])) {
                         </form>
 
                         <form method="POST" action="">
-                            <div class="p-4 bg-white rounded-lg shadow-sm hover:bg-gray-200 transition duration-300 flex justify-between items-center">
+                            <div class="p-4 bg-white rounded-lg shadow-sm hover:bg-gray-200 transition duration-300 flex justify-between items-center overflow-x-auto">
                                 <div class="flex items-center">
                                     <span class="font-bold text-lg text-gray-800">Tanggal Lahir:</span>
                                     <span class="text-gray-600 text-lg ml-2"><?= $formatted_birthdate ?></span>
@@ -401,7 +444,7 @@ if (isset($_POST['save_password'])) {
                     <p class="text-gray-600 text-lg mt-1">Email dan No Ponsel yang dapat dihubungi kampus</p>
                     <div class="mt-4 space-y-4">
                         <form method="POST" action="">
-                            <div class="p-4 bg-white rounded-lg shadow-sm hover:bg-gray-200 transition duration-300 flex justify-between items-center">
+                            <div class="p-4 bg-white rounded-lg shadow-sm hover:bg-gray-200 transition duration-300 flex justify-between items-center overflow-x-auto">
                                 <div class="flex items-center">
                                     <span class="font-bold text-lg text-gray-800">Email:</span>
                                     <span class="text-gray-600 text-lg ml-2"><?= $email ?></span>
@@ -417,7 +460,7 @@ if (isset($_POST['save_password'])) {
                         </form>
 
                         <form method="POST" action="">
-                            <div class="p-4 bg-white rounded-lg shadow-sm hover:bg-gray-200 transition duration-300 flex justify-between items-center">
+                            <div class="p-4 bg-white rounded-lg shadow-sm hover:bg-gray-200 transition duration-300 flex justify-between items-center overflow-x-auto">
                                 <div class="flex items-center">
                                     <span class="font-bold text-lg text-gray-800">No. Ponsel:</span>
                                     <span class="text-gray-600 text-lg ml-2"><?= $phone ?></span>
@@ -440,7 +483,7 @@ if (isset($_POST['save_password'])) {
                     <h2 class="text-2xl font-bold text-dark-teal">Lainnya</h2>
                     <p class="text-gray-600 text-lg mt-1">Password dan Alamat Rumah</p>
                     <div class="mt-4 space-y-4">
-                        <div class="p-4 bg-white rounded-lg shadow-sm hover:bg-gray-200 transition duration-300 flex justify-between items-center">
+                        <div class="p-4 bg-white rounded-lg shadow-sm hover:bg-gray-200 transition duration-300 flex justify-between items-center overflow-x-auto">
                             <div class="flex items-center">
                                 <span class="font-bold text-lg text-gray-800">Password:</span>
                                 <input type="password" class="bg-transparent text-gray-600 text-lg ml-2 w-full sm:w-2/3 border-none outline-none" value="**********" disabled>
@@ -450,7 +493,7 @@ if (isset($_POST['save_password'])) {
                             </button>
                         </div>
                         <form method="POST" action="">
-                            <div class="p-4 bg-white rounded-lg shadow-sm hover:bg-gray-200 transition duration-300 flex justify-between items-center">
+                            <div class="p-4 bg-white rounded-lg shadow-sm hover:bg-gray-200 transition duration-300 flex justify-between items-center overflow-x-auto">
                                 <div class="flex items-center">
                                     <span class="font-bold text-lg text-gray-800">Alamat:</span>
                                     <span class="text-gray-600 text-lg ml-2"><?= $address ?></span>
@@ -471,6 +514,39 @@ if (isset($_POST['save_password'])) {
     </div>
 
     <script>
+        function submitImageForm(event) {
+            const form = document.getElementById('image-upload-form');
+            const fileInput = document.getElementById('file-input');
+            
+            if (fileInput.files && fileInput.files[0]) {
+                // Optionally, you can preview the image before submitting
+                previewImage(event);
+                form.submit();
+            }
+        }
+
+        function previewImage(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                const imgElement = document.getElementById('profile-img');
+                imgElement.src = e.target.result;
+            };
+            
+            if (file) {
+                reader.readAsDataURL(file);
+            }
+        }
+
+        document.getElementById('edit-btn').addEventListener('click', function() {
+            document.getElementById('file-input').click();
+        });
+
+        document.getElementById('edit-btn').addEventListener('click', function() {
+            document.getElementById('file-input').click();
+        });
+
         function confirmLogout(event) {
             event.preventDefault(); // Mencegah link untuk navigasi
             const confirmation = confirm("Apakah Anda ingin keluar?");

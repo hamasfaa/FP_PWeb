@@ -357,7 +357,7 @@ $result_tugas = $stmt_tugas->get_result();
         </div>
         <!-- Profil -->
         <div class="profile-container flex items-center space-x-4 p-6 mt-auto">
-            <img src="<?php echo $photo ?>" alt="Foto Profil" class="rounded-xl w-12 h-12">
+            <img src="../../assets/img/<?php echo $photo ?>" alt="Foto Profil" class="rounded-xl w-12 h-12">
             <div class="flex flex-col profile-text">
                 <span class="font-bold text-xl text-white"><?php echo htmlspecialchars($name); ?></span>
                 <span class="text-white"><?php echo htmlspecialchars(strtoupper($role)); ?></span>
