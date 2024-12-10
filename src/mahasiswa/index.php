@@ -549,13 +549,13 @@ try {
                     let link = '#';
                     if (item.type === 'kelas') {
                         icon = '<span class="material-symbols-outlined text-dark-teal mr-2">school</span>';
-                        link = `./detailKelas.php?ID=${item.id}`;
+                        link = `./kelas.php`;
                     } else if (item.type === 'tugas') {
                         icon = '<span class="material-symbols-outlined text-dark-teal mr-2">task</span>';
-                        link = `./beriNilai.php?IDK=${item.kelasID}&IDT=${item.id}`;
+                        link = `./tugaskelas.php?kelas_id=${item.kelasID}`;
                     } else if (item.type === 'pertemuan') {
                         icon = '<span class="material-symbols-outlined text-dark-teal mr-2">event</span>';
-                        link = `./detailPresensi.php?IDK=${item.kelasID}&IDA=${item.id}`;
+                        link = `./absen.php?kelas_id=${item.kelasID}`;
                     }
 
                     hasilPencarian += `
