@@ -62,12 +62,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <a href="login.php" class="font-modak text-3xl text-dark-teal">KelasKu</a>
             <div class="hidden md:block">
                 <ul class="flex space-x-6">
-                    <li><a href="#" class="hover:-translate-y-1 transition text-lg px-3 py-2">Docs</a>
+                    <li><a href="#" class=" hover:-translate-y-1 transition text-lg px-3 py-2">Docs</a>
                     </li>
-                    <li><a href="#" class="hover:-translate-y-1 transition text-lg px-3 py-2">Tentang</a></li>
-                    <li><a href="#" class="hover:-translate-y-1 transition text-lg px-3 py-2">Bantuan</a></li>
+                    <li><a href="about.php" class=" hover:-translate-y-1 transition text-lg px-3 py-2">Tentang</a></li>
+                    <li><a href="#" class=" hover:-translate-y-1 transition text-lg px-3 py-2">Bantuan</a></li>
                     <li><a href="register.php"
-                            class="bg-light-teal text-white text-lg px-4 py-2 rounded border hover:bg-white hover:border-light-teal hover:text-light-teal">Buat
+                            class="bg-light-teal text-white text-lg px-4 py-2 rounded border hover:bg-white hover:border-light-teal hover:text-light-teal">Masuk
                             Akun</a></li>
                 </ul>
             </div>
@@ -86,9 +86,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 </span>
             </div>
             <ul class="flex flex-col space-y-6 p-10 text-white">
+                <li><a href="about.php" class="hover:-translate-y-1 transition text-lg">Tentang</a></li>
                 <li><a href="#" class="hover:-translate-y-1 transition text-lg">Docs</a></li>
                 <li><a href="#" class="hover:-translate-y-1 transition text-lg">Tentang</a></li>
-                <li><a href="#" class="hover:-translate-y-1 transition text-lg">Bantuan</a></li>
                 <li><a href="register.php"
                         class="text-lg bg-white text-light-teal px-4 py-2 rounded border hover:bg-light-teal hover:border-white hover:text-white">Buat
                         Akun</a>
