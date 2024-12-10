@@ -324,7 +324,7 @@ $conn->close();
                         class="px-3 shadow appearance-none border rounded w-full md:w-1/3 py-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                         placeholder="Masukkan kode kelas" required>
                 </div>
-                <div class="flex items-center justify-between px-4">
+                <div class="flex items-center justify-between">
                     <button type="submit"
                         class="bg-dark-teal hover:bg-teal-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full md:w-auto">Ambil Kelas
                     </button>
