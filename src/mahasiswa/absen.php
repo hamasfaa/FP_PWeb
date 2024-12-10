@@ -43,9 +43,7 @@ if ($result_kelas->num_rows > 0) {
 }
 $stmt_kelas->close();
 
-$sql_pertemuan_count = "SELECT COUNT(*) AS total_pertemuan
-                        FROM Absen_Dosen
-                        WHERE Kelas_K_ID = ?";
+$sql_pertemuan_count = "SELECT COUNT(*) AS total_pertemuan FROM Absen_Dosen WHERE Kelas_K_ID = ?";
 $stmt_pertemuan_count = $conn->prepare($sql_pertemuan_count);
 $stmt_pertemuan_count->bind_param('i', $kelasID);
 $stmt_pertemuan_count->execute();
@@ -60,9 +58,9 @@ $sql_status_count = "SELECT
                         COALESCE(SUM(CASE WHEN AM_Status = 3 THEN 1 ELSE 0 END), 0) AS sakit,
                         COALESCE(SUM(CASE WHEN AM_Status = 4 THEN 1 ELSE 0 END), 0) AS alpa
                     FROM Absen_Mahasiswa
-                    WHERE Kelas_K_ID = ?";
+                    WHERE Kelas_K_ID = ? AND User_U_ID = ?";
 $stmt_status_count = $conn->prepare($sql_status_count);
-$stmt_status_count->bind_param('i', $kelasID);
+$stmt_status_count->bind_param('ii', $kelasID, $userID);
 $stmt_status_count->execute();
 $stmt_status_count->store_result();
 $stmt_status_count->bind_result($hadir, $izin, $sakit, $alpa);
@@ -114,10 +112,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt_check_code->bind_result($absenDosenID);
         $stmt_check_code->fetch();
 
-        $insert_sql = "INSERT INTO Absen_Mahasiswa (AM_Status, Absen_Dosen_AD_ID, Kelas_K_ID, User_U_ID, AM_Deskripsi) VALUES (1, ?, ?, ?, ?)";
+        $insert_sql = "INSERT INTO Absen_Mahasiswa (AM_Status, Absen_Dosen_AD_ID, Kelas_K_ID, User_U_ID, AM_Deskripsi) 
+                       VALUES (?, ?, ?, ?, ?)";
         $stmt_insert = $conn->prepare($insert_sql);
-        $statusAlpa = 1;
-        $stmt_insert->bind_param('iiis', $absenDosenID, $kelasID, $userID, $attendance);
+        $stmt_insert->bind_param('iiiss', $attendance, $absenDosenID, $kelasID, $userID, $attendance);
         $stmt_insert->execute();
         $stmt_insert->close();
 
@@ -440,7 +438,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 ?>
             </div>
         </div>
-        <div class="p-6 rounded-lg flex flex-col md:flex-row items-center justify-center w-1/2 mx-auto h-auto bg-green-100 mt-8">
+        <div class="p-6 rounded-lg flex flex-col md:flex-row items-center justify-center w-1/2 mx-auto h-auto bg-green-100 mt-8 overflow-x-auto">
             <div class="w-full md:w-1/2">
                 <table class="w-full text-center border-collapse text-lg lg:text-xl">
                     <thead class="font-bold">
@@ -477,7 +475,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 </table>
             </div>
         </div>
-        <div class="p-6 rounded-lg flex flex-col md:flex-row items-center justify-center w-5/6 mx-auto h-auto bg-gray-100 mt-8">
+        <div class="p-6 rounded-lg flex flex-col md:flex-row items-center justify-center w-5/6 mx-auto h-auto bg-gray-100 mt-8 overflow-x-auto">
             <table class="class-table w-full border-collapse">
                 <thead>
                     <tr class="text-dark-teal w-1/5">

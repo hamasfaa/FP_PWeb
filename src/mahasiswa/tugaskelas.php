@@ -387,7 +387,7 @@ $result_tugas = $stmt_tugas->get_result();
                 ?>
             </div>
         </div>
-        <div class="p-6 rounded-lg flex flex-row justify-between">
+        <div class="p-6 rounded-lg flex flex-row justify-between overflow-x-auto">
             <table class="class-table w-full mt-6 border-collapse">
                 <thead>
                     <tr class="text-dark-teal">

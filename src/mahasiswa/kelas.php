@@ -46,8 +46,6 @@ $result = $stmt->get_result();
 $stmt->close();
 ?>
 
-
-
 <!DOCTYPE html>
 <html lang="id">
 
@@ -309,7 +307,7 @@ $stmt->close();
                 class="bg-light-teal text-white text-lg px-4 py-2 w-fit h-fit rounded border hover:bg-white hover:border-light-teal hover:text-light-teal">Ambil Kelas
             </a>
         </div>
-        <div class="p-6 rounded-lg flex flex-row justify-between">
+        <div class="p-6 rounded-lg flex flex-row justify-between overflow-x-auto">
             <table class="class-table w-full mt-6 border-collapse">
                 <thead>
                     <tr class="text-dark-teal">
