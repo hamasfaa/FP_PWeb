@@ -20,17 +20,74 @@ if ($stmt->num_rows > 0) {
     exit();
 }
 
-$class_sql =
-    "SELECT K.K_ID,K.K_NamaKelas, K.K_MataKuliah FROM Kelas K JOIN User_Kelas UK ON K.K_ID = UK.Kelas_K_ID WHERE UK.User_U_ID = ?";
-$class_stmt = $conn->prepare($class_sql);
-$class_stmt->bind_param('i', $userID);
-$class_stmt->execute();
-$class_stmt->store_result();
 
-if ($class_stmt->num_rows > 0) {
-    $class_stmt->bind_result($kelasID, $namaKelas,  $mataKuliah);
-} else {
-    $namaKelas  = $mataKuliah  = '';
+if (isset($_GET['IDK']) && isset($_GET['IDA'])) {
+    $kelasID = $_GET['IDK'];
+    $absenID = $_GET['IDA'];
+}
+
+$detail_sql
+    = "SELECT K.K_NamaKelas, K.K_MataKuliah, AD.AD_Pertemuan, AD.AD_Kode
+        FROM Absen_Dosen AD
+        JOIN Kelas K ON AD.Kelas_K_ID = K.K_ID
+        WHERE AD.AD_ID = ?";
+$detail_stmt = $conn->prepare($detail_sql);
+$detail_stmt->bind_param('i', $absenID);
+$detail_stmt->execute();
+$detail_stmt->store_result();
+$detail_stmt->bind_result($namaKelas, $mataKuliah, $pertemuan, $kode);
+$detail_stmt->fetch();
+$detail_stmt->close();
+
+$sql_absen
+    = "
+        SELECT U.U_ID, U.U_Nama, AM.AM_Status, AD.AD_Kode
+        FROM User U
+        LEFT JOIN User_Kelas UK ON UK.User_U_ID = U.U_ID
+        LEFT JOIN Absen_Mahasiswa AM ON AM.User_U_ID = U.U_ID AND AM.Absen_Dosen_AD_ID = ?
+        LEFT JOIN Absen_Dosen AD ON AD.AD_ID = ?
+        WHERE U.U_Role = 'mahasiswa' AND UK.Kelas_K_ID = ?
+        ORDER BY U.U_ID ASC
+    ";
+$stmt_absen = $conn->prepare($sql_absen);
+$stmt_absen->bind_param('iii', $absenID, $absenID, $kelasID);
+$stmt_absen->execute();
+$result_absen = $stmt_absen->get_result();
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['status'])) {
+    $userID = $_POST['userID'];
+    $absenID = $_POST['absenID'];
+    $status = $_POST['status'];
+
+    $check_sql = "SELECT AM_Status FROM Absen_Mahasiswa WHERE User_U_ID = ? AND Absen_Dosen_AD_ID = ?";
+    $check_stmt = $conn->prepare($check_sql);
+    $check_stmt->bind_param('ii', $userID, $absenID);
+    $check_stmt->execute();
+    $check_stmt->store_result();
+
+    if ($check_stmt->num_rows > 0) {
+        $update_sql = "UPDATE Absen_Mahasiswa SET AM_Status = ? WHERE User_U_ID = ? AND Absen_Dosen_AD_ID = ?";
+        $update_stmt = $conn->prepare($update_sql);
+        $update_stmt->bind_param('iii', $status, $userID, $absenID);
+
+        if ($update_stmt->execute()) {
+            header('Location: detailPresensi.php?IDK=' . $kelasID . '&IDA=' . $absenID);
+            exit();
+        } else {
+            echo "Gagal" . $conn->error;
+        }
+    } else {
+        $insert_sql = "INSERT INTO Absen_Mahasiswa (User_U_ID, Absen_Dosen_AD_ID, AM_Status, Kelas_K_ID) VALUES (?, ?, ?, ?)";
+        $insert_stmt = $conn->prepare($insert_sql);
+        $insert_stmt->bind_param('iiii', $userID, $absenID, $status, $kelasID);
+
+        if ($insert_stmt->execute()) {
+            header('Location: detailPresensi.php?IDK=' . $kelasID . '&IDA=' . $absenID);
+            exit();
+        } else {
+            echo "Gagal" . $conn->error;
+        }
+    }
 }
 ?>
 
@@ -288,11 +345,11 @@ if ($class_stmt->num_rows > 0) {
                 <h1 class="text-2xl sm:text-3xl font-bold text-dark-teal uppercase mb-2">Presensi
                     <?php echo $namaKelas ?>
                 </h1>
-                <p class="text-lg sm:text-xl text-teal-600 italic">IPA <span class="font-bold">[Pertemuan 1]</span></p>
+                <p class="text-lg sm:text-xl text-teal-600 italic"><?php echo htmlspecialchars($mataKuliah) ?> <span class="font-bold">[Pertemuan <?php echo htmlspecialchars($pertemuan) ?>]</span></p>
             </div>
             <div
                 class="flex items-center text-xl text-dark-teal border-2 border-dashed border-dark-teal rounded cursor-pointer hover:bg-light-teal transition h-fit w-fit p-2">
-                ASDF
+                <?php echo $kode ?>
                 <span class="material-symbols-outlined ml-2 text-dark-teal hover:text-white transition">
                     content_copy
                 </span>
@@ -310,47 +367,50 @@ if ($class_stmt->num_rows > 0) {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr class="transition duration-300 hover:bg-teal-50">
-                        <td class="p-4">1</td>
-                        <td class="p-4">Anies Baswedan</td>
-                        <td class="p-4 text-dark-teal">Hadir</td>
-                        <td class="p-4">
-                            <button
-                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-12 h-12 rounded-full border hover:bg-white hover:border-light-teal hover:text-light-teal">H</button>
-                            <button
-                                class="relative bg-orange-700 text-white text-lg px-4 py-2 w-12 h-12 rounded-full border hover:bg-white hover:border-orange-500 hover:text-orange-500">I</button>
-                            <button
-                                class="relative bg-yellow-700 text-white text-lg px-4 py-2 w-12 h-12 rounded-full border hover:bg-white hover:border-yellow-500 hover:text-yellow-500">S</button>
-                            <button
-                                class="relative bg-red-700 text-white text-lg px-4 py-2 w-12 h-12 rounded-full border hover:bg-white hover:border-red-500 hover:text-red-500">A</button>
-                        </td>
-                    </tr>
-                    <tr class="transition duration-300 hover:bg-teal-50">
-                        <td class="p-4">2</td>
-                        <td class="p-4">Fufufafa</td>
-                        <td class="p-4 text-red-700">Alpha</td>
-                        <td class="p-4">
-                            <button
-                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-12 h-12 rounded-full border hover:bg-white hover:border-light-teal hover:text-light-teal">H</button>
-                            <button
-                                class="relative bg-yellow-700 text-white text-lg px-4 py-2 w-12 h-12 rounded-full border hover:bg-white hover:border-yellow-500 hover:text-yellow-500">I</button>
-                            <button
-                                class="relative bg-red-700 text-white text-lg px-4 py-2 w-12 h-12 rounded-full border hover:bg-white hover:border-red-500 hover:text-red-500">A</button>
-                        </td>
-                    </tr>
-                    <tr class="transition duration-300 hover:bg-teal-50">
-                        <td class="p-4">3</td>
-                        <td class="p-4">El Kecepatan</td>
-                        <td class="p-4 text-yellow-500">Izin</td>
-                        <td class="p-4">
-                            <button
-                                class="relative bg-dark-teal text-white text-lg px-4 py-2 w-12 h-12 rounded-full border hover:bg-white hover:border-light-teal hover:text-light-teal">H</button>
-                            <button
-                                class="relative bg-yellow-700 text-white text-lg px-4 py-2 w-12 h-12 rounded-full border hover:bg-white hover:border-yellow-500 hover:text-yellow-500">I</button>
-                            <button
-                                class="relative bg-red-700 text-white text-lg px-4 py-2 w-12 h-12 rounded-full border hover:bg-white hover:border-red-500 hover:text-red-500">A</button>
-                        </td>
-                    </tr>
+                    <?php
+                    while ($row = $result_absen->fetch_assoc()) {
+                        $statusAbsen = ($row['AM_Status'] == NULL) ? 4 : $row['AM_Status'];
+                        $statusText = '';
+                        $statusClass = '';
+                        switch ($statusAbsen) {
+                            case 1:
+                                $statusClass = 'text-blue-700';
+                                $statusText = 'Hadir';
+                                break;
+                            case 2:
+                                $statusClass = 'text-purple-700';
+                                $statusText = 'Izin';
+                                break;
+                            case 3:
+                                $statusClass = 'text-yellow-600';
+                                $statusText = 'Sakit';
+                                break;
+                            case 4:
+                                $statusClass = 'text-red-600';
+                                $statusText = 'Alpa';
+                                break;
+                            default:
+                                $statusClass = 'text-red-600';
+                                $statusText = 'Alpa';
+                                break;
+                        }
+                    ?>
+                        <tr class="transition duration-300 hover:bg-teal-50">
+                            <td class="p-4"><?php echo $row['U_ID'] ?></td>
+                            <td class="p-4"><?php echo $row['U_Nama']; ?></td>
+                            <td class="p-4 <?php echo $statusClass; ?>"><?php echo $statusText; ?></td>
+                            <td class="p-4">
+                                <form method="POST" action="">
+                                    <input type="hidden" name="userID" value="<?php echo $row['U_ID']; ?>">
+                                    <input type="hidden" name="absenID" value="<?php echo $absenID; ?>">
+                                    <button type="submit" name="status" value="1" class="relative bg-blue-700 text-white text-lg px-4 py-2 w-12 h-12 rounded-full border hover:bg-white hover:border-blue-500 hover:text-blue-500">H</button>
+                                    <button type="submit" name="status" value="2" class="relative bg-purple-700 text-white text-lg px-4 py-2 w-12 h-12 rounded-full border hover:bg-white hover:border-purple-500 hover:text-purple-500">I</button>
+                                    <button type="submit" name="status" value="3" class="relative bg-yellow-600 text-white text-lg px-4 py-2 w-12 h-12 rounded-full border hover:bg-white hover:border-yellow-400 hover:text-yellow-400">S</button>
+                                    <button type="submit" name="status" value="4" class="relative bg-red-600 text-white text-lg px-4 py-2 w-12 h-12 rounded-full border hover:bg-white hover:border-red-400 hover:text-red-400">A</button>
+                                </form>
+                            </td>
+                        </tr>
+                    <?php } ?>
                 </tbody>
             </table>
         </div>
@@ -429,3 +489,4 @@ if ($class_stmt->num_rows > 0) {
 </body>
 
 </html>
+<?php $conn->close(); ?>

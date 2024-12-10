@@ -471,7 +471,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <tbody>
                         <?php while ($stmt_absen->fetch()): ?>
                             <tr class="transition duration-300 hover:bg-teal-50">
-                                <td class="p-4"><a href="./detailPresensi.php?ID=<?php echo $absenID; ?>"><?php echo $pertemuan ?></a></td>
+                                <td class="p-4"><a href="./detailPresensi.php?IDK=<?php echo $kelasID; ?>&IDA=<?php echo $absenID; ?>"><?php echo $pertemuan ?></a></td>
                                 <td class="p-4"><?php echo htmlspecialchars($deskripsi) ?></td>
                                 <td class="p-4"><?php echo htmlspecialchars($tanggalDibuat) ?></td>
                                 <td class="p-4"><?php echo htmlspecialchars($kodeAbsen) ?></td>
