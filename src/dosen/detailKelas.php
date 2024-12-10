@@ -307,7 +307,7 @@ if ($stmt_list->num_rows > 0) {
                 <p class="text-xl text-teal-600 italic"><?php echo $mataKuliah ?></p>
             </div>
             <div
-                class="flex items-center text-xl text-dark-teal border-2 border-dashed border-dark-teal rounded cursor-pointer hover:bg-light-teal transition h-fit w-fit p-2">
+                class="flex items-center text-xl text-dark-teal border-2 border-dashed border-dark-teal rounded cursor-pointer hover:bg-light-teal transition h-fit w-fit p-2" onclick="navigator.clipboard.writeText('<?php echo $kodeKelas ?>')">
                 <?php echo htmlspecialchars($kodeKelas) ?>
                 <span class="material-symbols-outlined ml-2 text-dark-teal hover:text-white transition">
                     content_copy

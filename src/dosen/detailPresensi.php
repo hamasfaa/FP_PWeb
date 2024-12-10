@@ -54,6 +54,28 @@ $stmt_absen->bind_param('iii', $absenID, $absenID, $kelasID);
 $stmt_absen->execute();
 $result_absen = $stmt_absen->get_result();
 
+$hadir = $izin = $sakit = $alpa = 0;
+
+while ($rowCount = $result_absen->fetch_assoc()) {
+    $statusAbsen = ($rowCount['AM_Status'] == NULL) ? 4 : $rowCount['AM_Status'];
+    switch ($statusAbsen) {
+        case 1:
+            $hadir++;
+            break;
+        case 2:
+            $izin++;
+            break;
+        case 3:
+            $sakit++;
+            break;
+        case 4:
+            $alpa++;
+            break;
+    }
+}
+
+$result_absen->data_seek(0);
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['status'])) {
     $userID = $_POST['userID'];
     $absenID = $_POST['absenID'];
@@ -352,13 +374,36 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['status'])) {
                 <p class="text-lg sm:text-xl text-teal-600 italic"><?php echo htmlspecialchars($mataKuliah) ?> <span class="font-bold">[Pertemuan <?php echo htmlspecialchars($pertemuan) ?>]</span></p>
             </div>
             <div
-                class="flex items-center text-xl text-dark-teal border-2 border-dashed border-dark-teal rounded cursor-pointer hover:bg-light-teal transition h-fit w-fit p-2">
+                class="flex items-center text-xl text-dark-teal border-2 border-dashed border-dark-teal rounded cursor-pointer hover:bg-light-teal transition h-fit w-fit p-2" onclick="navigator.clipboard.writeText('<?php echo $kode ?>')">
                 <?php echo $kode ?>
                 <span class="material-symbols-outlined ml-2 text-dark-teal hover:text-white transition">
                     content_copy
                 </span>
             </div>
         </div>
+        <div class="p-6 rounded-lg flex flex-col md:flex-row items-center justify-center w-1/2 mx-auto h-auto bg-green-100 mt-8">
+            <div class="w-full md:w-1/2 overflow-x-auto">
+                <table class="w-full text-center border-collapse text-lg lg:text-xl">
+                    <thead class="font-bold">
+                        <tr>
+                            <th class="border-r border-gray-300 w-1/4 text-blue-700 py-2">HADIR</th>
+                            <th class="border-r border-gray-300 w-1/4 text-purple-700">IZIN</th>
+                            <th class="border-r border-gray-300 w-1/4 text-yellow-600">SAKIT</th>
+                            <th class="w-1/4 text-red-600">ALPA</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="border-r border-gray-300 py-2"><?= $hadir ?></td>
+                            <td class="border-r border-gray-300"><?= $izin ?></td>
+                            <td class="border-r border-gray-300"><?= $sakit ?></td>
+                            <td><?= $alpa ?></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
         <!-- Tabel -->
         <div class="bg-white shadow-lg rounded-lg p-4 sm:p-8">
             <table class="w-full mt-6 border-collapse">

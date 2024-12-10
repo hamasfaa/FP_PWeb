@@ -438,8 +438,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 ?>
             </div>
         </div>
-        <div class="p-6 rounded-lg flex flex-col md:flex-row items-center justify-center w-1/2 mx-auto h-auto bg-green-100 mt-8 overflow-x-auto">
-            <div class="w-full md:w-1/2">
+        <div class="p-6 rounded-lg flex flex-col md:flex-row items-center justify-center w-1/2 mx-auto h-auto bg-green-100 mt-8">
+            <div class="w-full md:w-1/2 overflow-x-auto">
                 <table class="w-full text-center border-collapse text-lg lg:text-xl">
                     <thead class="font-bold">
                         <tr>
