@@ -182,11 +182,15 @@ $stmt->close();
             </div>
         </div>
         <div class="w-full mt-4 md:mt-0 md:flex md:justify-center">
-            <div class="flex items-center border rounded p-2 md:p-4 w-full md:w-2/5 lg:w-1/4">
-                <span class="material-symbols-outlined mr-2 text-light-teal">
-                    search
-                </span>
-                <input type="text" name="search" placeholder="CARI BLABLABLA" class="flex-1 outline-none">
+            <div class="relative w-full md:w-2/5 lg:w-1/4">
+                <div class="flex items-center border rounded p-2 md:p-4">
+                    <span class="material-symbols-outlined mr-2 text-light-teal">
+                        search
+                    </span>
+                    <input type="text" name="search" id="pencarian" placeholder="Cari kelas, tugas, atau absen..." class="flex-1 outline-none">
+                </div>
+                <div id="hasilPencarian" class="absolute w-full mt-2 bg-white border rounded shadow-lg z-50 hidden">
+                </div>
             </div>
         </div>
     </nav>
@@ -339,6 +343,80 @@ $stmt->close();
         sidebar.addEventListener('click', function(e) {
             e.stopPropagation();
         });
+
+        document.getElementById('pencarian').addEventListener('input', function() {
+            const searchTerm = this.value;
+            // console.log(searchTerm);
+            if (searchTerm.length > 2) {
+                // console.log(searchTerm);
+                document.getElementById('hasilPencarian').classList.remove('hidden');
+                fetchHasil(searchTerm);
+            } else {
+                document.getElementById('hasilPencarian').classList.add('hidden');
+            }
+        });
+
+        function fetchHasil(searchTerm) {
+            fetch('../../assets/be/search_results.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    redirect: 'manual',
+                    body: JSON.stringify({
+                        userID: <?php echo $userID; ?>,
+                        search: searchTerm,
+                    })
+                })
+                .then(response => {
+                    // console.log(response.status);
+                    // console.log(response.headers.get('Location'));
+                    // console.log(response);
+                    return response.json();
+                })
+                .then(data => {
+                    // console.log('Data JSON:', data);
+                    displayHasil(data);
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function displayHasil(data) {
+            // console.log(data.length);
+            let hasilPencarian = '';
+            if (data.length > 0) {
+                hasilPencarian = '<ul class="p-2">';
+                data.forEach(item => {
+                    let icon = '';
+                    let link = '#';
+                    if (item.type === 'kelas') {
+                        icon = '<span class="material-symbols-outlined text-dark-teal mr-2">school</span>';
+                        link = `./detailKelas.php?ID=${item.id}`;
+                    } else if (item.type === 'tugas') {
+                        icon = '<span class="material-symbols-outlined text-dark-teal mr-2">task</span>';
+                        link = `./beriNilai.php?IDK=${item.kelasID}&IDT=${item.id}`;
+                    } else if (item.type === 'pertemuan') {
+                        icon = '<span class="material-symbols-outlined text-dark-teal mr-2">event</span>';
+                        link = `./detailPresensi.php?IDK=${item.kelasID}&IDA=${item.id}`;
+                    }
+
+                    hasilPencarian += `
+                <li class="py-2 border-b flex items-center">
+                    ${icon}
+                    <a href="${link}" class="hover:underline">
+                    <div>
+                        <div class="font-semibold text-dark-teal">${item.title}</div>
+                        <div class="text-gray-600 text-sm">${item.subtitle}</div>
+                    </div>
+                    </a>
+                </li>`;
+                });
+                hasilPencarian += '</ul>';
+            } else {
+                hasilPencarian = 'Tidak ada hasil yang ditemukan.';
+            }
+            document.getElementById('hasilPencarian').innerHTML = hasilPencarian;
+        }
     </script>
 </body>
 

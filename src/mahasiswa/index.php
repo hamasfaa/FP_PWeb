@@ -543,18 +543,31 @@ try {
             // console.log(data.length);
             let hasilPencarian = '';
             if (data.length > 0) {
-                hasilPencarian = '<ul>';
+                hasilPencarian = '<ul class="p-2">';
                 data.forEach(item => {
-                    if (item.K_MataKuliah && item.K_NamaKelas) {
-                        hasilPencarian += `
-                    <li>${item.K_MataKuliah} - ${item.K_NamaKelas}</li>`;
-                    } else if (item.TD_Judul && item.TD_Deadline) {
-                        hasilPencarian += `
-                    <li>${item.TD_Judul} Deadline: ${item.TD_Deadline}</li>`;
-                    } else if (item.AD_Deskripsi && item.AD_TanggalDibuat) {
-                        hasilPencarian += `
-                    <li>${item.AD_Deskripsi} Tanggal: ${item.AD_TanggalDibuat}</li>`;
+                    let icon = '';
+                    let link = '#';
+                    if (item.type === 'kelas') {
+                        icon = '<span class="material-symbols-outlined text-dark-teal mr-2">school</span>';
+                        link = `./detailKelas.php?ID=${item.id}`;
+                    } else if (item.type === 'tugas') {
+                        icon = '<span class="material-symbols-outlined text-dark-teal mr-2">task</span>';
+                        link = `./beriNilai.php?IDK=${item.kelasID}&IDT=${item.id}`;
+                    } else if (item.type === 'pertemuan') {
+                        icon = '<span class="material-symbols-outlined text-dark-teal mr-2">event</span>';
+                        link = `./detailPresensi.php?IDK=${item.kelasID}&IDA=${item.id}`;
                     }
+
+                    hasilPencarian += `
+                <li class="py-2 border-b flex items-center">
+                    ${icon}
+                    <a href="${link}" class="hover:underline">
+                    <div>
+                        <div class="font-semibold text-dark-teal">${item.title}</div>
+                        <div class="text-gray-600 text-sm">${item.subtitle}</div>
+                    </div>
+                    </a>
+                </li>`;
                 });
                 hasilPencarian += '</ul>';
             } else {
