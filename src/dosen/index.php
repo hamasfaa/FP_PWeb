@@ -60,7 +60,7 @@ try {
 }
 
 $listKelas = [];
-$listKelas_sql = "SELECT K.K_NamaKelas, K.K_MataKuliah
+$listKelas_sql = "SELECT K.K_NamaKelas, K.K_MataKuliah, K.K_ID
     FROM Kelas K
     INNER JOIN User_Kelas UK ON K.K_ID = UK.Kelas_K_ID
     WHERE UK.User_U_ID = ? ";
@@ -75,7 +75,7 @@ $stmt_listKelas->close();
 
 $listTugas = [];
 $listTugas_sql = "
-    SELECT TD.TD_Judul, TD.TD_Deadline
+    SELECT TD.TD_Judul, TD.TD_Deadline, UK.Kelas_K_ID, TD.TD_ID
     FROM Tugas_Dosen TD
     INNER JOIN User_Kelas UK ON TD.Kelas_K_ID = UK.Kelas_K_ID
     INNER JOIN User U ON UK.User_U_ID = U.U_ID
@@ -93,7 +93,11 @@ $stmt_listTugas->close();
 
 
 $listPertemuan = [];
+<<<<<<< HEAD
 $listPertemuan_sql = "SELECT AD.AD_Pertemuan, AD.AD_TanggalDibuat, UK.Kelas_K_ID, K.K_MataKuliah, AD.AD_ID
+=======
+$listPertemuan_sql = "SELECT AD.AD_Pertemuan, AD.AD_TanggalDibuat, AD.AD_ID, UK.Kelas_K_ID
+>>>>>>> 29c976b06040245331401655fa7cb9f90aed5ec6
     FROM Absen_Dosen AD
     INNER JOIN User_Kelas UK ON AD.Kelas_K_ID = UK.Kelas_K_ID
     INNER JOIN Kelas K ON AD.Kelas_K_ID = K.K_ID
@@ -429,7 +433,7 @@ $stmt_listPertemuan->close();
                     <?php if (!empty($listKelas)): ?>
                         <?php foreach ($listKelas as $kelas): ?>
                             <div class="flex justify-between border-b py-2">
-                                <a href="#" class="text-dark-teal"><?php echo htmlspecialchars($kelas['K_NamaKelas']); ?></a>
+                                <a href="./detailKelas.php?ID=<?php echo htmlspecialchars($kelas['K_ID']) ?>" class="text-dark-teal"><?php echo htmlspecialchars($kelas['K_NamaKelas']); ?></a>
                                 <span class="text-gray-500"><?php echo htmlspecialchars($kelas['K_MataKuliah']); ?></span>
                             </div>
                         <?php endforeach; ?>
@@ -444,7 +448,7 @@ $stmt_listPertemuan->close();
                     <?php if (!empty($listTugas)): ?>
                         <?php foreach ($listTugas as $tugas): ?>
                             <div class="flex justify-between border-b py-2">
-                                <a href="#" class="text-dark-teal"><?php echo htmlspecialchars($tugas['TD_Judul']); ?></a>
+                                <a href="./beriNilai.php?IDK=<?php echo $tugas['Kelas_K_ID'] ?>&IDT=<?php echo $tugas['TD_ID'] ?>" class="text-dark-teal"><?php echo htmlspecialchars($tugas['TD_Judul']); ?></a>
                                 <span class="text-gray-500"><?php echo htmlspecialchars($tugas['TD_Deadline']); ?></span>
                             </div>
                         <?php endforeach; ?>
@@ -459,10 +463,14 @@ $stmt_listPertemuan->close();
                     <?php if (!empty($listPertemuan)): ?>
                         <?php foreach ($listPertemuan as $pertemuan): ?>
                             <div class="flex justify-between border-b py-2">
+<<<<<<< HEAD
                                 <a href="detailPresensi.php?IDK=<?php echo $pertemuan['Kelas_K_ID'] ?>&IDA=<?php echo $pertemuan['AD_ID'] ?>" class="text-dark-teal">
                                     <?php echo htmlspecialchars($pertemuan['AD_Pertemuan']); ?>
                                 </a>
                                 <span class="text-gray-500"><?php echo htmlspecialchars($pertemuan['K_MataKuliah']); ?></span>
+=======
+                                <a href="./detailPresensi.php?IDK=<?php echo $pertemuan['Kelas_K_ID'] ?>&IDA=<?php echo $pertemuan['AD_ID'] ?> ?>" class="text-dark-teal"><?php echo htmlspecialchars($pertemuan['AD_Pertemuan']); ?></a>
+>>>>>>> 29c976b06040245331401655fa7cb9f90aed5ec6
                                 <span class="text-gray-500"><?php echo htmlspecialchars($pertemuan['AD_TanggalDibuat']); ?></span>
                             </div>
                         <?php endforeach; ?>
