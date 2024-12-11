@@ -74,13 +74,14 @@ while ($row = $hasilListKelas->fetch_assoc()) {
 $stmt_listKelas->close();
 
 $listTugas = [];
-$listTugas_sql = "SELECT TD.TD_Judul, TD.TD_Deadline
+$listTugas_sql = "
+    SELECT TD.TD_Judul, TD.TD_Deadline
     FROM Tugas_Dosen TD
-    INNER JOIN Tugas_Mahasiswa TM ON TD.TD_ID = TM.Tugas_Dosen_TD_ID
-    WHERE TM.User_U_ID = ? 
+    INNER JOIN User_Kelas UK ON TD.Kelas_K_ID = UK.Kelas_K_ID
+    INNER JOIN User U ON UK.User_U_ID = U.U_ID
+    WHERE U.U_ID = ? 
       AND MONTH(TD.TD_Deadline) = ? 
-      AND YEAR(TD.TD_Deadline) = ?
-    GROUP BY TD.TD_ID";
+      AND YEAR(TD.TD_Deadline) = ?";
 $stmt_listTugas = $conn->prepare($listTugas_sql);
 $stmt_listTugas->bind_param('iii', $userID, $bulan, $tahun);
 $stmt_listTugas->execute();
@@ -89,6 +90,7 @@ while ($row = $hasilListTugas->fetch_assoc()) {
     $listTugas[] = $row;
 }
 $stmt_listTugas->close();
+
 
 $listPertemuan = [];
 $listPertemuan_sql = "SELECT AD.AD_Pertemuan, AD.AD_TanggalDibuat

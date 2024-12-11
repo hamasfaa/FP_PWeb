@@ -18,6 +18,7 @@ CREATE TABLE Absen_Dosen (
 CREATE TABLE Absen_Mahasiswa (
     AM_ID int  NOT NULL AUTO_INCREMENT,
     AM_Status int  NOT NULL,
+    AM_Deskripsi longtext  NOT NULL,
     Absen_Dosen_AD_ID int  NOT NULL,
     Kelas_K_ID int  NOT NULL,
     User_U_ID int  NOT NULL,
