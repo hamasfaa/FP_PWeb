@@ -480,15 +480,21 @@ if (isset($_FILES['profile_photo']) && $_FILES['profile_photo']['error'] === UPL
                     <h2 class="text-2xl font-bold text-dark-teal">Lainnya</h2>
                     <p class="text-gray-600 text-lg mt-1">Password dan Alamat Rumah</p>
                     <div class="mt-4 space-y-4">
-                        <div class="p-4 bg-white rounded-lg shadow-sm hover:bg-gray-200 transition duration-300 flex justify-between items-center overflow-x-auto">
-                            <div class="flex items-center">
-                                <span class="font-bold text-lg text-gray-800">Password:</span>
-                                <input type="password" class="bg-transparent text-gray-600 text-lg ml-2 w-full sm:w-2/3 border-none outline-none" value="**********" disabled>
+                        <form method="POST" action="">
+                            <div class="p-4 bg-white rounded-lg shadow-sm hover:bg-gray-200 transition duration-300 flex justify-between items-center overflow-x-auto">
+                                <div class="flex items-center">
+                                    <span class="font-bold text-lg text-gray-800">Password:</span>
+                                    <input type="password" class="bg-transparent text-gray-600 text-lg ml-2 w-full sm:w-2/3 border-none outline-none" value="**********" disabled>
+                                </div>
+                                <button type="submit" name="edit_password" class="text-gray-600">
+                                    <span class="material-symbols-outlined">edit</span>
+                                </button>
                             </div>
-                            <button class="text-gray-600">
-                                <span class="material-symbols-outlined">edit</span>
-                            </button>
-                        </div>
+                            <?php if (isset($_POST['edit_password'])): ?>
+                                <input type="password" name="new_password" class="mt-2 p-2 border rounded" value="" required>
+                                <button type="submit" name="save_password" class="bg-green-500 text-white rounded px-4 py-2 mt-2">Simpan</button>
+                            <?php endif; ?>
+                        </form>
                         <form method="POST" action="">
                             <div class="p-4 bg-white rounded-lg shadow-sm hover:bg-gray-200 transition duration-300 flex justify-between items-center overflow-x-auto">
                                 <div class="flex items-center">
