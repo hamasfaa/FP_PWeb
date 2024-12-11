@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
                 $sql = "INSERT INTO User (U_ID, U_Nama, U_TanggalLahir, U_Role, U_Email, U_Password, U_Foto) 
-                    VALUES (?, ?, ?, ?, ?, ?, '../../assets/img/default.png')";
+                    VALUES (?, ?, ?, ?, ?, ?, 'default.jpg')";
                 $stmt = $conn->prepare($sql);
                 $stmt->bind_param("ssssss", $new_id, $name, $dob, $role, $email, $hashedPassword);
 
