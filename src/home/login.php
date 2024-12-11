@@ -67,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <li><a href="about.php" class=" hover:-translate-y-1 transition text-lg px-3 py-2">Tentang</a></li>
                     <li><a href="#" class=" hover:-translate-y-1 transition text-lg px-3 py-2">Bantuan</a></li>
                     <li><a href="register.php"
-                            class="bg-light-teal text-white text-lg px-4 py-2 rounded border hover:bg-white hover:border-light-teal hover:text-light-teal">Masuk
+                            class="bg-light-teal text-white text-lg px-4 py-2 rounded border hover:bg-white hover:border-light-teal hover:text-light-teal">Buat
                             Akun</a></li>
                 </ul>
             </div>

@@ -16,7 +16,7 @@ $stmt_who->store_result();
 if ($stmt_who->num_rows > 0) {
     $stmt_who->bind_result($name, $role);
     $stmt_who->fetch();
-    echo $name . $role;
+    echo $_SESSION['U_ID'] . $name . $role;
 } else {
     echo "Nama User Tidak Ditemukan";
 }

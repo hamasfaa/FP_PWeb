@@ -26,6 +26,7 @@ $date = new DateTime();
 $hari = $date->format('l');
 $tanggal = $date->format('d F Y');
 $bulan = $date->format('m');
+$tahun = $date->format('Y');
 
 $key = '210b802c-ef69-4346-8174-53b17a97bcb0';
 $holiday_api = new \HolidayAPI\Client(['key' => $key]);
@@ -57,6 +58,55 @@ try {
 } catch (Exception $e) {
     $data_json = json_encode([]);
 }
+
+$listKelas = [];
+$listKelas_sql = "SELECT K.K_NamaKelas, K.K_MataKuliah
+    FROM Kelas K
+    INNER JOIN User_Kelas UK ON K.K_ID = UK.Kelas_K_ID
+    WHERE UK.User_U_ID = ?";
+$stmt_listKelas = $conn->prepare($listKelas_sql);
+$stmt_listKelas->bind_param('i', $userID);
+$stmt_listKelas->execute();
+$hasilListKelas = $stmt_listKelas->get_result();
+while ($row = $hasilListKelas->fetch_assoc()) {
+    $listKelas[] = $row;
+}
+$stmt_listKelas->close();
+
+$listTugas = [];
+$listTugas_sql = "
+    SELECT TD.TD_Judul, TD.TD_Deadline
+    FROM Tugas_Dosen TD
+    INNER JOIN User_Kelas UK ON TD.Kelas_K_ID = UK.Kelas_K_ID
+    INNER JOIN User U ON UK.User_U_ID = U.U_ID
+    WHERE U.U_ID = ? 
+      AND MONTH(TD.TD_Deadline) = ? 
+      AND YEAR(TD.TD_Deadline) = ?";
+$stmt_listTugas = $conn->prepare($listTugas_sql);
+$stmt_listTugas->bind_param('iii', $userID, $bulan, $tahun);
+$stmt_listTugas->execute();
+$hasilListTugas = $stmt_listTugas->get_result();
+while ($row = $hasilListTugas->fetch_assoc()) {
+    $listTugas[] = $row;
+}
+$stmt_listTugas->close();
+
+$listPertemuan = [];
+$listPertemuan_sql = "
+    SELECT AD.AD_Pertemuan, AD.AD_TanggalDibuat
+    FROM Absen_Dosen AD
+    INNER JOIN User_Kelas UK ON AD.Kelas_K_ID = UK.Kelas_K_ID
+    WHERE UK.User_U_ID = ? 
+      AND MONTH(AD.AD_TanggalDibuat) = ? 
+      AND YEAR(AD.AD_TanggalDibuat) = ?";
+$stmt_listPertemuan = $conn->prepare($listPertemuan_sql);
+$stmt_listPertemuan->bind_param('iii', $userID, $bulan, $tahun);
+$stmt_listPertemuan->execute();
+$hasilListPertemuan = $stmt_listPertemuan->get_result();
+while ($row = $hasilListPertemuan->fetch_assoc()) {
+    $listPertemuan[] = $row;
+}
+$stmt_listPertemuan->close();
 
 ?>
 
@@ -374,28 +424,46 @@ try {
             <div class="bg-white shadow-lg rounded-lg p-8 mb-6">
                 <h2 class="text-2xl font-semibold text-dark-teal mb-4">Daftar Kelas</h2>
                 <div class="class-card space-y-4">
-                    <div class="flex justify-between border-b py-2">
-                        <a href="#" class="text-dark-teal">Kelas 1: Pemrograman Web</a>
-                        <span class="text-gray-500">Matakuliah</span>
-                    </div>
+                    <?php if (!empty($listKelas)): ?>
+                        <?php foreach ($listKelas as $kelas): ?>
+                            <div class="flex justify-between border-b py-2">
+                                <a href="#" class="text-dark-teal"><?php echo htmlspecialchars($kelas['K_NamaKelas']); ?></a>
+                                <span class="text-gray-500"><?php echo htmlspecialchars($kelas['K_MataKuliah']); ?></span>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <p class="text-gray-500">Tidak ada kelas.</p>
+                    <?php endif; ?>
                 </div>
             </div>
             <div class="bg-white shadow-lg rounded-lg p-8 mb-6">
                 <h2 class="text-2xl font-semibold text-dark-teal mb-4">Daftar Tugas</h2>
                 <div class="task-card space-y-4">
-                    <div class="flex justify-between border-b py-2">
-                        <a href="#" class="text-dark-teal">Tugas 1: Implementasi CRUD</a>
-                        <span class="text-gray-500">Batas: 15 Desember 2024</span>
-                    </div>
+                    <?php if (!empty($listTugas)): ?>
+                        <?php foreach ($listTugas as $tugas): ?>
+                            <div class="flex justify-between border-b py-2">
+                                <a href="#" class="text-dark-teal"><?php echo htmlspecialchars($tugas['TD_Judul']); ?></a>
+                                <span class="text-gray-500"><?php echo htmlspecialchars($tugas['TD_Deadline']); ?></span>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <p class="text-gray-500">Tidak ada tugas.</p>
+                    <?php endif; ?>
                 </div>
             </div>
             <div class="bg-white shadow-lg rounded-lg p-8 mb-6">
                 <h2 class="text-2xl font-semibold text-dark-teal mb-4">Daftar Pertemuan</h2>
                 <div class="class-card space-y-4">
-                    <div class="flex justify-between border-b py-2">
-                        <a href="#" class="text-dark-teal">Kelas 1: Pemrograman Web</a>
-                        <span class="text-gray-500">Matakuliah</span>
-                    </div>
+                    <?php if (!empty($listPertemuan)): ?>
+                        <?php foreach ($listPertemuan as $pertemuan): ?>
+                            <div class="flex justify-between border-b py-2">
+                                <a href="#" class="text-dark-teal"><?php echo htmlspecialchars($pertemuan['AD_Pertemuan']); ?></a>
+                                <span class="text-gray-500"><?php echo htmlspecialchars($pertemuan['AD_TanggalDibuat']); ?></span>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <p class="text-gray-500">Tidak ada pertemuan.</p>
+                    <?php endif; ?>
                 </div>
             </div>
             <div class="bg-white shadow-lg rounded-lg p-8 mb-6">
