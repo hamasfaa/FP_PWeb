@@ -552,9 +552,12 @@ $stmt_listPertemuan->close();
 
         function updateClock() {
             const now = new Date();
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const seconds = String(now.getSeconds()).padStart(2, '0');
+            const timeNow = new Date(now.toLocaleString("en-US", {
+                timeZone: "Asia/Jakarta"
+            }));
+            const hours = String(timeNow.getHours()).padStart(2, '0');
+            const minutes = String(timeNow.getMinutes()).padStart(2, '0');
+            const seconds = String(timeNow.getSeconds()).padStart(2, '0');
             document.getElementById('clock').textContent = `${hours}:${minutes}:${seconds}`;
         }
         setInterval(updateClock, 1000);
