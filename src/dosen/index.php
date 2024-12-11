@@ -93,13 +93,15 @@ $stmt_listTugas->close();
 
 
 $listPertemuan = [];
-$listPertemuan_sql = "SELECT AD.AD_Pertemuan, AD.AD_TanggalDibuat
+$listPertemuan_sql = "SELECT AD.AD_Pertemuan, AD.AD_TanggalDibuat, UK.Kelas_K_ID, K.K_MataKuliah, AD.AD_ID
     FROM Absen_Dosen AD
     INNER JOIN User_Kelas UK ON AD.Kelas_K_ID = UK.Kelas_K_ID
+    INNER JOIN Kelas K ON AD.Kelas_K_ID = K.K_ID
     WHERE UK.User_U_ID = ? 
       AND MONTH(AD.AD_TanggalDibuat) = ? 
       AND YEAR(AD.AD_TanggalDibuat) = ?
     GROUP BY AD.AD_ID";
+
 $stmt_listPertemuan = $conn->prepare($listPertemuan_sql);
 $stmt_listPertemuan->bind_param('iii', $userID, $bulan, $tahun);
 $stmt_listPertemuan->execute();
@@ -457,7 +459,10 @@ $stmt_listPertemuan->close();
                     <?php if (!empty($listPertemuan)): ?>
                         <?php foreach ($listPertemuan as $pertemuan): ?>
                             <div class="flex justify-between border-b py-2">
-                                <a href="#" class="text-dark-teal"><?php echo htmlspecialchars($pertemuan['AD_Pertemuan']); ?></a>
+                                <a href="detailPresensi.php?IDK=<?php echo $pertemuan['Kelas_K_ID'] ?>&IDA=<?php echo $pertemuan['AD_ID'] ?>" class="text-dark-teal">
+                                    <?php echo htmlspecialchars($pertemuan['AD_Pertemuan']); ?>
+                                </a>
+                                <span class="text-gray-500"><?php echo htmlspecialchars($pertemuan['K_MataKuliah']); ?></span>
                                 <span class="text-gray-500"><?php echo htmlspecialchars($pertemuan['AD_TanggalDibuat']); ?></span>
                             </div>
                         <?php endforeach; ?>
