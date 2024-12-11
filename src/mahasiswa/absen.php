@@ -102,6 +102,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $code = $_POST['code'];
     $attendance = $_POST['attendance'];
 
+    // Memeriksa apakah kode presensi benar
     $sql_check_code = "SELECT AD_ID FROM Absen_Dosen WHERE AD_Kode = ? AND Kelas_K_ID = ?";
     $stmt_check_code = $conn->prepare($sql_check_code);
     $stmt_check_code->bind_param('si', $code, $kelasID);
@@ -112,11 +113,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt_check_code->bind_result($absenDosenID);
         $stmt_check_code->fetch();
 
+        $status = 1; 
+
         $insert_sql = "INSERT INTO Absen_Mahasiswa (AM_Status, Absen_Dosen_AD_ID, Kelas_K_ID, User_U_ID, AM_Deskripsi) 
                        VALUES (?, ?, ?, ?, ?)";
         $stmt_insert = $conn->prepare($insert_sql);
-        $stmt_insert->bind_param('iiiss', $attendance, $absenDosenID, $kelasID, $userID, $attendance);
-        $stmt_insert->execute();
+        $stmt_insert->bind_param('iiiss', $status, $absenDosenID, $kelasID, $userID, $attendance);
         $stmt_insert->close();
 
         header('Location: absen.php?kelas_id=' . $kelasID);
@@ -128,6 +130,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $stmt_check_code->close();
 }
+
+
 ?>
 
 <!DOCTYPE html>
