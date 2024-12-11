@@ -101,9 +101,6 @@ if (isset($_FILES['profile_photo']) && $_FILES['profile_photo']['error'] === UPL
             $update_stmt->bind_param('si', $file_name_safe, $userID);
             
             if ($update_stmt->execute()) {
-                if ($photo && file_exists($upload_dir . $photo)) {
-                    unlink($upload_dir . $photo);
-                }
                 header("Location: pengaturan.php?success=1");
                 exit();
             } else {
