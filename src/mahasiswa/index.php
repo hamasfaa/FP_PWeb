@@ -27,7 +27,7 @@ $hari = $date->format('l');
 $tanggal = $date->format('d F Y');
 $bulan = $date->format('m');
 $tahun = $date->format('Y');
-$jam = $date->format('H:i:s');
+// $jam = $date->format('H:i:s');
 
 
 $key = '210b802c-ef69-4346-8174-53b17a97bcb0';
@@ -422,7 +422,7 @@ $stmt_listPertemuan->close();
         <div class="bg-white rounded-lg p-8 flex flex-col items-center text-center mb-6">
             <h1 class="text-4xl font-bold text-dark-teal uppercase mb-4">Selamat Datang, <?php echo htmlspecialchars($name); ?></h1>
             <p class="text-xl text-gray-700 italic mb-6"><?php echo $hari . ', ' . $tanggal; ?></p>
-            <div id="" class="text-2xl text-gray-700"><?php echo $jam; ?></div>
+            <div id="clock" class="text-2xl text-gray-700"></div>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <div class="bg-white shadow-lg rounded-lg p-8 mb-6">
